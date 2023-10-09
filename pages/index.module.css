@@ -42,9 +42,11 @@
   width: 320px;
 }
 .main input[type="text"] {
+  display: inline-block;
   padding: 12px 16px;
   border: 1px solid #10a37f;
   border-radius: 4px;
+  margin-top: 5px;
   margin-bottom: 24px;
   outline-color: #10a37f;
 }
@@ -52,16 +54,62 @@
   color: #8e8ea0;
   opacity: 1;
 }
+
+.main .card{
+  justify-content:center;
+  margin-bottom:10px;
+}
+.main input[type="number"] {
+  width: 10%;
+  height: 5px;
+  padding: 8px 16px;
+  border: 1px solid #10a37f;
+  border-radius: 4px;
+  outline-color: #10a37f;
+  margin-right: 5px;
+}
+.main select{
+  border: 1px solid #10a37f;
+  border-radius: 4px;
+  outline-color: #10a37f;
+}
+
 .main input[type="submit"] {
   padding: 12px 0;
   color: #fff;
-  background-color: #10a37f;
   border: none;
   border-radius: 4px;
   text-align: center;
   cursor: pointer;
 }
+
+.submitting{
+  background-color: #a31010;
+}
+
+.normal{
+  background-color: #10a37f;
+}
+
 .main .result {
   font-weight: bold;
   margin-top: 40px;
+}
+
+.active {
+  padding: 12px 0;
+  color: #fff;
+  background-color: #ea1212 !important;
+  border: none;
+  border-radius: 4px;
+  text-align: center;
+  cursor: pointer;
+}
+
+.none{
+  display: none;
+}
+
+.text{
+  white-space: pre-line;
 }
