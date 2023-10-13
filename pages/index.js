@@ -11,7 +11,7 @@ export default function Home() {
   const [resultList, setResultList] = useState("");
   const [ isSubmitting, setIsSubmitting ] = useState( false );
   const [ isSubmittingList, setIsSubmittingList ] = useState( false );
-  const dataJson = result.length === 0 ? [] : JSON.parse(result);
+  const dataJson = result.length === 0 ? [] : JSON.parse( result );
 
   async function onSubmit(event) {
     event.preventDefault();
@@ -29,6 +29,9 @@ export default function Home() {
         break;
       case "hard":
         apiGenerte = "/api/generateHard";
+        break;
+      case "elite":
+        apiGenerte = "/api/generateElite";
         break;
       default:
         apiGenerte = "/api/generateEasy";
@@ -84,14 +87,14 @@ export default function Home() {
       setIsSubmittingList( false ); 
     }
   }
-
+  
   return (
     <div>
       <Head>
         <title>OpenAI Quickstart</title>
         <link rel="icon" href="/quest.png" />
       </Head>
-
+    {/* generate list */}
       <main className={styles.main}>
         <img src="/quest.png" className={styles.icon} />
         <h3>Question List</h3>
@@ -113,8 +116,9 @@ export default function Home() {
               <option value="difficulty level easy">Easy</option>
               <option value="difficulty level medium">Medium</option>
               <option value="difficulty level hard">Hard</option>
+              <option value="difficulty level elite">elite</option>
             </select>
-           </div>
+          </div>
           <input
             type="text"
             name="text"
@@ -124,19 +128,20 @@ export default function Home() {
           />
           <input
             type="submit"
-            value="Generate question"
+            value="Generate list"
             className={isSubmittingList ? styles.submitting : styles.normal}
             />
         </form>
         <div className={ styles.result }>
             {resultList.length !== 0 ? (
-               <p className={styles.text}>{ resultList }</p>
+              <p className={styles.text}>{ resultList }</p>
             ) : null}
         </div>
       </main>
+      {/* generate quest */}
       <main className={styles.main}>
         <img src="/quest.png" className={styles.icon} />
-        <h3>Question title</h3>
+        <h3>Question Title</h3>
         <form onSubmit={onSubmit}>
             <select
               name="difficulty"
@@ -147,6 +152,7 @@ export default function Home() {
               <option value="easy">Easy</option>
               <option value="medium">Medium</option>
               <option value="hard">Hard</option>
+              <option value="elite">Elite</option>
             </select>
           <input
             type="text"

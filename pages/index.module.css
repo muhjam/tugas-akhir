@@ -81,6 +81,7 @@
   border-radius: 4px;
   text-align: center;
   cursor: pointer;
+  margin-bottom: 5px;
 }
 
 .submitting{
@@ -112,4 +113,7 @@
 
 .text{
   white-space: pre-line;
+}
+.w-md-editor-text-input{  
+  margin: 10px 0;
 }
