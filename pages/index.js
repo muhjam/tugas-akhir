@@ -259,7 +259,7 @@ export default function Home() {
               {/* Modal header */}
               <div className="flex items-center justify-between p-4 md:p-5 border-b rounded-t">
                 <h3 className="text-xl font-semibold text-gray-900">
-                  Export Data Json Stringify
+                  Export String Json
                 </h3>
                 <button
                   type="button"
@@ -310,7 +310,7 @@ export default function Home() {
         </div>
         </>
       )}
-    <div className="p-[24px] flex justify-center">
+    <div className="p-[8px] md:p-[24px] flex justify-center">
       <div className="max-w-[1080px] w-full shadow-md p-4">
         <div className="flex justify-center mb-[8px]">
           <div className="max-w-[500px]">
@@ -326,10 +326,12 @@ export default function Home() {
         <div className="flex flex-col mb-[8px]">
         <form onSubmit={ onGenerate }>
           <label htmlFor="prompt" className="text-[14px] font-[600]">Prompt:</label>
-          <div className="flex w-full gap-2">
+          <div className="flex w-full gap-2 flex-wrap md:flex-nowrap">
             <input type="text" id="prompt" value={prompt} onChange={(e) => setPrompt(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 focus:outline-none" required />
-            <button type="submit" className={`${isGenerating ? 'bg-gray-300 hover:bg-gray-400 focus:ring-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600 focus:ring-green-300'} text-white focus:ring-4 focus:outline-none font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center h-fit`}>Generate</button>
-            <button type="button" className="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center h-fit" onClick={handleToggleModal}>Export</button>
+            <div className="flex items-center gap-2 justify-end w-full md:w-auto">
+              <button type="submit" className={`${isGenerating ? 'bg-gray-300 hover:bg-gray-400 focus:ring-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600 focus:ring-green-300'} text-white focus:ring-4 focus:outline-none font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center h-fit`}>Generate</button>
+              <button type="button" className="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center h-fit" onClick={handleToggleModal}>Export</button>
+            </div>
           </div>
           </form>
         </div>
@@ -342,9 +344,10 @@ export default function Home() {
         <div className="mb-[8px]">
           <label htmlFor="description" className="text-[14px] font-[600]">Description:</label>
           <MDEditor
-            className="focus:outline-none focus:ring-0"
+            className="focus:outline-none focus:ring-0 focus:border-none"
             id="description"
             data-color-mode="light"
+            height={'125px'}
             value={description} 
             onChange={(value) => setDescription(value)} 
           />
@@ -366,7 +369,7 @@ export default function Home() {
                     e.target.value,
                   )
                 }
-                className="w-1/3 border-disable mt-2 bg-gray-50 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 block p-2.5 focus:outline-none"
+                className="w-full md:w-1/3 border-disable mt-2 bg-gray-50 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 block p-2.5 focus:outline-none"
               />
               <select
                 id="types"
@@ -378,7 +381,7 @@ export default function Home() {
                     e.target.value,
                   )
                 }
-                className="w-1/3 border-disable mt-2 bg-gray-50 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 block p-2.5 focus:outline-none cursor-pointer">
+                className="w-full md:w-1/3 border-disable mt-2 bg-gray-50 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 block p-2.5 focus:outline-none cursor-pointer">
                 <option value="string">string</option>
                 <option value="int">int</option>
                 <option value="float">float</option>
@@ -412,7 +415,7 @@ export default function Home() {
           <label className="text-[14px] font-[600]">Output Type:</label>
           <select
             id="types"
-            className="w-1/3 border-disable mt-2 bg-gray-50 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 block p-2.5 focus:outline-none cursor-pointer"
+            className="w-full md:w-1/3 border-disable mt-2 bg-gray-50 border border-gray-300 rounded-md focus:ring-blue-500 focus:border-blue-500 block p-2.5 focus:outline-none cursor-pointer"
             value={outputType || ''}
             onChange={(e) => setOutputType(e.target.value)}>
             <option value="string">string</option>
@@ -427,7 +430,7 @@ export default function Home() {
           {testCase.map((tc, index) => (
             <div key={index} className="mt-[16px]">
               <div className="flex w-full gap-10">
-                <div className="w-1/3">
+                <div className="w-full md:w-1/3">
                   <label className="mt-5 text-sm font-bold text-black">
                     Test Case No {index + 1}
                     {testCase.length > 2 ? (
@@ -580,34 +583,6 @@ export default function Home() {
                       />
                     )}
                   </div>
-                </div>
-                <div className="w-1/3">
-                  {!!testCaseResult?.length && (
-                    <>
-                      <p>
-                        Expected:{' '}
-                        <span className="font-semibold">
-                          {testCaseResult[index]?.expected?.value.toString()}
-                        </span>
-                      </p>
-                      <p>
-                        Output:
-                        <span className="font-semibold">
-                          {testCaseResult[index]?.output?.toString() ?? ' - '}
-                        </span>
-                      </p>
-                      <p>
-                        Status:{' '}
-                        <span
-                          className={`font-semibold ${testCaseResult[index]?.status === 'failed'
-                            ? 'text-red-500'
-                            : 'text-green'
-                            }`}>
-                          {testCaseResult[index]?.status}{' '}
-                        </span>
-                      </p>
-                    </>
-                  )}
                 </div>
               </div>
             </div>
