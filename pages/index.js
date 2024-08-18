@@ -329,7 +329,7 @@ export default function Home() {
           <div className="flex w-full gap-2 flex-wrap md:flex-nowrap">
             <input type="text" id="prompt" value={prompt} onChange={(e) => setPrompt(e.target.value)} className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 focus:outline-none" placeholder="Example: Naruto vs Sasuke ..." required />
             <div className="flex items-center gap-2 justify-end w-full md:w-auto">
-              <button type="submit" className={`${isGenerating ? 'bg-gray-300 hover:bg-gray-400 focus:ring-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600 focus:ring-green-300'} text-white focus:ring-4 focus:outline-none font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center h-fit`}>Generate</button>
+              <button type="submit" className={`${isGenerating ? 'bg-gray-300 hover:bg-gray-400 focus:ring-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600 focus:ring-green-300'} text-white focus:ring-4 focus:outline-none font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center h-fit`}>{isGenerating ? 'Loading...' : 'Generate'}</button>
               <button type="button" className="text-white bg-sky-500 hover:bg-sky-600 focus:ring-4 focus:outline-none focus:ring-sky-300 font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5 text-center h-fit" onClick={handleToggleModal}>Export</button>
             </div>
           </div>
@@ -347,7 +347,6 @@ export default function Home() {
             className="focus:outline-none focus:ring-0 focus:border-none"
             id="description"
             data-color-mode="light"
-            height={'125px'}
             value={description} 
             onChange={(value) => setDescription(value)} 
           />
