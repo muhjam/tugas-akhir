@@ -3,6 +3,7 @@ import { useState } from 'react';
 import dynamic from 'next/dynamic';
 import '@uiw/react-md-editor/markdown-editor.css';
 import '@uiw/react-markdown-preview/markdown.css';
+import ModalPrompt from '/components/ModalPrompt';
 
 const MDEditor = dynamic(
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
@@ -10,19 +11,41 @@ const MDEditor = dynamic(
 );
 
 export default function Home() {
-  const [result, setResult] = useState([]);
-  const [isGenerating, setIsGenerating] = useState(false);
+  const [isGenerating, setIsGenerating] = useState([]); // Array to track generating state for each question
   const [isShow, setIsShow] = useState([]); // Control visibility of generated questions
   const [questions, setQuestions] = useState([{
     prompt: "",
     difficulty: "Mudah",
-    type: "Essay",
+    type: "Esai",
     title: "",
     description: "",
     answer: "",
     topic: ""
   }]); // Array of questions
-  
+  const [isModalOpen, setIsModalOpen] = useState(false);
+
+  const openModal = () => setIsModalOpen(true);
+  const closeModal = () => setIsModalOpen(false);
+
+  const handleModalSubmit = (data) => {
+    data?.map((item) => {
+      setQuestions((prev) => [
+        ...prev,
+        {
+          prompt: item?.prompt,
+          difficulty: item?.difficulty,
+          type: item?.type,
+          title: "",
+          description: "",
+          answer: "",
+          topic: "",
+        },
+      ]);
+      // Add a new generating state for the new question
+      setIsGenerating((prev) => [...prev, false]);
+    });
+  };
+
   const toggleVisibility = (index) => {
     setIsShow((prev) => prev.includes(index) ? prev.filter(i => i !== index) : [...prev, index]);
   };
@@ -38,52 +61,67 @@ export default function Home() {
     setQuestions([...questions, {
       prompt: "",
       difficulty: "Mudah",
-      type: "Essay",
+      type: "Esai",
       title: "",
       description: "",
       answer: "",
       topic: ""
     }]);
+    setIsGenerating((prev) => [...prev, false]); // Add a new generating state
+  };
+
+  const removeQuestion = (index) => {
+    const updatedQuestions = questions.filter((_, i) => i !== index); // Remove question at index
+    const updatedIsGenerating = isGenerating.filter((_, i) => i !== index); // Remove corresponding generating state
+    setQuestions(updatedQuestions);
+    setIsGenerating(updatedIsGenerating);
+    setIsShow(prev => prev.filter(i => i !== index)); // Optionally remove from show state
   };
 
   async function onGenerate(event, index) {
     event.preventDefault();
-    setIsGenerating(true);
+    const updatedIsGenerating = [...isGenerating];
+    updatedIsGenerating[index] = true; // Set the specific question's loading state to true
+    setIsGenerating(updatedIsGenerating);
+
     const { prompt, difficulty, type } = questions[index];
-    
+  
     try {
-      const response = await fetch('/api/generate', {
+      const result = await fetch('/api/generate', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: prompt, type, difficulty }),
+        body: JSON.stringify({ text: prompt, type, difficulty, mode: "detail" }),
       });
-
-      const data = await response.json();
-
-      if (response.status !== 200) {
-        throw data.error || new Error(`Request failed with status ${response.status}`);
-      }
-
-      const validatedJson = JSON.parse(data.result);
-      if (validatedJson) {
+  
+      const response = await result.json(); 
+      const data = response.result;
+  
+      // Parsing respon CSV
+      const [title, description, answer, topic] = data?.split("|").map(item => item.trim());
+  
+      // Validasi jika semua elemen tersedia
+      if (title && description && answer && topic) {
         const updatedQuestions = [...questions];
         updatedQuestions[index] = {
           ...updatedQuestions[index],
-          title: validatedJson.title,
-          description: validatedJson.description,
-          answer: validatedJson.answer,
-          topic: validatedJson.topics,
+          title,
+          description,
+          answer,
+          topic,
         };
         setQuestions(updatedQuestions);
         setIsShow((prev) => [...prev, index]);
+      } else {
+        throw new Error("Response format is invalid");
       }
     } catch (error) {
       console.error(error);
       alert(error.message);
     } finally {
-      setIsGenerating(false);
+      updatedIsGenerating[index] = false; // Set the specific question's loading state to false
+      setIsGenerating(updatedIsGenerating);
     }
   }
 
@@ -93,6 +131,7 @@ export default function Home() {
         <title>OpenAI Quickstart</title>
         <link rel="icon" href="/quest.png" />
       </Head>
+      <ModalPrompt isOpen={isModalOpen} onClose={closeModal} onSubmit={handleModalSubmit} />
       <div className="p-[8px] md:p-[24px] flex justify-center">
         <div className="flex justify-center mb-[8px]">
           <div className="max-w-[500px]">
@@ -112,6 +151,11 @@ export default function Home() {
               <div className="flex flex-col mb-[8px]">
                 <form onSubmit={(e) => onGenerate(e, index)}>
                   <div className="flex items-center gap-2">
+                    {questions.length > 1 &&(
+                    <div className="w-[60px] hover:opacity-[0.8] cursor-pointer" onClick={() => removeQuestion(index)}>
+                      <img src="/ic-close.svg" className="w-[24px]"/>
+                    </div>
+                    )}
                     <div className="w-full">
                       <label htmlFor="prompt" className="text-[14px] font-[600]">Prompt:</label>
                       <input 
@@ -139,30 +183,31 @@ export default function Home() {
                     <div className="flex flex-col justify-center w-full">
                       <label className="text-[14px] font-[600]">Tipe Soal:</label>
                       <div className="flex gap-2">
-                      <select 
-                        value={question.type} 
-                        onChange={(e) => handleInputChange(index, 'type', e.target.value)} 
-                        className="bg-gray-50 w-full max-w-[200px] border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-2.5"
-                      >
-                        <option value="Essay">Essay</option>
-                        <option value="PG">PG</option>
-                      </select>
-                      <div className="flex items-center gap-2 justify-end w-full md:w-auto">
-                    <button 
-                      type="submit" 
-                      className={`${isGenerating ? 'bg-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5`}
-                    >
-                      {isGenerating ? 'Loading...' : 'Generate'}
-                    </button>
-                    <button 
-                      type="button" 
-                      onClick={() => toggleVisibility(index)} 
-                      className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5"
-                    >
-                      {isShow.includes(index) ? 'Hide' : 'Show'}
-                    </button>
-                  </div>
-                  </div>
+                        <select 
+                          value={question.type} 
+                          onChange={(e) => handleInputChange(index, 'type', e.target.value)} 
+                          className="bg-gray-50 w-full max-w-[200px] border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-2.5"
+                        >
+                          <option value="Esai">Esai</option>
+                          <option value="PG">PG</option>
+                        </select>
+                        <div className="flex items-center gap-2 justify-end w-full md:w-auto">
+                          <button 
+                            type="submit" 
+                            disabled={isGenerating[index]} // Check the specific question's loading state
+                            className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5`}
+                          >
+                            {isGenerating[index] ? 'Loading...' : 'Generate'}
+                          </button>
+                          <button 
+                            type="button" 
+                            onClick={() => toggleVisibility(index)} 
+                            className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5"
+                          >
+                            {isShow.includes(index) ? 'Hide' : 'Show'}
+                          </button>
+                        </div>
+                      </div>
                     </div>
                   </div>
                 </form>
@@ -217,7 +262,14 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div className="flex justify-end mr-4 pr-2">
+        <div className="flex justify-end mr-4 pr-2 gap-2">
+          <button 
+            type="button" 
+            onClick={openModal} 
+            className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5"
+          >
+            Prompt Soal
+          </button>
           <button 
             type="button" 
             onClick={addQuestion} 
