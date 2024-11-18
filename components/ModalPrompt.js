@@ -30,8 +30,9 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
       const data = await response.json();
       const results = data.result.split("\n").map(item => item.trim());
       const questions = results.map((item) => {
-        const [prompt, _, type] = item.split("|").map(part => part.trim());
-        return { prompt, difficulty, type };
+        const [prompt, thisDifficulty, type] = item.split("|").map(part => part.trim());
+        const settingDifficulty = difficulty === "Acak" ? thisDifficulty : difficulty;
+        return { prompt, difficulty: settingDifficulty, type };
       });
 
       // Pass the generated questions back to the parent component
