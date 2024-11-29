@@ -317,14 +317,14 @@ export default function Home() {
           <button 
             type="button" 
             onClick={openModal} 
-            className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5"
+            className="bg-green-500 hover:bg-green-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5"
           >
             Prompt Soal
           </button>
           <button 
             type="button" 
             onClick={addQuestion} 
-            className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5"
+            className="bg-green-500 hover:bg-green-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5"
           >
             Tambah Soal
           </button>

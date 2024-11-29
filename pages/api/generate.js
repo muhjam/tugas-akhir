@@ -39,7 +39,7 @@ export default async function (req, res) {
       }    
     })
 
-    res.status(200).json({ result: response.body.choices[0].message.content });
+    res.status(200).json({ result: response?.body?.choices[0]?.message?.content || "" });
   } catch(error) {
     console.error(`Error with OpenAI API request: ${error.message}`);
     res.status(500).json({
