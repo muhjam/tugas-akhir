@@ -256,7 +256,7 @@ export default function Home() {
                 </form>
               </div>
               {/* colabs */}
-                <div className={`duration-300 ${isShow.includes(index) ? 'h-[500px] overflow-scroll' : 'h-0 overflow-hidden'}`}>
+                <div className={`duration-300 ${isShow.includes(index) ? 'h-[620px] overflow-scroll' : 'h-0 overflow-hidden'}`}>
                   <div className="flex flex-col mb-[8px]">
                     <label htmlFor="title" className="text-[14px] font-[600]">Judul:</label>
                     <input 
@@ -311,7 +311,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div className="flex justify-between items-center px-2 md:pl-6 md:pr-5 gap-2 w-full mb-2">
+        <div className="flex justify-between items-center px-2 md:pl-6 md:pr-5 gap-2 w-full mb-2 mt-2 md:mt-0">
         <button      
           type="button" 
           onClick={openTallyPopup} 
