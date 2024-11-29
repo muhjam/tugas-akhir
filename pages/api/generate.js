@@ -103,6 +103,8 @@ function generatePrompt ( data )
         - prompt: Menjelaskan ide soal yang akan dibuatnya seperti apa.
         - tingkat kesulitan: Hanya "Mudah", "Normal", atau "Sulit".
         - jenis: Hanya "Esai" atau "PG".
+
+        Format yang selalu anda kasih harus seperti ini "<prompt>|<tingkat kesulitan>|<jenis>"
       `
 
       // Create an array of message objects with roles and content
