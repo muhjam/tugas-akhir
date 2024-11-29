@@ -1,6 +1,9 @@
 import Head from "next/head";
 import { useState } from 'react';
 import dynamic from 'next/dynamic';
+import 'katex/dist/katex.min.css'; 
+import rehypeKatex from 'rehype-katex';
+import remarkMath from 'remark-math'; 
 import '@uiw/react-md-editor/markdown-editor.css';
 import '@uiw/react-markdown-preview/markdown.css';
 import ModalPrompt from '/components/ModalPrompt';
@@ -23,6 +26,7 @@ export default function Home() {
     topic: ""
   }]); // Array of questions
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [queue, setQueue] = useState([]); // Antrian untuk permintaan generate
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -84,44 +88,58 @@ export default function Home() {
     updatedIsGenerating[index] = true; // Set the specific question's loading state to true
     setIsGenerating(updatedIsGenerating);
 
-    const { prompt, difficulty, type } = questions[index];
-  
+    // Tambahkan permintaan ke antrian
+    setQueue((prev) => [...prev, { index, prompt: questions[index].prompt, difficulty: questions[index].difficulty, type: questions[index].type }]);
+    
+    // Proses antrian
+    processQueue();
+  }
+
+  const processQueue = async () => {
+    if (queue.length === 0) return; // Jika tidak ada permintaan dalam antrian
+
+    const { index, prompt, difficulty, type } = queue[0]; // Ambil permintaan pertama dari antrian
+    const updatedIsGenerating = [...isGenerating]; // Definisikan di sini
+
     try {
-      const result = await fetch('/api/generate', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ text: prompt, type, difficulty, mode: "detail" }),
-      });
-  
-      const response = await result.json(); 
-      const data = response.result;
-  
-      // Parsing respon CSV
-      const [title, description, answer, topic] = data?.split("|").map(item => item.trim());
-  
-      // Validasi jika semua elemen tersedia
-      if (title && description && answer && topic) {
-        const updatedQuestions = [...questions];
-        updatedQuestions[index] = {
-          ...updatedQuestions[index],
-          title,
-          description,
-          answer,
-          topic,
-        };
-        setQuestions(updatedQuestions);
-        setIsShow((prev) => [...prev, index]);
-      } else {
-        throw new Error("Response format is invalid");
-      }
+        const result = await fetch('/api/generate', {
+            method: "POST",
+            headers: {
+                "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ text: prompt, type, difficulty, mode: "detail" }),
+        });
+
+        const response = await result.json(); 
+        const data = response.result;
+
+        // Parsing respon CSV
+        const [title, description, answer, topic] = data?.split("|").map(item => item.trim());
+
+        // Validasi jika semua elemen tersedia
+        if (title && description && answer && topic) {
+            const updatedQuestions = [...questions];
+            updatedQuestions[index] = {
+                ...updatedQuestions[index],
+                title,
+                description,
+                answer,
+                topic,
+            };
+            setQuestions(updatedQuestions);
+            setIsShow((prev) => [...prev, index]);
+        } else {
+            throw new Error("Response format is invalid");
+        }
     } catch (error) {
-      console.error(error);
-      alert(error.message);
+        console.error(error);
+        alert(error.message);
     } finally {
-      updatedIsGenerating[index] = false; // Set the specific question's loading state to false
-      setIsGenerating(updatedIsGenerating);
+        updatedIsGenerating[index] = false;
+        setIsGenerating(updatedIsGenerating);
+        
+        setQueue((prev) => prev.slice(1));
+        processQueue();
     }
   }
 
@@ -204,7 +222,7 @@ export default function Home() {
                             onClick={() => toggleVisibility(index)} 
                             className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5"
                           >
-                            {isShow.includes(index) ? 'Hide' : 'Show'}
+                            {isShow.includes(index) ? 'Tutup' : 'Buka'}
                           </button>
                         </div>
                       </div>
@@ -223,7 +241,7 @@ export default function Home() {
                             onClick={() => toggleVisibility(index)} 
                             className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5"
                           >
-                            {isShow.includes(index) ? 'Hide' : 'Show'}
+                            {isShow.includes(index) ? 'Tutup' : 'Buka'}
                           </button>
                         </div>
                     </div>
@@ -252,6 +270,10 @@ export default function Home() {
                       value={question.description} 
                       onChange={(value) => handleInputChange(index, 'description', value)} 
                       className="focus:outline-none focus:ring-0 focus:border-none"
+                      previewOptions={{
+                        remarkPlugins: [remarkMath], // Enable parsing of math syntax
+                        rehypePlugins: [rehypeKatex], // Enable rendering of math
+                      }}
                     />
                   </div>
                   <div className="mb-[8px]">

@@ -20,6 +20,7 @@
     "dotenv": "^16.4.5",
     "flowbite": "^2.5.1",
     "flowbite-react": "^0.10.1",
+    "katex": "^0.16.11",
     "next": "^13.1.1",
     "next-remove-imports": "^1.0.12",
     "openai": "^3.3.0",
@@ -28,6 +29,8 @@
     "react-copy-to-clipboard": "^5.1.0",
     "react-dom": "^18.2.0",
     "react-quill": "^2.0.0",
+    "rehype-katex": "^7.0.1",
+    "remark-math": "^6.0.0",
     "style-loader": "^4.0.0",
     "sweetalert2": "^11.12.4"
   },
