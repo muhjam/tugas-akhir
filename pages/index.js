@@ -172,13 +172,13 @@ export default function Home() {
       <div className="max-w-[1080px] w-full container mx-auto">
         <div className="p-[8px] md:p-[24px] flex flex-col justify-center">
           {questions.map((question, index) => (
-            <div className="max-w-[1080px] w-full shadow-md p-4" key={index}>
+            <div className="max-w-[1080px] w-full shadow-md p-2 md:p-4" key={index}>
               <div className="flex flex-col mb-[8px]">
                 <form onSubmit={(e) => onGenerate(e, index)}>
                   <div className="flex flex-col md:flex-row md:items-center gap-2">
                     {questions.length > 1 &&(
-                    <div className="w-[60px] hover:opacity-[0.8] cursor-pointer" onClick={() => removeQuestion(index)}>
-                      <img src="/ic-close.svg" className="w-[24px]"/>
+                    <div className="w-[40px] md:w-[60px] hover:opacity-[0.8] cursor-pointer bg-red-500 p-2 rounded-md flex items-center justify-center" onClick={() => removeQuestion(index)}>
+                      <img src="/ic-trash.svg" className="w-[24px]"/>
                     </div>
                     )}
                     <div className="w-full">
@@ -229,7 +229,7 @@ export default function Home() {
                             onClick={() => toggleVisibility(index)} 
                             className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5"
                           >
-                            {isShow.includes(index) ? 'Tutup' : 'Buka'}
+                            <img src="/ic-arrow.svg" className={`w-[20px] min-w-[20px] duration-200 ${isShow.includes(index) && ('rotate-180')}`}/>
                           </button>
                         </div>
                       </div>
@@ -239,25 +239,24 @@ export default function Home() {
                           <button 
                             type="submit" 
                             disabled={isGenerating[index]} // Check the specific question's loading state
-                            className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5`}
+                            className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait ' : 'bg-green-500 hover:bg-green-600 '} text-white font-medium rounded-md text-sm w-full px-5 py-2.5`}
                           >
                             Generate
                           </button>
                           <button 
                             type="button" 
                             onClick={() => toggleVisibility(index)} 
-                            className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5"
+                            className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-fit px-5 py-2.5"
                           >
-                            {isShow.includes(index) ? 'Tutup' : 'Buka'}
+                            <img src="/ic-arrow.svg" className={`w-[20px] duration-200 ${isShow.includes(index) && ('rotate-180')}`}/>
                           </button>
                         </div>
                     </div>
                   </div>
                 </form>
               </div>
-
-              {isShow.includes(index) && (
-                <div>
+              {/* colabs */}
+                <div className={`duration-300 ${isShow.includes(index) ? 'h-[500px] overflow-scroll' : 'h-0 overflow-hidden'}`}>
                   <div className="flex flex-col mb-[8px]">
                     <label htmlFor="title" className="text-[14px] font-[600]">Judul:</label>
                     <input 
@@ -309,39 +308,35 @@ export default function Home() {
                     />
                   </div>
                 </div>
-              )}
             </div>
           ))}
         </div>
-        <div className="flex justify-between md:justify-end px-2 md:px-0 md:pr-5 gap-2 w-full mb-2">
+        <div className="flex justify-between items-center px-2 md:pl-6 md:pr-5 gap-2 w-full mb-2">
+        <button      
+          type="button" 
+          onClick={openTallyPopup} 
+          className="bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-md text-sm md:w-auto px-5 py-2.5 flex items-center justify-between gap-1" >
+              <img src="/ic-star.svg" className="w-[20px]"/>
+              <span className="md:block hidden">Review</span>
+            </button>
+            <div className="flex justify-end gap-2">
           <button 
             type="button" 
             onClick={openModal} 
-            className="bg-green-500 hover:bg-green-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5"
           >
-            Prompt Soal
+            <img src="/ic-gear.svg" className="w-[20px]"/>
           </button>
           <button 
             type="button" 
             onClick={addQuestion} 
-            className="bg-green-500 hover:bg-green-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5 flex justify-between items-center gap-1"
           >
-            Tambah Soal
+            <img src="/ic-plus.svg" className="w-[20px]"/>
           </button>
-          <button      
-          type="button" 
-          onClick={openTallyPopup} 
-          className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5 md:block hidden" >
-            Review
-            </button>
+          </div>
         </div>
         <div className="flex md:hidden justify-between md:justify-end px-2 md:px-0 md:pr-5 gap-2 w-full mb-4">
-        <button      
-          type="button" 
-          onClick={openTallyPopup} 
-          className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5" >
-            Review
-            </button>
         </div>
       </div>
     </>

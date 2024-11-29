@@ -88,7 +88,7 @@ const handleOutsideClick = (event) => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={handleOutsideClick}>
       <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg max-h-[500px] overflow-scroll">
-        <h2 className="text-xl font-semibold mb-4">Generate Soal</h2>
+        <h2 className="text-xl font-semibold mb-4">Generate Prompt Soal</h2>
         <form onSubmit={onGenerate}>
           <div className="mb-4">
             <label htmlFor="prompt" className="block text-sm font-medium mb-1">
@@ -177,7 +177,7 @@ const handleOutsideClick = (event) => {
             <button
               type="button"
               onClick={onClose}
-              className="bg-gray-500 text-white px-4 py-2 rounded-md hover:bg-gray-600"
+              className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
             >
               Batal
             </button>
