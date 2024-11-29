@@ -147,7 +147,7 @@ const handleOutsideClick = (event) => {
           </div>
           <div className="mb-4">
             <label htmlFor="file" className="block text-sm font-medium mb-1">
-              Upload PDF:
+              Unggah PDF:
             </label>
             <input
               type="file"

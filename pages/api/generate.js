@@ -70,7 +70,7 @@ function generatePrompt ( data )
 
               - **judul**: Judul singkat untuk soal.
               - **deskripsi**: Deskripsi rinci tentang soal, menjelaskan dengan jelas apa yang perlu diselesaikan oleh siswa.
-              - **jawaban**: Jawaban yang benar untuk soal tersebut.
+              - **jawaban**: Jawaban yang benar untuk soal tersebut dan perlu dijelaskan juga cara pengerjaannya.
               - **topik**: Topik matematika yang relevan, seperti Aljabar, Geometri, Trigonometri, Kalkulus, atau Statistik.
 
               Contoh format soal dalam CSV:
@@ -79,8 +79,8 @@ function generatePrompt ( data )
               Anda akan menerima pertanyaan dari pengguna dengan pola berikut:
               "|-[perintah dan aturan]-| |-[tingkat kesulitan]-| |-[tipe soal]-|"
 
-              Dengan pola tersebut, Anda bisa memahami konteks soal dan menghasilkan soal sesuai dengan permintaan. Jika ada rumus atau simbol matematika dalam soal, Anda harus merubahnya menjadi format LaTeX untuk memastikan tampilannya lebih baik, seperti matriks dan simbol-simbol matematika lainnya.
-              Contoh: $$A = \\begin{bmatrix} 2 & 3 & 1 \\\ 4 & 0 & -1 \\\ 5 & 2 & 3 \\end{bmatrix}$$
+              Dengan pola tersebut, Anda bisa memahami konteks soal dan menghasilkan soal sesuai dengan permintaan. Jika ada rumus atau simbol matematika dalam soal, Anda harus merubahnya menjadi format LaTeX atau format yang support markdown rehype-katex dan remark-math untuk memastikan tampilannya lebih baik, seperti matriks dan simbol-simbol matematika lainnya.
+              Contoh: $$A = \begin{bmatrix} 2 & 3 & 1 \\ 4 & 0 & -1 \\ 5 & 2 & 3 \end{bmatrix}$$
       `
     
     // Create an array of message objects with roles and content
@@ -91,27 +91,19 @@ function generatePrompt ( data )
           },
           {
             role: "user",
-            content: "|-[buat soal aritmatika]-| |-[tingkat kesulitan Mudah]-| |-[bertipe Esai]-|",
+            content: "|-[buat soal persamaan 3 variabel]-| |-[tingkat kesulitan Mudah]-| |-[bertipe Esai]-|",
           },
           {
             role: "assistant",
-            content: "Perhitungan Aritmatika|Seorang siswa membeli beberapa pensil dengan harga yang sama. Jika siswa tersebut membayar total $36 dan mendapatkan 9 pensil, berapa harga satu pensil?|Harga satu pensil adalah Rp 60.000|Algebra",
+            content: "Sistem Persamaan Linear 3 Variabel|Diberikan sistem persamaan linear berikut:\n\n1. $$x + 2y + 3z = 14$$\n2. $$2x - y + z = 5$$\n3. $$3x + 4y - 2z = 1$$\n\nTentukan nilai dari x, y, dan z yang memenuhi ketiga persamaan di atas.|Untuk menyelesaikan sistem persamaan ini, kita dapat menggunakan metode eliminasi atau substitusi. Berikut adalah langkah penyelesaiannya menggunakan metode eliminasi:\n\n1. Eliminasi z dari persamaan (1) dan (2):\n\n   Dari persamaan (1) dan (2), kita eliminasi z:\n\n   Persamaan (1): $$x + 2y + 3z = 14$$\n\n   Persamaan (2): $$2x - y + z = 5$$\n\n   Kalikan persamaan (2) dengan 3:\n\n   $$6x - 3y + 3z = 15$$\n\n   Kurangkan persamaan (1) dari hasil perkalian persamaan (2):\n\n   $$(6x - 3y + 3z) - (x + 2y + 3z) = 15 - 14$$\n\n   $$5x - 5y = 1$$\n\n   $$x - y = \\frac{1}{5}$$ (Persamaan 4)\n\n2. Eliminasi z dari persamaan (2) dan (3):\n\n   Persamaan (3): $$3x + 4y - 2z = 1$$\n\n   Kalikan persamaan (2) dengan 2:\n\n   $$4x - 2y + 2z = 10$$\n\n   Tambahkan persamaan (3) ke hasil perkalian persamaan (2):\n\n   $$(4x - 2y + 2z) + (3x + 4y - 2z) = 10 + 1$$\n\n   $$7x + 2y = 11$$\n\n   $$x = \\frac{11 - 2y}{7}$$ (Persamaan 5)\n\n3. Substitusi x dari persamaan (5) ke persamaan (4):\n\n   $$\\left(\\frac{11 - 2y}{7}\\right) - y = \\frac{1}{5}$$\n\n   Selesaikan untuk y:\n\n   $$\\frac{11 - 2y - 7y}{7} = \\frac{1}{5}$$\n\n   $$11 - 9y = \\frac{7}{5}$$\n\n   $$55 - 45y = 7$$\n\n   $$45y = 48$$\n\n   $$y = \\frac{48}{45}$$\n\n   $$y = \\frac{16}{15}$$\n\n4. Substitusi y ke dalam persamaan (5) untuk mendapatkan x:\n\n   $$x = \\frac{11 - 2\\left(\\frac{16}{15}\\right)}{7}$$\n\n   $$x = \\frac{11 - \\frac{32}{15}}{7}$$\n\n   $$x = \\frac{\\frac{165}{15} - \\frac{32}{15}}{7}$$\n\n   $$x = \\frac{\\frac{133}{15}}{7}$$\n\n   $$x = \\frac{133}{105}$$\n\n   $$x = \\frac{19}{15}$$\n\n5. Substitusi x dan y ke salah satu persamaan awal untuk mendapatkan z (gunakan persamaan 2):\n\n   $$2\\left(\\frac{19}{15}\\right) - \\left(\\frac{16}{15}\\right) + z = 5$$\n\n   $$\\frac{38}{15} - \\frac{16}{15} + z = 5$$\n\n   $$\\frac{22}{15} + z = 5$$\n\n   $$z = 5 - \\frac{22}{15}$$\n\n   $$z = \\frac{75}{15} - \\frac{22}{15}$$\n\n   $$z = \\frac{53}{15}$$\n\nJadi, nilai x, y, dan z yang memenuhi ketiga persamaan adalah $$x = \\frac{19}{15}$$, $$y = \\frac{16}{15}$$, $$z = \\frac{53}{15}$$.|Persamaan",
           },
           {
             role: "user",
-            content: "|-[buat soal aritmatika]-| |-[tingkat kesulitan Mudah]-| || |-[bertipe PG]-|",
+            content: "|-[buat soal persamaan 3]-| |-[tingkat kesulitan Mudah]-| || |-[bertipe PG]-|",
           },
           {
             role: "assistant",
-            content: "Perhitungan Aritmatika|Seorang siswa membeli beberapa pensil dengan harga yang sama. Jika siswa tersebut membayar total $36 dan mendapatkan 9 pensil, berapa harga satu pensil?\n\nA. Rp30.000\n\nB. Rp60.000\n\nC. Rp150.000\n\nD. Rp200.000\n\nE. Rp300.000|B. Rp60.000|Algebra",
-          },
-          {
-            role: "user",
-            content: "|-[matriks 3x3]-| |-[tingkat kesulitan Mudah]-| || |-[bertipe Esai]-|",
-          },
-          {
-            role: "assistant",
-            content: "Determinan Matriks 3x3|Diberikan matriks $$ A = \\begin{bmatrix} 2 & 1 & 3 \\\ 0 & -1 & 4 \\\ 5 & 2 & 0 \\end{bmatrix}$$. Hitunglah determinan dari matriks ( A ).|Algebra",
+            content: "Sistem Persamaan Linear|Diberikan sistem persamaan linear berikut:\n\n1. $$2x + 3y - z = 7$$\n2. $$x - 2y + 4z = -3$$\n3. $$3x + y + 2z = 4$$\n\nBerapa nilai dari $z$ yang memenuhi ketiga persamaan di atas?\n\nA. 1\n\nB. 0\n\nC. -1\n\nD. 2\n\nE. -2|**Jawaban:**\nC. -1\n\n**Penyelesaian:**\n\nUntuk mencari nilai dari z, kita dapat menggunakan metode eliminasi atau substitusi. Berikut adalah langkah penyelesaiannya menggunakan metode substitusi:\n\n1. Dari persamaan (2): $$x - 2y + 4z = -3$$, kita dapat mengekspresikan x dalam bentuk y dan z:\n\n$$x = -3 + 2y - 4z$$\n\n2. Substitusikan x ke dalam persamaan (1) dan (3):\n\nPersamaan (1): $$2(-3 + 2y - 4z) + 3y - z = 7$$\n\n$$-6 + 4y - 8z + 3y - z = 7$$\n\n$$7y - 9z = 13$$  (Persamaan 4)\n\nPersamaan (3): $$3(-3 + 2y - 4z) + y + 2z = 4$$\n\n$$-9 + 6y - 12z + y + 2z = 4$$\n\n$$7y - 10z = 13$$  (Persamaan 5)\n\n3. Kurangkan Persamaan (5) dari Persamaan (4):\n\n$$(7y - 9z) - (7y - 10z) = 13 - 13$$\n\n$$z = -1$$\n\nJadi, nilai dari z yang memenuhi ketiga persamaan adalah -1.|Aritmatika, Aljabar",
           },
           {
             role: "user",
@@ -134,8 +126,8 @@ function generatePrompt ( data )
               Anda akan menerima pertanyaan dari pengguna dengan pola sebagai berikut:
               "|-[perintah dan aturan]-| |-[detail perintah dan aturan seperti kurikulum atau rencana pembelajaran yang perlu diuji]-| |-[tingkat kesulitan]-| |-[tipe soal]-| |-[jumlah soal]-|"
 
-              Dengan pola ini, Anda bisa memahami konteks soal yang diminta dan menghasilkan daftar ide soal sesuai dengan permintaan pengguna. Jika ada rumus atau simbol matematika dalam ide soal, Anda harus merubahnya menjadi format LaTeX untuk memastikan tampilan yang lebih baik, seperti matriks dan simbol matematika lainnya.
-              Contoh: $$A = \\begin{bmatrix} 2 & 3 & 1 \\\ 4 & 0 & -1 \\\ 5 & 2 & 3 \\end{bmatrix}$$
+             Dengan pola tersebut, Anda bisa memahami konteks soal dan menghasilkan soal sesuai dengan permintaan. Jika ada rumus atau simbol matematika dalam soal, Anda harus merubahnya menjadi format LaTeX atau format yang support markdown rehype-katex dan remark-math untuk memastikan tampilannya lebih baik, seperti matriks dan simbol-simbol matematika lainnya.
+             Contoh: $$A = \begin{bmatrix} 2 & 3 & 1 \\ 4 & 0 & -1 \\ 5 & 2 & 3 \end{bmatrix}$$
       `
 
       // Create an array of message objects with roles and content
