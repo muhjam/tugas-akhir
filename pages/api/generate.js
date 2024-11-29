@@ -107,6 +107,14 @@ function generatePrompt ( data )
           },
           {
             role: "user",
+            content: "|-[matriks 3x3]-| |-[tingkat kesulitan Mudah]-| || |-[bertipe Esai]-|",
+          },
+          {
+            role: "assistant",
+            content: "Determinan Matriks 3x3|Diberikan matriks $$ A = \\begin{bmatrix} 2 & 1 & 3 \\\ 0 & -1 & 4 \\\ 5 & 2 & 0 \\end{bmatrix}$$. Hitunglah determinan dari matriks ( A ).|Algebra",
+          },
+          {
+            role: "user",
             content: `|-[${prompt}]-| |-[tingkat kesulitan ${difficulty}]-| |-[bertipe ${type}]-|`,
           },
     ];
