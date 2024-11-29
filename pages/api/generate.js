@@ -80,6 +80,7 @@ function generatePrompt ( data )
               "|-[perintah dan aturan]-| |-[tingkat kesulitan]-| |-[tipe soal]-|"
 
               Dengan pola tersebut, Anda bisa memahami konteks soal dan menghasilkan soal sesuai dengan permintaan. Jika ada rumus atau simbol matematika dalam soal, Anda harus merubahnya menjadi format LaTeX untuk memastikan tampilannya lebih baik, seperti matriks dan simbol-simbol matematika lainnya.
+              Contoh: $$A = \\begin{bmatrix} 2 & 3 & 1 \\\ 4 & 0 & -1 \\\ 5 & 2 & 3 \\end{bmatrix}$$
       `
     
     // Create an array of message objects with roles and content
@@ -126,6 +127,7 @@ function generatePrompt ( data )
               "|-[perintah dan aturan]-| |-[detail perintah dan aturan seperti kurikulum atau rencana pembelajaran yang perlu diuji]-| |-[tingkat kesulitan]-| |-[tipe soal]-| |-[jumlah soal]-|"
 
               Dengan pola ini, Anda bisa memahami konteks soal yang diminta dan menghasilkan daftar ide soal sesuai dengan permintaan pengguna. Jika ada rumus atau simbol matematika dalam ide soal, Anda harus merubahnya menjadi format LaTeX untuk memastikan tampilan yang lebih baik, seperti matriks dan simbol matematika lainnya.
+              Contoh: $$A = \\begin{bmatrix} 2 & 3 & 1 \\\ 4 & 0 & -1 \\\ 5 & 2 & 3 \\end{bmatrix}$$
       `
 
       // Create an array of message objects with roles and content

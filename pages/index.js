@@ -291,6 +291,10 @@ export default function Home() {
                       value={question.answer} 
                       onChange={(value) => handleInputChange(index, 'answer', value)} 
                       className="focus:outline-none focus:ring-0 focus:border-none"
+                      previewOptions={{
+                        remarkPlugins: [remarkMath], // Enable parsing of math syntax
+                        rehypePlugins: [rehypeKatex], // Enable rendering of math
+                      }}
                     />
                   </div>
                   <div className="flex flex-col mb-[8px]">
