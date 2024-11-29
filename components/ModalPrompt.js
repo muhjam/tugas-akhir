@@ -2,6 +2,7 @@ import { useState } from 'react';
 
 const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
   const [isGenerating, setIsGenerating] = useState(false); 
+  const [isParsing, setIsParsing] = useState(false);
   const [formData, setFormData] = useState({
     prompt: '',
     total: 1,
@@ -31,7 +32,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
       const data = await response.json();
       const results = data.result.split("\n").map(item => item.trim());
       const questions = results.map((item) => {
-        const [prompt, thisDifficulty, type] = item.split("|").map(part => part.trim());
+        const [prompt, thisDifficulty, type] = item.split("|->").map(part => part.trim());
         const settingDifficulty = difficulty === "Acak" ? thisDifficulty : difficulty;
         return { prompt, difficulty: settingDifficulty, type };
       });
@@ -48,30 +49,33 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
     }
   }
 
-const handleFileChange = async (event) => {
-  const file = event.target.files[0];
-  if (file) {
-    const reader = new FileReader();
-    reader.onload = async (e) => {
-      const base64File = btoa(e.target.result); // Convert to base64
-      try {
-        const response = await fetch('/api/pdfParse', {
-          method: 'POST',
-          headers: {
-            'Content-Type': 'application/json',
-          },
-          body: JSON.stringify({ file: base64File }), // Send base64 file
-        });
-        const data = await response.json();
-        handleChange('detail', data.text); 
-      } catch (error) {
-        console.error('Error parsing PDF:', error);
-        alert('Failed to parse PDF');
-      }
-    };
-    reader.readAsBinaryString(file); 
-  }
-};
+  const handleFileChange = async (event) => {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = async (e) => {
+        const base64File = btoa(e.target.result); // Convert to base64
+        setIsParsing(true); // Set loading true saat mulai parsing
+        try {
+          const response = await fetch('/api/pdfParse', {
+            method: 'POST',
+            headers: {
+              'Content-Type': 'application/json',
+            },
+            body: JSON.stringify({ file: base64File }), // Send base64 file
+          });
+          const data = await response.json();
+          handleChange('detail', data.text);
+        } catch (error) {
+          console.error('Error parsing PDF:', error);
+          alert('Failed to parse PDF');
+        } finally {
+          setIsParsing(false); // Set loading false setelah selesai parsing
+        }
+      };
+      reader.readAsBinaryString(file);
+    }
+  };
 
 const handleOutsideClick = (event) => {
   if (event.target === event.currentTarget) {
@@ -158,7 +162,16 @@ const handleOutsideClick = (event) => {
             />
           </div>
           <div className="mb-4">
-            <textarea value={formData.detail} className='w-full h-[80px]' readOnly={true}></textarea>
+            {!isParsing && formData?.detail?.length > 0 ? (
+              <textarea 
+              value={formData.detail} // Tampilkan 'Loading...' saat loading
+              className='w-full h-[80px]' 
+              readOnly={true}
+              ></textarea>
+            ): isParsing &&(
+              <>Loading...</>
+            )}
+             
           </div>
           <div className="flex justify-end gap-2">
             <button

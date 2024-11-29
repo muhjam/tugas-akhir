@@ -124,7 +124,7 @@ export default function Home() {
       const data = response.result;
   
       // Parsing respon CSV
-      const [title, description, answer, topic] = data?.split("|").map(item => item.trim());
+      const [title, description, answer, topic] = data?.split("|->").map(item => item.trim());
   
       // Validasi jika semua elemen tersedia
       if (title && description && answer && topic) {
