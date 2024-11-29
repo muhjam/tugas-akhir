@@ -1,5 +1,5 @@
 import Head from "next/head";
-import { useState } from 'react';
+import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import 'katex/dist/katex.min.css'; 
 import rehypeKatex from 'rehype-katex';
@@ -30,6 +30,28 @@ export default function Home() {
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
+
+  useEffect(() => {
+    // Load Tally script
+    const script = document.createElement('script');
+    script.src = "https://tally.so/widgets/embed.js";
+    script.async = true;
+    document.body.appendChild(script);
+  }, []);
+
+  const openTallyPopup = () => {
+    Tally.openPopup('m61EBN', {
+      layout: 'modal', // Open as a centered modal
+      width: 700, // Set the width of the modal
+      autoClose: 5000, // Close the popup 5 seconds after form was submitted (in ms)
+      onOpen: () => {
+        console.log('Popup opened');
+      },
+      onClose: () => {
+        console.log('Popup closed');
+      },
+    });
+  };
 
   const handleModalSubmit = (data) => {
     data?.map((item) => {
@@ -302,7 +324,7 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div className="flex justify-between md:justify-end px-2 md:px-0 md:pr-5 gap-2 w-full">
+        <div className="flex justify-between md:justify-end px-2 md:px-0 md:pr-5 gap-2 w-full mb-2">
           <button 
             type="button" 
             onClick={openModal} 
@@ -317,6 +339,20 @@ export default function Home() {
           >
             Tambah Soal
           </button>
+          <button      
+          type="button" 
+          onClick={openTallyPopup} 
+          className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5 md:block hidden" >
+            Review
+            </button>
+        </div>
+        <div className="flex md:hidden justify-between md:justify-end px-2 md:px-0 md:pr-5 gap-2 w-full mb-4">
+        <button      
+          type="button" 
+          onClick={openTallyPopup} 
+          className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5" >
+            Review
+            </button>
         </div>
       </div>
     </>
