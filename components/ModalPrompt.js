@@ -7,6 +7,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
     total: 1,
     difficulty: 'Acak',
     type: 'Acak',
+    detail: ''
   });
 
   const handleChange = (field, value) => {
@@ -15,7 +16,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
 
   async function onGenerate(event) {
     event.preventDefault();
-    const { prompt, difficulty, type, total } = formData;
+    const { prompt, difficulty, type, total, detail } = formData;
     setIsGenerating(true);
   
     try {
@@ -24,7 +25,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: prompt, type, difficulty, mode: "list", total: total }),
+        body: JSON.stringify({ text: prompt, type, difficulty, detail, mode: "list", total: total }),
       });
   
       const data = await response.json();
@@ -46,6 +47,31 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
       setIsGenerating(false);
     }
   }
+
+const handleFileChange = async (event) => {
+  const file = event.target.files[0];
+  if (file) {
+    const reader = new FileReader();
+    reader.onload = async (e) => {
+      const base64File = btoa(e.target.result); // Convert to base64
+      try {
+        const response = await fetch('/api/pdfParse', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ file: base64File }), // Send base64 file
+        });
+        const data = await response.json();
+        handleChange('detail', data.text); 
+      } catch (error) {
+        console.error('Error parsing PDF:', error);
+        alert('Failed to parse PDF');
+      }
+    };
+    reader.readAsBinaryString(file); 
+  }
+};
 
   if (!isOpen) return null;
 
@@ -112,6 +138,21 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
               <option value="Essay">Essay</option>
               <option value="PG">PG</option>
             </select>
+          </div>
+          <div className="mb-4">
+            <label htmlFor="file" className="block text-sm font-medium mb-1">
+              Upload PDF:
+            </label>
+            <input
+              type="file"
+              id="file"
+              accept="application/pdf"
+              onChange={handleFileChange}
+              className="w-full p-2 border border-gray-300 rounded-md"
+            />
+          </div>
+          <div className="mb-4">
+            <textarea value={formData.detail} className='w-full h-[80px]' readOnly={true}></textarea>
           </div>
           <div className="flex justify-end gap-2">
             <button

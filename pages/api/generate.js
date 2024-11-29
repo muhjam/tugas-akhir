@@ -9,11 +9,12 @@ const path = process.env.AZURE_COMPLETIONPATH_GPT4
 let client = new ModelClient(endpoint, new AzureKeyCredential(key));
 
 export default async function (req, res) {
-  const {text, mode, difficuly, type, total}  = req.body || '';
+  const {text, mode, difficuly, detail, type, total}  = req.body || '';
   const body = {
       text,
       mode,
       difficuly,
+      detail,
       type,
       total
   }
@@ -51,6 +52,7 @@ export default async function (req, res) {
 function generatePrompt ( data )
 {
   const prompt = data?.text;
+  const detail = data?.detail || "tidak ada"; 
   const difficulty = data?.difficuly || "Acak";
   const type = data?.type || "Acak";
   const total = data?.total || "1";
@@ -67,6 +69,8 @@ function generatePrompt ( data )
       - deskripsi: Deskripsi rinci tentang soal, menjelaskan dengan jelas apa yang perlu diselesaikan oleh siswa.
       - jawaban: Jawaban yang benar untuk soal tersebut.
       - topik: Topik matematika yang relevan (contoh: Aljabar, Geometri, Trigonometri, Kalkulus, atau Statistik).
+
+      Anda akan menerima pertanyaan dari user dengan pola "|-[perintah dan aturan]-| |-[tingkat kesulitan]-| |-[tipe soal]-|" agar mudah untuk anda memahami konteksnya.
       `
     
     // Create an array of message objects with roles and content
@@ -77,7 +81,7 @@ function generatePrompt ( data )
           },
           {
             role: "user",
-            content: "buat soal aritmatika dengan tingkat kesulitan Mudah dan bertipe Esai",
+            content: "|-[buat soal aritmatika]-| |-[tingkat kesulitan Mudah]-| |-[bertipe Esai]-|",
           },
           {
             role: "assistant",
@@ -85,7 +89,7 @@ function generatePrompt ( data )
           },
           {
             role: "user",
-            content: "buat soal aritmatika dengan tingkat kesulitan Mudah dan bertipe PG",
+            content: "|-[buat soal aritmatika]-| |-[tingkat kesulitan Mudah]-| || |-[bertipe PG]-|",
           },
           {
             role: "assistant",
@@ -93,18 +97,20 @@ function generatePrompt ( data )
           },
           {
             role: "user",
-            content: `${prompt} dengan tingkat kesulitan ${difficulty} dan bertipe ${type}`,
+            content: `|-[${prompt}]-| |-[tingkat kesulitan ${difficulty}]-| |-[bertipe ${type}]-|`,
           },
     ];
   } else  {
       systemPrompt = `
         Anda adalah asisten virtual yang berspesialisasi dalam membuat daftar ide prompt untuk soal matematika tingkat sekolah menengah atas. Daftar soal harus berdasarkan topik umum SMA seperti aljabar, geometri, trigonometri, kalkulus, atau statistik dan juga tingkat kesulitan serta jumlah soal yang disesuaikan dengan keinginan pengguna. Respon harus diformat dalam bentuk CSV dengan pemisah "|" serta "\n" dan mencakup:
 
-        - prompt: Menjelaskan ide soal yang akan dibuatnya seperti apa.
+        - prompt: Menjelaskan ide soal yang akan dibuatnya seperti apa dan tolong jabarkan lebih detail soal itu isinya bakal seperti apa.
         - tingkat kesulitan: Hanya "Mudah", "Normal", atau "Sulit".
         - jenis: Hanya "Esai" atau "PG".
 
         Format yang selalu anda kasih harus seperti ini "<prompt>|<tingkat kesulitan>|<jenis>"
+        
+        Anda akan menerima pertanyaan dari user dengan pola "|-[perintah dan aturan]-| |-[detail perintah dan aturan seperti kurikulum atau rencana pembelajaran yang perlu diuji]-| |-[tingkat kesulitan]-| |-[tipe soal]-| |-[jumlah soal]-|" agar mudah untuk anda memahami konteksnya.
       `
 
       // Create an array of message objects with roles and content
@@ -115,7 +121,7 @@ function generatePrompt ( data )
         },
         {
           role: "user",
-          content: "buat list soal matematika dasar dengan tingkat kesulitan Acak dan bertipe Acak dengan jumlah 5 soal",
+          content: "|-[buat list soal matematika dasar]-| |-[tidak ada]-| |-[tingkat kesulitan Acak]-|  |-[bertipe Acak]-|  |-[jumlah 5 soal]-|",
         },
         {
           role: "assistant",
@@ -123,7 +129,7 @@ function generatePrompt ( data )
         },
         {
           role: "user",
-          content: "buat list soal matematika dasar dengan tingkat kesulitan Acak dan bertipe Acak dengan jumlah 5 soal",
+          content: "|-[buat list soal matematika dasar]-| |-[tidak ada]-| |-[tingkat kesulitan Acak]-|  |-[bertipe Acak]-|  |-[jumlah 5 soal]-|",
         },
         {
           role: "assistant",
@@ -131,7 +137,7 @@ function generatePrompt ( data )
         },
         {
           role: "user",
-          content: `${prompt} dengan tingkat kesulitan ${difficulty} dan bertipe ${type} dengan jumlah ${total} soal`,
+          content: `|-[${prompt}]-| |-[${detail}]-| |-[tingkat kesulitan ${difficulty}]-| |-[bertipe ${type}]-|  |-[jumlah ${total} soal]-|`,
         },
       ];
   }

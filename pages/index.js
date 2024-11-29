@@ -134,7 +134,7 @@ export default function Home() {
       <ModalPrompt isOpen={isModalOpen} onClose={closeModal} onSubmit={handleModalSubmit} />
       <div className="p-[8px] md:p-[24px] flex justify-center">
         <div className="flex justify-center mb-[8px]">
-          <div className="max-w-[500px]">
+          <div className="max-w-[500px] w-full">
             <h1 className="text-[24px] font-[600] text-center">Pembuatan Soal Matematika Otomatis</h1>
             <h2 className="text-[14px] text-gray-800 font-[500] text-center">
               Pembuatan soal matematika tingkat SMA otomatis menggunakan AI <br />
@@ -150,7 +150,7 @@ export default function Home() {
             <div className="max-w-[1080px] w-full shadow-md p-4" key={index}>
               <div className="flex flex-col mb-[8px]">
                 <form onSubmit={(e) => onGenerate(e, index)}>
-                  <div className="flex items-center gap-2">
+                  <div className="flex flex-col md:flex-row md:items-center gap-2">
                     {questions.length > 1 &&(
                     <div className="w-[60px] hover:opacity-[0.8] cursor-pointer" onClick={() => removeQuestion(index)}>
                       <img src="/ic-close.svg" className="w-[24px]"/>
@@ -168,7 +168,7 @@ export default function Home() {
                         required 
                       />
                     </div>
-                    <div className="flex flex-col justify-center w-full max-w-[200px]">
+                    <div className="flex flex-col justify-center w-full md:max-w-[200px]">
                       <label className="text-[14px] font-[600]">Tingkat Kesulitan:</label>
                       <select 
                         value={question.difficulty} 
@@ -186,12 +186,12 @@ export default function Home() {
                         <select 
                           value={question.type} 
                           onChange={(e) => handleInputChange(index, 'type', e.target.value)} 
-                          className="bg-gray-50 w-full max-w-[200px] border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-2.5"
+                          className="bg-gray-50 w-full md:max-w-[200px] border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-2.5"
                         >
                           <option value="Esai">Esai</option>
                           <option value="PG">PG</option>
                         </select>
-                        <div className="flex items-center gap-2 justify-end w-full md:w-auto">
+                        <div className="md:flex items-center gap-2 justify-end w-full md:w-auto hidden">
                           <button 
                             type="submit" 
                             disabled={isGenerating[index]} // Check the specific question's loading state
@@ -208,6 +208,24 @@ export default function Home() {
                           </button>
                         </div>
                       </div>
+                    </div>
+                    <div className="flex flex-col justify-center w-full md:max-w-[200px] md:hidden">
+                      <div className="flex items-center gap-2 justify-end w-full md:w-auto md:hidden">
+                          <button 
+                            type="submit" 
+                            disabled={isGenerating[index]} // Check the specific question's loading state
+                            className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5`}
+                          >
+                            {isGenerating[index] ? 'Loading...' : 'Generate'}
+                          </button>
+                          <button 
+                            type="button" 
+                            onClick={() => toggleVisibility(index)} 
+                            className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5"
+                          >
+                            {isShow.includes(index) ? 'Hide' : 'Show'}
+                          </button>
+                        </div>
                     </div>
                   </div>
                 </form>
@@ -262,18 +280,18 @@ export default function Home() {
             </div>
           ))}
         </div>
-        <div className="flex justify-end mr-4 pr-2 gap-2">
+        <div className="flex justify-between md:justify-end px-2 md:px-0 md:pr-5 gap-2 w-full">
           <button 
             type="button" 
             onClick={openModal} 
-            className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5"
+            className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5"
           >
             Prompt Soal
           </button>
           <button 
             type="button" 
             onClick={addQuestion} 
-            className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5"
+            className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5"
           >
             Tambah Soal
           </button>
