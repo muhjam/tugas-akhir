@@ -1,4 +1,3 @@
-import Head from "next/head";
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import 'katex/dist/katex.min.css'; 
@@ -7,6 +6,8 @@ import remarkMath from 'remark-math';
 import '@uiw/react-md-editor/markdown-editor.css';
 import '@uiw/react-markdown-preview/markdown.css';
 import ModalPrompt from '/components/ModalPrompt';
+import Login from '/components/Login';
+import users from '../users/index.json';
 
 const MDEditor = dynamic(
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
@@ -14,8 +15,9 @@ const MDEditor = dynamic(
 );
 
 export default function Home() {
-  const [isGenerating, setIsGenerating] = useState([]); // Array to track generating state for each question
-  const [isShow, setIsShow] = useState([]); // Control visibility of generated questions
+  const [isGenerating, setIsGenerating] = useState([]);
+  const [isWaiting, setIsWaiting] = useState(false);
+  const [isShow, setIsShow] = useState([]);
   const [questions, setQuestions] = useState([{
     prompt: "",
     difficulty: "Mudah",
@@ -26,31 +28,33 @@ export default function Home() {
     topic: ""
   }]); // Array of questions
   const [isModalOpen, setIsModalOpen] = useState(false);
+  const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [nuptk, setNupkt] = useState("")
+  const [nama, setNama] = useState("")
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
+    // Logika login
+    const storedNupkt = localStorage.getItem('nupkt');
+    const storedPassword = localStorage.getItem('password');
+    
+    if (storedNupkt && storedPassword) {
+      const user = users.find(user => user.NUPTK === storedNupkt && user.Password === storedPassword);
+      if (user) {
+        setNupkt(storedNupkt)
+        setNama(user.Nama)
+        setIsLoggedIn(true);
+      }
+    }
+
     // Load Tally script
     const script = document.createElement('script');
     script.src = "https://tally.so/widgets/embed.js";
     script.async = true;
     document.body.appendChild(script);
   }, []);
-
-  const openTallyPopup = () => {
-    Tally.openPopup('m61EBN', {
-      layout: 'modal', // Open as a centered modal
-      width: 700, // Set the width of the modal
-      autoClose: 5000, // Close the popup 5 seconds after form was submitted (in ms)
-      onOpen: () => {
-        console.log('Popup opened');
-      },
-      onClose: () => {
-        console.log('Popup closed');
-      },
-    });
-  };
 
   const handleModalSubmit = (data) => {
     data?.map((item) => {
@@ -105,6 +109,7 @@ export default function Home() {
 
   async function onGenerate(event, index) {
     event.preventDefault();
+    setIsWaiting(true);
     const updatedIsGenerating = [...isGenerating];
     updatedIsGenerating[index] = true; // Set the specific question's loading state to true
     setIsGenerating(updatedIsGenerating);
@@ -146,16 +151,24 @@ export default function Home() {
       alert(error.message);
     } finally {
       updatedIsGenerating[index] = false; 
+      setIsWaiting(false);
       setIsGenerating(updatedIsGenerating);
     }
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem('nupkt');
+    localStorage.removeItem('password');
+    setIsLoggedIn(false);
+  };
+
   return (
     <>
-      <Head>
-        <title>OpenAI Quickstart</title>
-        <link rel="icon" href="/quest.png" />
-      </Head>
+     {!isLoggedIn ? ( 
+        <Login/>
+      ) : (
+      <div className='flex flex-col justify-between w-full h-[100dvh]'>
+        <div>
       <ModalPrompt isOpen={isModalOpen} onClose={closeModal} onSubmit={handleModalSubmit} />
       <div className="p-[8px] md:p-[24px] flex justify-center">
         <div className="flex justify-center mb-[8px]">
@@ -219,10 +232,10 @@ export default function Home() {
                         <div className="md:flex items-center gap-2 justify-end w-full md:w-auto hidden">
                           <button 
                             type="submit" 
-                            disabled={isGenerating[index]} // Check the specific question's loading state
-                            className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5`}
+                            disabled={isGenerating[index] || isWaiting}
+                            className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait' : isWaiting ? 'bg-green-600' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5`}
                           >
-                             Generate
+                             {isGenerating[index] ? "Loading.." : "Generate"}
                           </button>
                           <button 
                             type="button" 
@@ -238,10 +251,10 @@ export default function Home() {
                       <div className="flex items-center gap-2 justify-end w-full md:w-auto md:hidden">
                           <button 
                             type="submit" 
-                            disabled={isGenerating[index]} // Check the specific question's loading state
-                            className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait ' : 'bg-green-500 hover:bg-green-600 '} text-white font-medium rounded-md text-sm w-full px-5 py-2.5`}
+                            disabled={isGenerating[index] || isWaiting}
+                            className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait ' : isWaiting ? 'bg-green-600' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full px-5 py-2.5`}
                           >
-                            Generate
+                            {isGenerating[index] ? "Loading.." : "Generate"}
                           </button>
                           <button 
                             type="button" 
@@ -312,13 +325,13 @@ export default function Home() {
           ))}
         </div>
         <div className="flex justify-between items-center px-2 md:pl-6 md:pr-5 gap-2 w-full mb-2 mt-2 md:mt-0">
-        <button      
-          type="button" 
-          onClick={openTallyPopup} 
+        <a      
+        
+          href={`#tally-open=m61EBN&tally-layout=modal&tally-emoji-text=👋&tally-emoji-animation=wave&nuptk=${nuptk}&nama=${nama}`}
           className="bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-md text-sm md:w-auto px-5 py-2.5 flex items-center justify-between gap-1" >
               <img src="/ic-star.svg" className="w-[20px]"/>
               <span className="md:block hidden">Review</span>
-            </button>
+            </a>
             <div className="flex justify-end gap-2">
           <button 
             type="button" 
@@ -339,6 +352,19 @@ export default function Home() {
         <div className="flex md:hidden justify-between md:justify-end px-2 md:px-0 md:pr-5 gap-2 w-full mb-4">
         </div>
       </div>
+      </div>
+      <div>
+        <button 
+        type="button" 
+        onClick={handleLogout} // Panggil fungsi handleLogout saat tombol diklik
+        className="bg-red-500 hover:bg-red-600 text-white font-medium rounded-md text-sm w-fit px-5 py-2.5 flex justify-between items-center gap-1 m-2"
+      >
+        <img src="/ic-arrow-out.svg" className="w-[20px]"/>
+        Logout
+      </button>
+      </div>
+      </div>
+      )}
     </>
   );
 }
