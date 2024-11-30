@@ -29,6 +29,7 @@ export default function Home() {
   }]); // Array of questions
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false)
+  const [isLoading, setIsLoading] = useState(true);
   const [nuptk, setNupkt] = useState("")
   const [nama, setNama] = useState("")
 
@@ -54,6 +55,7 @@ export default function Home() {
     script.src = "https://tally.so/widgets/embed.js";
     script.async = true;
     document.body.appendChild(script);
+    setIsLoading(false);
   }, []);
 
   const handleModalSubmit = (data) => {
@@ -164,7 +166,11 @@ export default function Home() {
 
   return (
     <>
-     {!isLoggedIn ? ( 
+      {isLoading ? ( 
+        <div className="flex items-center justify-center w-full h-screen bg-white">
+          <h1 className="text-gray-500">Loading...</h1>
+        </div>
+      ) : !isLoggedIn ? ( 
         <Login/>
       ) : (
       <div className='flex flex-col justify-between w-full h-[100dvh]'>
