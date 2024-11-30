@@ -33,7 +33,7 @@ export default async function (req, res) {
     const response = await await client.path(path).post({
       body: {
         messages,
-        max_tokens: 4096,
+        // max_tokens: 4096,
         top_p: 1.0,
         temperature: 0.65,
       }    
@@ -67,14 +67,13 @@ function generatePrompt ( data )
               Anda adalah asisten virtual yang spesialis dalam membuat soal matematika untuk tingkat Sekolah Menengah Atas (SMA). Tugas Anda adalah membuat soal matematika yang relevan dengan topik umum SMA seperti Aljabar, Geometri, Trigonometri, Kalkulus, atau Statistik. Soal yang Anda buat harus disesuaikan dengan tingkat kesulitan yang diminta oleh pengguna.
 
               Respon Anda harus diformat dalam bentuk CSV dengan pemisah "|->" dan mencakup kolom-kolom berikut:
-
               - **judul**: Judul singkat untuk soal.
               - **deskripsi**: Deskripsi rinci tentang soal, menjelaskan dengan jelas apa yang perlu diselesaikan oleh siswa.
               - **jawaban**: Jawaban yang benar untuk soal tersebut dan perlu dijelaskan juga cara pengerjaannya.
               - **topik**: Topik matematika yang relevan, seperti Aljabar, Geometri, Trigonometri, Kalkulus, atau Statistik.
 
               Contoh format soal dalam CSV:
-              "judul|deskripsi|jawaban|topik"
+              "judul|->deskripsi|->jawaban|->topik"
 
               Anda akan menerima pertanyaan dari pengguna dengan pola berikut:
               "|-[perintah dan aturan]-| |-[tingkat kesulitan]-| |-[tipe soal]-|"
@@ -114,14 +113,14 @@ function generatePrompt ( data )
       systemPrompt = `
               Anda adalah asisten virtual yang berspesialisasi dalam membuat daftar ide prompt untuk soal matematika tingkat Sekolah Menengah Atas (SMA). Daftar ide soal yang Anda buat harus didasarkan pada topik-topik umum SMA seperti Aljabar, Geometri, Trigonometri, Kalkulus, atau Statistik, dengan tingkat kesulitan dan jumlah soal yang disesuaikan dengan permintaan pengguna.
 
-              Respon Anda harus diformat dalam bentuk CSV dengan pemisah "|->" dan "\n", mencakup kolom-kolom berikut:
+              Respon Anda harus diformat dalam bentuk CSV dengan pemisah "|->" dan "<_>", mencakup kolom-kolom berikut:
 
-              - **prompt**: Menjelaskan ide soal yang akan dibuat, serta memberikan penjabaran lebih detail mengenai soal tersebut, seperti jenis soal dan apa yang perlu diselesaikan oleh siswa.
+              - **prompt**: Menjelaskan ide soal yang akan dibuat, serta memberikan penjabaran lebih detail mengenai soal tersebut, seperti jenis soal.
               - **tingkat kesulitan**: Tingkat kesulitan soal, yang hanya bisa berupa "Mudah", "Normal", atau "Sulit".
               - **jenis**: Jenis soal, yang hanya bisa berupa "Esai" atau "PG" (Pilihan Ganda).
 
               Format yang harus Anda ikuti adalah:
-              "<prompt>|<tingkat kesulitan>|<jenis>"
+              "<prompt>|-><tingkat kesulitan>|-><jenis>"
 
               Anda akan menerima pertanyaan dari pengguna dengan pola sebagai berikut:
               "|-[perintah dan aturan]-| |-[detail perintah dan aturan seperti kurikulum atau rencana pembelajaran yang perlu diuji]-| |-[tingkat kesulitan]-| |-[tipe soal]-| |-[jumlah soal]-|"
@@ -142,7 +141,7 @@ function generatePrompt ( data )
         },
         {
           role: "assistant",
-          content: "1. <prompt>|-><tingkat kesulitan>|-><jenis>\n2. <prompt>|-><tingkat kesulitan>|-><jenis>\n3. <prompt>|-><tingkat kesulitan>|-><jenis>\n4. <prompt>|-><tingkat kesulitan>|-><jenis>\n<prompt>|-><tingkat kesulitan>|-><jenis>",
+          content: "1. <prompt>|-><tingkat kesulitan>|-><jenis><_>2. <prompt>|-><tingkat kesulitan>|-><jenis><_>3. <prompt>|-><tingkat kesulitan>|-><jenis><_>4. <prompt>|-><tingkat kesulitan>|-><jenis><_><prompt>|-><tingkat kesulitan>|-><jenis>",
         },
         {
           role: "user",
@@ -150,7 +149,7 @@ function generatePrompt ( data )
         },
         {
           role: "assistant",
-          content: "1. Soal Perbandingan (FPB): Soal ini melibatkan konsep FPB yang cukup dasar, tetapi perlu analisis untuk memahami bagaimana membagi jumlah apel dan jeruk secara maksimal.|->Normal|->Esai\n2. Soal Persamaan Linear (Kecepatan, Jarak, dan Waktu): Soal ini sederhana karena hanya membutuhkan rumus dasar kecepatan = jarak/waktu. Tidak banyak analisis yang diperlukan.|->Mudah|->Esai\n3. Soal Pola Bilangan (Deret Aritmatika): Memerlukan pemahaman konsep deret aritmatika dan penerapan rumus jumlah suku. Tingkatannya menengah karena ada langkah tambahan untuk menghitung.|->Normal|->PG\n4. Soal Operasi Campuran (Aljabar Dasar): Menggunakan persamaan linier satu variabel yang sederhana. Penyelesaiannya langsung tanpa perlu banyak langkah kompleks.|->Mudah|->PG\n5. Soal Pecahan (Operasi Pecahan): Menghitung pecahan dan mengurangkannya dari total hanya melibatkan operasi aritmatika dasar.|->Mudah|->Esai",
+          content: "1. Soal Perbandingan (FPB): Soal ini melibatkan konsep FPB yang cukup dasar, tetapi perlu analisis untuk memahami bagaimana membagi jumlah apel dan jeruk secara maksimal.|->Normal|->Esai<_>2. Soal Persamaan Linear (Kecepatan, Jarak, dan Waktu): Soal ini sederhana karena hanya membutuhkan rumus dasar kecepatan = jarak/waktu. Tidak banyak analisis yang diperlukan.|->Mudah|->Esai<_>3. Soal Pola Bilangan (Deret Aritmatika): Memerlukan pemahaman konsep deret aritmatika dan penerapan rumus jumlah suku. Tingkatannya menengah karena ada langkah tambahan untuk menghitung.|->Normal|->PG<_>4. Soal Operasi Campuran (Aljabar Dasar): Menggunakan persamaan linier satu variabel yang sederhana. Penyelesaiannya langsung tanpa perlu banyak langkah kompleks.|->Mudah|->PG<_>5. Soal Pecahan (Operasi Pecahan): Menghitung pecahan dan mengurangkannya dari total hanya melibatkan operasi aritmatika dasar.|->Mudah|->Esai",
         },
         {
           role: "user",

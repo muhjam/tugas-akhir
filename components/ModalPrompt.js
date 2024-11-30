@@ -30,7 +30,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
       });
   
       const data = await response.json();
-      const results = data.result.split("\n").map(item => item.trim());
+      const results = data.result.split("<_>").map(item => item.trim());
       const questions = results.map((item) => {
         const [prompt, thisDifficulty, type] = item.split("|->").map(part => part.trim());
         const settingDifficulty = difficulty === "Acak" ? thisDifficulty : difficulty;
@@ -115,6 +115,7 @@ const handleOutsideClick = (event) => {
               onChange={(e) => handleChange('total', e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md"
               min="1"
+              max="50"
               required
             />
           </div>
