@@ -33,7 +33,7 @@ export default async function (req, res) {
     const response = await await client.path(path).post({
       body: {
         messages,
-        // max_tokens: 4096,
+        max_tokens: 16383,
         top_p: 1.0,
         temperature: 0.65,
       }    
