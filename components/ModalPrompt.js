@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useState, useRef } from 'react';
 
 const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
   const [isGenerating, setIsGenerating] = useState(false); 
@@ -10,6 +10,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
     type: 'Acak',
     detail: ''
   });
+  const abortControllerRef = useRef(null);
 
   const handleChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
@@ -20,12 +21,15 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
     const { prompt, difficulty, type, total, detail } = formData;
     setIsGenerating(true);
   
+    abortControllerRef.current = new AbortController();
+  
     try {
       const response = await fetch('/api/generate', {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
+        signal: abortControllerRef.current.signal, 
         body: JSON.stringify({ text: prompt, type, difficulty, detail, mode: "list", total: total }),
       });
   
@@ -42,8 +46,12 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
       onClose();
 
     } catch (error) {
-      console.error(error);
-      alert(error.message);
+      if (error.name === 'AbortError') {
+        console.log('Request was aborted');
+      } else {
+        console.error(error);
+        alert(error.message);
+      }
     } finally {
       setIsGenerating(false);
     }
@@ -78,10 +86,18 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
   };
 
 const handleOutsideClick = (event) => {
-  if (event.target === event.currentTarget) {
+  if (event.target === event.currentTarget && !isGenerating) {
     onClose();
   }
 };
+
+const handleClose = () => {
+  if (abortControllerRef.current) {
+    abortControllerRef.current.abort(); // Hentikan permintaan API
+  }
+  onClose();
+};
+
 
   if (!isOpen) return null;
 
@@ -115,7 +131,7 @@ const handleOutsideClick = (event) => {
               onChange={(e) => handleChange('total', e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md"
               min="1"
-              max="50"
+              max="100"
               required
             />
           </div>
@@ -177,7 +193,7 @@ const handleOutsideClick = (event) => {
           <div className="flex justify-end gap-2">
             <button
               type="button"
-              onClick={onClose}
+              onClick={handleClose}
               className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
             >
               Batal

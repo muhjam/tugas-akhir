@@ -94,6 +94,14 @@ function generatePrompt ( data )
           },
           {
             role: "assistant",
+            content: "1. <judul>|-><deskripsi>|-><jawaban>|-><topik>",
+          },
+          {
+            role: "user",
+            content: "|-[buat soal persamaan 3 variabel]-| |-[tingkat kesulitan Mudah]-| |-[bertipe Esai]-|",
+          },
+          {
+            role: "assistant",
             content: "Sistem Persamaan Linear 3 Variabel|->Diberikan sistem persamaan linear berikut:\n\n1. $$x + 2y + 3z = 14$$\n2. $$2x - y + z = 5$$\n3. $$3x + 4y - 2z = 1$$\n\nTentukan nilai dari x, y, dan z yang memenuhi ketiga persamaan di atas.|->Untuk menyelesaikan sistem persamaan ini, kita dapat menggunakan metode eliminasi atau substitusi. Berikut adalah langkah penyelesaiannya menggunakan metode eliminasi:\n\n1. Eliminasi z dari persamaan (1) dan (2):\n\n   Dari persamaan (1) dan (2), kita eliminasi z:\n\n   Persamaan (1): $$x + 2y + 3z = 14$$\n\n   Persamaan (2): $$2x - y + z = 5$$\n\n   Kalikan persamaan (2) dengan 3:\n\n   $$6x - 3y + 3z = 15$$\n\n   Kurangkan persamaan (1) dari hasil perkalian persamaan (2):\n\n   $$(6x - 3y + 3z) - (x + 2y + 3z) = 15 - 14$$\n\n   $$5x - 5y = 1$$\n\n   $$x - y = \\frac{1}{5}$$ (Persamaan 4)\n\n2. Eliminasi z dari persamaan (2) dan (3):\n\n   Persamaan (3): $$3x + 4y - 2z = 1$$\n\n   Kalikan persamaan (2) dengan 2:\n\n   $$4x - 2y + 2z = 10$$\n\n   Tambahkan persamaan (3) ke hasil perkalian persamaan (2):\n\n   $$(4x - 2y + 2z) + (3x + 4y - 2z) = 10 + 1$$\n\n   $$7x + 2y = 11$$\n\n   $$x = \\frac{11 - 2y}{7}$$ (Persamaan 5)\n\n3. Substitusi x dari persamaan (5) ke persamaan (4):\n\n   $$\\left(\\frac{11 - 2y}{7}\\right) - y = \\frac{1}{5}$$\n\n   Selesaikan untuk y:\n\n   $$\\frac{11 - 2y - 7y}{7} = \\frac{1}{5}$$\n\n   $$11 - 9y = \\frac{7}{5}$$\n\n   $$55 - 45y = 7$$\n\n   $$45y = 48$$\n\n   $$y = \\frac{48}{45}$$\n\n   $$y = \\frac{16}{15}$$\n\n4. Substitusi y ke dalam persamaan (5) untuk mendapatkan x:\n\n   $$x = \\frac{11 - 2\\left(\\frac{16}{15}\\right)}{7}$$\n\n   $$x = \\frac{11 - \\frac{32}{15}}{7}$$\n\n   $$x = \\frac{\\frac{165}{15} - \\frac{32}{15}}{7}$$\n\n   $$x = \\frac{\\frac{133}{15}}{7}$$\n\n   $$x = \\frac{133}{105}$$\n\n   $$x = \\frac{19}{15}$$\n\n5. Substitusi x dan y ke salah satu persamaan awal untuk mendapatkan z (gunakan persamaan 2):\n\n   $$2\\left(\\frac{19}{15}\\right) - \\left(\\frac{16}{15}\\right) + z = 5$$\n\n   $$\\frac{38}{15} - \\frac{16}{15} + z = 5$$\n\n   $$\\frac{22}{15} + z = 5$$\n\n   $$z = 5 - \\frac{22}{15}$$\n\n   $$z = \\frac{75}{15} - \\frac{22}{15}$$\n\n   $$z = \\frac{53}{15}$$\n\nJadi, nilai x, y, dan z yang memenuhi ketiga persamaan adalah $$x = \\frac{19}{15}$$, $$y = \\frac{16}{15}$$, $$z = \\frac{53}{15}$$.|->Persamaan",
           },
           {
