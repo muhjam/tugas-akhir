@@ -200,8 +200,8 @@ const handleClose = () => {
             </button>
             <button
               type="submit"
-              disabled={isGenerating}
-              className={`${isGenerating ? 'bg-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5`}
+              disabled={isGenerating || isParsing}
+              className={`${isGenerating || isParsing ? 'bg-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5`}
             >
               Generate
             </button>
