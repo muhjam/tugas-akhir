@@ -94,7 +94,7 @@ function generatePrompt ( data )
           },
           {
             role: "assistant",
-            content: "1. <judul>|-><deskripsi>|-><jawaban>|-><topik>",
+            content: "<judul>|-><deskripsi>|-><jawaban>|-><topik>",
           },
           {
             role: "user",
