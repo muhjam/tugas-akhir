@@ -14,7 +14,7 @@ const Login = () => {
         localStorage.setItem('password', password);
         Swal.fire({
           title: 'Login Berhasil!',
-          text: `Selamat Datang, Bapa/Ibu ${user.Nama}!`,
+          text: `Selamat Datang, ${user.pria ? "Bapa" : "Ibu"} ${user.Nama}!`,
           icon: 'success',
           confirmButtonText: 'OK'
         }).then(() => window.location.reload());
