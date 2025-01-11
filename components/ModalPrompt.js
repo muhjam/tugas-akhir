@@ -30,7 +30,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
           "Content-Type": "application/json",
         },
         signal: abortControllerRef.current.signal, 
-        body: JSON.stringify({ text: prompt, type, difficulty, detail, mode: "list", total: total }),
+        body: JSON.stringify({ prompt, type, difficulty, detail, mode: "list", total: total }),
       });
   
       const data = await response.json();
@@ -108,7 +108,7 @@ const handleClose = () => {
         <form onSubmit={onGenerate}>
           <div className="mb-4">
             <label htmlFor="prompt" className="block text-sm font-medium mb-1">
-              Prompt:
+              Perintah:
             </label>
             <input
               type="text"
