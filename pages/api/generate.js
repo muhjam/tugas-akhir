@@ -10,16 +10,16 @@ const path = process.env.AZURE_COMPLETIONPATH_GPT4
 let client = new ModelClient(endpoint, new AzureKeyCredential(key));
 
 export default async function (req, res) {
-  const {text, mode, difficuly, detail, type, total}  = req.body || '';
+  const {prompt, mode, difficuly, detail, type, total}  = req.body || '';
   const body = {
-      text,
+      prompt,
       mode,
       difficuly,
       detail,
       type,
       total
   }
-  if (text.trim().length === 0) {
+  if (prompt.trim().length === 0) {
     res.status(400).json({
       error: {
         message: "Please enter a valid text",
@@ -52,7 +52,7 @@ export default async function (req, res) {
 
 function generatePrompt ( data )
 {
-  const prompt = data?.text;
+  const prompt = data?.prompt;
   const detail = data?.detail || "tidak ada"; 
   const difficulty = data?.difficuly || "Acak";
   const type = data?.type || "Acak";
@@ -64,7 +64,7 @@ function generatePrompt ( data )
   if(data?.mode === "detail"){
     // prompt sepesifik easy/medium/hard
     systemPrompt = `
-              Anda adalah asisten virtual yang spesialis dalam membuat soal matematika untuk tingkat Sekolah Menengah Atas (SMA). Tugas Anda adalah membuat soal matematika yang relevan dengan topik umum SMA seperti Aljabar, Geometri, Trigonometri, Kalkulus, atau Statistik. Soal yang Anda buat harus disesuaikan dengan tingkat kesulitan yang diminta oleh pengguna.
+              Anda adalah asisten virtual yang spesialis dalam membuat soal matematika untuk tingkat Sekolah Menengah Atas (SMA). Tugas Anda adalah membuat soal matematika yang relevan dengan topik umum SMA seperti Aljabar, Geometri, Trigonometri, Kalkulus, dan lain sebagainya. Soal yang Anda buat harus disesuaikan dengan tingkat kesulitan yang diminta oleh pengguna dan jika pengguna konteks nya diluar matematika, tolong buatkan saja soal tapi di relasikan ke matematika, contohnya sejarah, anda bisa membuat soal matermatika yang mengangkat studikasus sejarah.
 
               Respon Anda harus diformat dalam bentuk CSV dengan pemisah "|->" dan mencakup kolom-kolom berikut:
               - **judul**: Judul singkat untuk soal.
@@ -119,7 +119,7 @@ function generatePrompt ( data )
     ];
   } else  {
       systemPrompt = `
-              Anda adalah asisten virtual yang berspesialisasi dalam membuat daftar ide prompt untuk soal matematika tingkat Sekolah Menengah Atas (SMA). Daftar ide soal yang Anda buat harus didasarkan pada topik-topik umum SMA seperti Aljabar, Geometri, Trigonometri, Kalkulus, atau Statistik, dengan tingkat kesulitan dan jumlah soal yang disesuaikan dengan permintaan pengguna.
+              Anda adalah asisten virtual yang berspesialisasi dalam membuat daftar ide prompt untuk soal matematika tingkat Sekolah Menengah Atas (SMA). Daftar ide soal yang Anda buat harus didasarkan pada topik-topik umum SMA seperti Aljabar, Geometri, Trigonometri, Kalkulus, dan lain sebagainya, dengan tingkat kesulitan dan jumlah soal yang disesuaikan dengan permintaan pengguna dan jika pengguna konteks nya diluar matematika, tolong buatkan saja soal tapi di relasikan ke matematika, contohnya sejarah, anda bisa membuat soal matermatika yang mengangkat studikasus sejarah.
 
               Respon Anda harus diformat dalam bentuk CSV dengan pemisah "|->" dan "<_>", mencakup kolom-kolom berikut:
 

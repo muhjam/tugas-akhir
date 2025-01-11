@@ -124,7 +124,7 @@ export default function Home() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ text: prompt, type, difficulty, mode: "detail" }),
+        body: JSON.stringify({ prompt, type, difficulty, mode: "detail" }),
       });
   
       const response = await result.json(); 
@@ -201,7 +201,7 @@ export default function Home() {
                     </div>
                     )}
                     <div className="w-full">
-                      <label htmlFor="prompt" className="text-[14px] font-[600]">Prompt:</label>
+                      <label htmlFor="prompt" className="text-[14px] font-[600]">Perintah:</label>
                       <input 
                         type="text" 
                         id="prompt" 
