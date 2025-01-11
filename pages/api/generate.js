@@ -1,8 +1,8 @@
 const { OpenAIClient, AzureKeyCredential } = require("@azure/openai");
 
 const client = new OpenAIClient(
-  "https://devcodeai.openai.azure.com/", 
-  new AzureKeyCredential("cc6fbbeb2a99477caff36a3561413c0f")
+  NEXT_PUBLIC_DEVCODE_ENDPOINT, 
+  new AzureKeyCredential(OPENAI_API_KEY)
 );
 
 export default async function (req, res) {
