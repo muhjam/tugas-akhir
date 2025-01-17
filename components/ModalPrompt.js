@@ -41,7 +41,6 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
         return { prompt, difficulty: settingDifficulty, type };
       });
 
-      // Pass the generated questions back to the parent component
       onSubmit(questions);
       onClose();
 
@@ -62,15 +61,15 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
     if (file) {
       const reader = new FileReader();
       reader.onload = async (e) => {
-        const base64File = btoa(e.target.result); // Convert to base64
-        setIsParsing(true); // Set loading true saat mulai parsing
+        const base64File = btoa(e.target.result); 
+        setIsParsing(true);
         try {
           const response = await fetch('/api/pdfParse', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',
             },
-            body: JSON.stringify({ file: base64File }), // Send base64 file
+            body: JSON.stringify({ file: base64File }),
           });
           const data = await response.json();
           handleChange('detail', data.text);
@@ -78,7 +77,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
           console.error('Error parsing PDF:', error);
           alert('Failed to parse PDF');
         } finally {
-          setIsParsing(false); // Set loading false setelah selesai parsing
+          setIsParsing(false);
         }
       };
       reader.readAsBinaryString(file);
@@ -93,7 +92,7 @@ const handleOutsideClick = (event) => {
 
 const handleClose = () => {
   if (abortControllerRef.current) {
-    abortControllerRef.current.abort(); // Hentikan permintaan API
+    abortControllerRef.current.abort();
   }
   onClose();
 };
