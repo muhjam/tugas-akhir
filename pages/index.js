@@ -127,8 +127,8 @@ export default function Home() {
         body: JSON.stringify({ prompt, type, difficulty, mode: "detail" }),
       });
   
-      const response = await result.json(); 
-      const data = response.result;
+      const response = await result?.json(); 
+      const data = response?.result || "";
   
       // Parsing respon CSV
       const [title, description, answer, topic] = data?.split("|->").map(item => item.trim());

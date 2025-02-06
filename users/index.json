@@ -6,9 +6,27 @@
         "pria": true
     },
     {
-        "NUPTK": "213040072",
-        "Nama": "Ranca Gigih P",
-        "Password": "Ranca123",
+        "NUPTK": "1395741642200013",
+        "Nama": "Ir. Matnur, B.E.E, S.Tr.Pd",
+        "Password": "123",
+        "pria": true
+    },
+    {
+        "NUPTK": "dianing.anugerah@gmail.com",
+        "Nama": "Dianing Anugerah, S.Pd",
+        "Password": "Lulus2025",
+        "pria": false
+    },
+    {
+        "NUPTK": "alifaazmilf1999@gmail.com",
+        "Nama": "Alifa Azmil Fauziah, S.Pd",
+        "Password": "Lulus2025",
+        "pria": false
+    },
+    {
+        "NUPTK": "gitaanandap1510@gmail.com",
+        "Nama": "Gita Ananda Putri, S.Pd",
+        "Password": "Lulus2025",
         "pria": false
     }
 ]
