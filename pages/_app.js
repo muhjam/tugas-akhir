@@ -7,8 +7,8 @@ function MyApp({ Component, pageProps }) {
   return (
     <>
     <Head>
-    <title>OpenAI Quickstart</title>
-    <link rel="icon" href="/quest.png" />
+    <title>Tugas Akhir | Jamjam</title>
+    <link rel="icon" href="/math.png" />
   </Head>
   <Component {...pageProps} />
   </>
