@@ -26,7 +26,7 @@ export default function Home() {
     description: "",
     answer: "",
     topic: ""
-  }]); // Array of questions
+  }]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [isLoading, setIsLoading] = useState(true);
@@ -50,7 +50,6 @@ export default function Home() {
       }
     }
 
-    // Load Tally script
     const script = document.createElement('script');
     script.src = "https://tally.so/widgets/embed.js";
     script.async = true;
@@ -72,7 +71,6 @@ export default function Home() {
           topic: "",
         },
       ]);
-      // Add a new generating state for the new question
       setIsGenerating((prev) => [...prev, false]);
     });
   };
@@ -88,7 +86,6 @@ export default function Home() {
   };
 
   const addQuestion = () => {
-    // Add a new question template
     setQuestions([...questions, {
       prompt: "",
       difficulty: "Mudah",
@@ -98,22 +95,22 @@ export default function Home() {
       answer: "",
       topic: ""
     }]);
-    setIsGenerating((prev) => [...prev, false]); // Add a new generating state
+    setIsGenerating((prev) => [...prev, false]);
   };
 
   const removeQuestion = (index) => {
-    const updatedQuestions = questions.filter((_, i) => i !== index); // Remove question at index
-    const updatedIsGenerating = isGenerating.filter((_, i) => i !== index); // Remove corresponding generating state
+    const updatedQuestions = questions.filter((_, i) => i !== index);
+    const updatedIsGenerating = isGenerating.filter((_, i) => i !== index);
     setQuestions(updatedQuestions);
     setIsGenerating(updatedIsGenerating);
-    setIsShow(prev => prev.filter(i => i !== index)); // Optionally remove from show state
+    setIsShow(prev => prev.filter(i => i !== index));
   };
 
   async function onGenerate(event, index) {
     event.preventDefault();
     setIsWaiting(true);
     const updatedIsGenerating = [...isGenerating];
-    updatedIsGenerating[index] = true; // Set the specific question's loading state to true
+    updatedIsGenerating[index] = true;
     setIsGenerating(updatedIsGenerating);
 
     const { prompt, difficulty, type } = questions[index];
@@ -130,10 +127,8 @@ export default function Home() {
       const response = await result?.json(); 
       const data = response?.result || "";
   
-      // Parsing respon CSV
       const [title, description, answer, topic] = data?.split("|->").map(item => item.trim());
   
-      // Validasi jika semua elemen tersedia
       if (title && description && answer && topic) {
         const updatedQuestions = [...questions];
         updatedQuestions[index] = {
@@ -210,6 +205,7 @@ export default function Home() {
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 focus:outline-none" 
                         placeholder="Contoh: Buatkan soal tentang Aritmatika" 
                         required 
+                        autoComplete="off"
                       />
                     </div>
                     <div className="flex flex-col justify-center w-full md:max-w-[200px]">
@@ -296,8 +292,8 @@ export default function Home() {
                       onChange={(value) => handleInputChange(index, 'description', value)} 
                       className="focus:outline-none focus:ring-0 focus:border-none"
                       previewOptions={{
-                        remarkPlugins: [remarkMath], // Enable parsing of math syntax
-                        rehypePlugins: [rehypeKatex], // Enable rendering of math
+                        remarkPlugins: [remarkMath], 
+                        rehypePlugins: [rehypeKatex],
                       }}
                     />
                   </div>
@@ -310,8 +306,8 @@ export default function Home() {
                       onChange={(value) => handleInputChange(index, 'answer', value)} 
                       className="focus:outline-none focus:ring-0 focus:border-none"
                       previewOptions={{
-                        remarkPlugins: [remarkMath], // Enable parsing of math syntax
-                        rehypePlugins: [rehypeKatex], // Enable rendering of math
+                        remarkPlugins: [remarkMath],
+                        rehypePlugins: [rehypeKatex],
                       }}
                     />
                   </div>
@@ -362,7 +358,7 @@ export default function Home() {
       <div>
         <button 
         type="button" 
-        onClick={handleLogout} // Panggil fungsi handleLogout saat tombol diklik
+        onClick={handleLogout}
         className="bg-red-500 hover:bg-red-600 text-white font-medium rounded-md text-sm w-fit px-5 py-2.5 flex justify-between items-center gap-1 m-2"
       >
         <img src="/ic-arrow-out.svg" className="w-[20px]"/>
