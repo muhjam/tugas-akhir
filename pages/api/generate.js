@@ -154,7 +154,7 @@ function generatePrompt ( data )
       },
       {
         role: "assistant",
-        content: "Tebak Gambar Bangun Ruang|->Pada gambar di bawah ini terdapat sebuah bangun ruang. Pilihlah nama bangun ruang yang tepat berdasarkan gambar tersebut.\n\n![image](https://files.oaiusercontent.com/file-KSjexG1QiCZhRLbfLRry6d?se=2025-03-08T17%3A47%3A51Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D604800%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3D615aa608-0231-4d2f-b21e-3a43b78b7f4f.webp&sig=oKJSUFyQxvw5fKYDN1MZLfCegQDIWp2t/OR691/p0ME%3D)\n\nPilihan jawaban:\n\\\nA. Kubus\n\\\nB. Balok\n\\\nC. Prisma Segitiga\n\\\nD. Limas Segiempat\n\\\nE. Tabung|->Misalkan gambar menunjukkan sebuah bangun ruang yang memiliki enam sisi yang semuanya berbentuk persegi dan sama besar. Berdasarkan karakteristik tersebut, bangun ruang ini adalah:\n\nJawaban yang benar adalah A. Balok.|->Geometri",
+        content: "Tebak Gambar Bangun Ruang|->Pada gambar di bawah ini terdapat sebuah bangun ruang. Pilihlah nama bangun ruang yang tepat berdasarkan gambar tersebut.\n\n![image]((https://files.oaiusercontent.com/file-KSjexG1QiCZhRLbfLRry6d?se=2025-03-08T21%3A27%3A59Z&sp=r&sv=2024-08-04&sr=b&rscc=max-age%3D604800%2C%20immutable%2C%20private&rscd=attachment%3B%20filename%3D615aa608-0231-4d2f-b21e-3a43b78b7f4f.webp&sig=d93BCKhb%2BHd8OBlu56wej%2B8yAbNXP%2BfiKnwwJGHdkfw%3D)\n\nPilihan jawaban:\n\\\nA. Kubus\n\\\nB. Balok\n\\\nC. Prisma Segitiga\n\\\nD. Limas Segiempat\n\\\nE. Tabung|->Misalkan gambar menunjukkan sebuah bangun ruang yang memiliki enam sisi yang semuanya berbentuk persegi dan sama besar. Berdasarkan karakteristik tersebut, bangun ruang ini adalah:\n\nJawaban yang benar adalah A. Balok.|->Geometri",
       },
       {
         role: "user",
