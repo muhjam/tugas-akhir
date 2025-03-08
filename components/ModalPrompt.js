@@ -135,8 +135,8 @@ const handleClose = () => {
             />
           </div>
           <div className="mb-4">
-            <label htmlFor="difficulty" className="block text-sm font-medium mb-1">
-              Tingkat Kesulitan:
+            <label htmlFor="difficulty" className="block text-sm font-medium mb-1 capitalize">
+              tingkat kognitif:
             </label>
             <select
               id="difficulty"

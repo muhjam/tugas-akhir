@@ -8,6 +8,11 @@ import '@uiw/react-markdown-preview/markdown.css';
 import ModalPrompt from '/components/ModalPrompt';
 import Login from '/components/Login';
 import users from '../users/index.json';
+import { RiPlayListAddFill } from "react-icons/ri";
+import { LuPlus } from "react-icons/lu";
+import { IoIosStarOutline, IoIosArrowDown } from "react-icons/io";
+import { CiLogout } from "react-icons/ci";
+import { GoTrash } from "react-icons/go";
 
 const MDEditor = dynamic(
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
@@ -30,8 +35,9 @@ export default function Home() {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false)
   const [isLoading, setIsLoading] = useState(true);
-  const [nuptk, setNupkt] = useState("")
-  const [nama, setNama] = useState("")
+  const [nuptk, setNupkt] = useState("");
+  const [nama, setNama] = useState("");
+  const [generateClickCount, setGenerateClickCount] = useState(0);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -126,8 +132,6 @@ export default function Home() {
   
       const response = await result?.json(); 
       const data = response?.result || "";
-
-      console.log(response?.result)
   
       const [title, description, answer, topic] = data?.split("|->").map(item => item.trim());
   
@@ -152,6 +156,20 @@ export default function Home() {
       updatedIsGenerating[index] = false; 
       setIsWaiting(false);
       setIsGenerating(updatedIsGenerating);
+      setGenerateClickCount((prevCount) => {
+        const newCount = prevCount + 1;
+        if (newCount % 5 === 0) {
+          window.Tally.openPopup('m61EBN',  {
+            layout: 'modal',
+            width: 376,
+            emoji: {
+              text: "👋",
+              animation: "wave"
+            }, 
+          });
+        }
+        return newCount;
+      });
     }
   }
 
@@ -194,7 +212,7 @@ export default function Home() {
                   <div className="flex flex-col md:flex-row md:items-center gap-2">
                     {questions.length > 1 &&(
                     <div className="w-[40px] md:w-[60px] hover:opacity-[0.8] cursor-pointer bg-red-500 p-2 rounded-md flex items-center justify-center" onClick={() => removeQuestion(index)}>
-                      <img src="/ic-trash.svg" className="w-[24px]"/>
+                      <GoTrash className='text-md text-white'/>
                     </div>
                     )}
                     <div className="w-full">
@@ -211,7 +229,7 @@ export default function Home() {
                       />
                     </div>
                     <div className="flex flex-col justify-center w-full md:max-w-[200px]">
-                      <label className="text-[14px] font-[600]">Tingkat Kesulitan:</label>
+                      <label className="text-[14px] font-[600] capitalize">tingkat kognitif:</label>
                       <select 
                         value={question.difficulty} 
                         onChange={(e) => handleInputChange(index, 'difficulty', e.target.value)} 
@@ -249,7 +267,7 @@ export default function Home() {
                             onClick={() => toggleVisibility(index)} 
                             className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5"
                           >
-                            <img src="/ic-arrow.svg" className={`w-[20px] min-w-[20px] duration-200 ${isShow.includes(index) && ('rotate-180')}`}/>
+                            <IoIosArrowDown className={`text-xl duration-200 ${isShow.includes(index) && ('-rotate-180')}`}/>
                           </button>
                         </div>
                       </div>
@@ -334,10 +352,9 @@ export default function Home() {
         </div>
         <div className="flex justify-between items-center px-2 md:pl-6 md:pr-5 gap-2 w-full mb-2 mt-2 md:mt-0">
         <a      
-        
           href={`#tally-open=m61EBN&tally-layout=modal&tally-emoji-text=👋&tally-emoji-animation=wave&nuptk=${nuptk}&nama=${nama}`}
           className="bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-md text-sm md:w-auto px-5 py-2.5 flex items-center justify-between gap-1" >
-              <img src="/ic-star.svg" className="w-[20px]"/>
+              <IoIosStarOutline className='text-xl'/>
               <span className="md:block hidden">Review</span>
             </a>
             <div className="flex justify-end gap-2">
@@ -346,14 +363,14 @@ export default function Home() {
             onClick={openModal} 
             className="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5"
           >
-            <img src="/ic-gear.svg" className="w-[20px]"/>
+            <RiPlayListAddFill className='text-xl'/>
           </button>
           <button 
             type="button" 
             onClick={addQuestion} 
             className="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5 flex justify-between items-center gap-1"
           >
-            <img src="/ic-plus.svg" className="w-[20px]"/>
+            <LuPlus className='text-xl'/>
           </button>
           </div>
         </div>
@@ -367,7 +384,7 @@ export default function Home() {
         onClick={handleLogout}
         className="bg-red-500 hover:bg-red-600 text-white font-medium rounded-md text-sm w-fit px-5 py-2.5 flex justify-between items-center gap-1 m-2"
       >
-        <img src="/ic-arrow-out.svg" className="w-[20px]"/>
+        <CiLogout className="text-xl"/>
         Logout
       </button>
       </div>

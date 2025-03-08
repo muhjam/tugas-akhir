@@ -65,7 +65,7 @@ function generatePrompt ( data )
       systemPrompt = `
       ---
       Goal:
-      Saya ingin sebuah sistem yang dapat membuat soal matematika tingkat Sekolah Menengah Atas (SMA) menggunakan kurikulum Indonesia terbaru, dengan format yang jelas, relevan dengan kurikulum, dan menyesuaikan tingkat kesulitan sesuai dengan tingkat koognitif Taksonomi Bloom C1-C6.  
+      Saya ingin sebuah sistem yang dapat membuat soal matematika tingkat Sekolah Menengah Atas (SMA) menggunakan kurikulum Indonesia terbaru, dengan format yang jelas, relevan dengan kurikulum, dan menyesuaikan tingkat kognitif sesuai dengan tingkat kognitif Taksonomi Bloom C1-C6.  
       Soal harus tetap dalam konteks Indonesia, termasuk mata uang, budaya, atau aspek lain yang relevan. Jika pengguna memberikan konteks di luar matematika, sistem harus mengubahnya menjadi soal matematika yang tetap sesuai dengan tingkat SMA.  
       Bila diperlukan referensi gambar, soal harus dapat menyertakan gambar, seperti bangun ruang yang dimaksud atau elemen visual lainnya.
 
@@ -82,10 +82,12 @@ function generatePrompt ( data )
 
       Jika ada rumus atau simbol matematika, gunakan format **LaTeX** atau yang mendukung **rehype-katex** dan **remark-math** agar tampilan lebih baik.  
       Contoh latex:  
-      "$$A = \\begin{bmatrix} 2 & 3 & 1 \ 4 & 0 & -1 \ 5 & 2 & 3 \end{bmatrix}$$"
-      "$$\frac{1}{2} + \frac{1}{4} - \frac{1}{8}$$."
-      "f(x) = $\frac{x^2 - 1}{x - 1}$ saat  (x)"
+      "$$A = \\begin{bmatrix} 2 & 3 & 1 \\ 4 & 0 & -1 \\ 5 & 2 & 3 \\end{bmatrix}$$"
+      "$$\\frac{1}{2} + \\frac{1}{4} - \\frac{1}{8}$$."
+      "f(x) = $\\frac{x^2 - 1}{x - 1}$ saat  (x)"
       "$$d = \\sqrt{25}$$"
+      "$[\\begin{array}{c}10,7 \\\\\\end{array}]$"
+
 
       ---
       Warnings:
@@ -98,7 +100,7 @@ function generatePrompt ( data )
       ---
       Context Dump:
       Saya ingin sistem ini beradaptasi dengan format input berikut:  
-      "|-[perintah dan aturan]-| |-[tingkat kesulitan]-| |-[tipe soal]-|"
+      "|-[perintah dan aturan]-| |-[tingkat kognitif Taksonomi Bloom]-| |-[tipe soal]-|"
 
       Misalnya:  
       "|-[Buat soal tentang integral dengan aplikasi dalam ekonomi]-| |-[Tingkat sulit]-| |-[Pilihan Ganda]-|"
@@ -116,7 +118,7 @@ function generatePrompt ( data )
       },
       {
         role: "user",
-        content: "|-[buat soal persamaan 3 variabel]-| |-[tingkat kesulitan C1]-| |-[bertipe Esai]-|",
+        content: "|-[buat soal persamaan 3 variabel]-| |-[tingkat kognitif Taksonomi Bloom C1]-| |-[bertipe Esai]-|",
       },
       {
         role: "assistant",
@@ -124,7 +126,7 @@ function generatePrompt ( data )
       },
       {
         role: "user",
-        content: "|-[buat soal persamaan 3 variabel]-| |-[tingkat kesulitan C1]-| |-[bertipe Esai]-|",
+        content: "|-[buat soal persamaan 3 variabel]-| |-[tingkat kognitif Taksonomi Bloom C1]-| |-[bertipe Esai]-|",
       },
       {
         role: "assistant",
@@ -132,7 +134,7 @@ function generatePrompt ( data )
       },
       {
         role: "user",
-        content: "|-[8. Jelaskan konsep induksi matematika dan berikan contoh sederhana tentang bagaimana induksi digunakan untuk membuktikan pernyataan bahwa jumlah n bilangan ganjil pertama adalah n².]-| |-[tingkat kesulitan C1]-| |-[bertipe Esai]-|",
+        content: "|-[8. Jelaskan konsep induksi matematika dan berikan contoh sederhana tentang bagaimana induksi digunakan untuk membuktikan pernyataan bahwa jumlah n bilangan ganjil pertama adalah n².]-| |-[tingkat kognitif Taksonomi Bloom C1]-| |-[bertipe Esai]-|",
       },
       {
         role: "assistant",
@@ -140,15 +142,15 @@ function generatePrompt ( data )
       },
       {
         role: "user",
-        content: "|-[17. Tentukan nilai limit dari $f(x) = \frac{x^2 - 1}{x - 1}$ saat $x$ mendekati 1.]-| |-[tingkat kesulitan C3]-| |-[bertipe PG]-|",
+        content: "|-[17. Tentukan nilai limit dari $f(x) = \\frac{x^2 - 1}{x - 1}$ saat $x$ mendekati 1.]-| |-[tingkat kognitif Taksonomi Bloom C3]-| |-[bertipe PG]-|",
       },
       {
         role: "assistant",
-        content: "Limit Fungsi|->Tentukan nilai limit dari $f(x) = \frac{x^2 - 1}{x - 1}$ saat $x$ mendekati 1. Pilihan jawaban:\n\\\nA. 0\n\\\nB. 1\n\\\nC. 2\n\\\nD. Tidak terdefinisi\n\\\n\E. 3|->Untuk menentukan limit tersebut, kita dapat menyederhanakan fungsi terlebih dahulu. Fungsi $f(x) = \frac{x^2 - 1}{x - 1}$ dapat difaktorkan sebagai berikut:\n\n$$f(x) = \frac{(x - 1)(x + 1)}{x - 1}$$\n\nDengan mengeliminasi faktor $(x - 1)$ yang sama di pembilang dan penyebut, kita mendapatkan:\n\n$$f(x) = x + 1$$\n\nSekarang kita dapat menghitung limitnya saat $x$ mendekati 1:\n\n$$\lim_{{x \to 1}} (x + 1) = 1 + 1 = 2$$\n\nJadi, nilai limit dari $f(x)$ saat $x$ mendekati 1 adalah 2. Jawaban yang benar adalah C. 2.|->Kalkulus",
+        content: "Limit Fungsi|->Tentukan nilai limit dari $f(x) = \\frac{x^2 - 1}{x - 1}$ saat $x$ mendekati 1. Pilihan jawaban:\n\\\nA. 0\n\\\nB. 1\n\\\nC. 2\n\\\nD. Tidak terdefinisi\n\\\n\E. 3|->Untuk menentukan limit tersebut, kita dapat menyederhanakan fungsi terlebih dahulu. Fungsi $f(x) = \\frac{x^2 - 1}{x - 1}$ dapat difaktorkan sebagai berikut:\n\n$$f(x) = \\frac{(x - 1)(x + 1)}{x - 1}$$\n\nDengan mengeliminasi faktor $(x - 1)$ yang sama di pembilang dan penyebut, kita mendapatkan:\n\n$$f(x) = x + 1$$\n\nSekarang kita dapat menghitung limitnya saat $x$ mendekati 1:\n\n$$\lim_{{x \to 1}} (x + 1) = 1 + 1 = 2$$\n\nJadi, nilai limit dari $f(x)$ saat $x$ mendekati 1 adalah 2. Jawaban yang benar adalah C. 2.|->Kalkulus",
       },
       {
         role: "user",
-        content: "|-[tebak gambar bangun ruang]-| |-[tingkat kesulitan C6]-| |-[bertipe PG]-|",
+        content: "|-[tebak gambar bangun ruang]-| |-[tingkat kognitif Taksonomi Bloom C6]-| |-[bertipe PG]-|",
       },
       {
         role: "assistant",
@@ -156,14 +158,14 @@ function generatePrompt ( data )
       },
       {
         role: "user",
-        content: `|-[${prompt}]-| |-[tingkat kesulitan ${difficulty}]-| |-[bertipe ${type}]-|`,
+        content: `|-[${prompt}]-| |-[tingkat kognitif Taksonomi Bloom ${difficulty}]-| |-[bertipe ${type}]-|`,
       },
     ];
   } else  {
     systemPrompt = `
     ---
     Goal:
-    Saya ingin sebuah sistem yang dapat membuat daftar ide soal matematika tingkat Sekolah Menengah Atas (SMA) menggunakan kurikulum Indonesia terbaru. Ide soal harus jelas, sesuai kurikulum, dan menyesuaikan tingkat kesulitan berdasarkan tingkat kognitif Taksonomi Bloom C1-C6.  
+    Saya ingin sebuah sistem yang dapat membuat daftar ide soal matematika tingkat Sekolah Menengah Atas (SMA) menggunakan kurikulum Indonesia terbaru. Ide soal harus jelas, sesuai kurikulum, dan menyesuaikan tingkat kognitif berdasarkan tingkat kognitif Taksonomi Bloom C1-C6.  
     Soal harus tetap dalam konteks Indonesia, termasuk mata uang, budaya, atau aspek lain yang relevan. Jika pengguna memberikan konteks di luar matematika, sistem harus mengubahnya menjadi ide soal matematika yang tetap sesuai dengan tingkat SMA.  
     Bila diperlukan referensi gambar, soal harus dapat menyertakan gambar, seperti bangun ruang yang dimaksud atau elemen visual lainnya.
     
@@ -171,11 +173,11 @@ function generatePrompt ( data )
     Return Format:
     Hasil harus selalu dalam format **CSV dengan pemisah "|->"**, yang mencakup kolom:  
     - **prompt** → Menjelaskan ide soal yang akan dibuat, serta memberikan penjabaran lebih detail mengenai soal tersebut, seperti jenis soal.  
-    - **tingkat kesulitan** → Tingkat kesulitan soal, yang HANYA bisa berupa tingkat koognitif Taksonomi Bloom C1 hingga C6.  
+    - **tingkat kognitif** → tingkat kognitif soal, yang HANYA bisa berupa tingkat kognitif Taksonomi Bloom C1 hingga C6.  
     - **jenis** → Jenis soal, yang HANYA bisa berupa "Esai" atau "PG" (Pilihan Ganda).  
     
     Contoh format:  
-    "<prompt>|-><tingkat kesulitan>|-><jenis>"
+    "<prompt>|-><tingkat kognitif>|-><jenis>"
     
     Jika ada rumus atau simbol matematika, gunakan format **LaTeX** atau yang mendukung **rehype-katex** dan **remark-math** agar tampilan lebih baik.  
     Contoh latex:  
@@ -183,6 +185,7 @@ function generatePrompt ( data )
     "$$\\frac{1}{2} + \\frac{1}{4} - \\frac{1}{8}$$."
     "f(x) = $\\frac{x^2 - 1}{x - 1}$ saat  (x)"
     "$$d = \\\\sqrt{25}$$"
+    "$[\\begin{array}{c}10,7 \\\\\\end{array}]$"
     
     ---
     Warnings:
@@ -195,10 +198,10 @@ function generatePrompt ( data )
     ---
     Context Dump:
     Saya ingin sistem ini beradaptasi dengan format input berikut:  
-    "|-[perintah dan aturan]-| |-[referensi pengetahuan dan aturan seperti kurikulum atau rencana pembelajaran yang perlu diuji]-| |-[tingkat kesulitan]-| |-[tipe soal]-| |-[jumlah soal]-|"
+    "|-[perintah dan aturan]-| |-[referensi pengetahuan dan aturan seperti kurikulum atau rencana pembelajaran yang perlu diuji]-| |-[tingkat kognitif Taksonomi Bloom]-| |-[tipe soal]-| |-[jumlah soal]-|"
     
     Misalnya:  
-    "|-[buat list soal matematika dasar]-| |-[tidak ada]-| |-[tingkat kesulitan Acak]-| |-[bertipe Acak]-| |-[jumlah 5 soal]-|"
+    "|-[buat list soal matematika dasar]-| |-[tidak ada]-| |-[tingkat kognitif Taksonomi Bloom Acak]-| |-[bertipe Acak]-| |-[jumlah 5 soal]-|"
     Sistem harus memahami pola ini dan menghasilkan daftar ide soal yang sesuai.  
     
     Sistem harus mampu menangani berbagai permintaan pengguna dengan fleksibilitas, tetapi tetap menjaga standar akademik SMA Indonesia.  
@@ -211,15 +214,15 @@ function generatePrompt ( data )
       },
       {
         role: "user",
-        content: "|-[buat list soal matematika dasar]-| |-[tidak ada]-| |-[tingkat kesulitan Acak]-| |-[bertipe Acak]-| |-[jumlah 5 soal]-|",
+        content: "|-[buat list soal matematika dasar]-| |-[tidak ada]-| |-[tingkat kognitif Taksonomi Bloom Acak]-| |-[bertipe Acak]-| |-[jumlah 5 soal]-|",
       },
       {
         role: "assistant",
-        content: "1. <prompt>|-><tingkat kesulitan>|-><jenis><_>2. <prompt>|-><tingkat kesulitan>|-><jenis><_>3. <prompt>|-><tingkat kesulitan>|-><jenis><_>4. <prompt>|-><tingkat kesulitan>|-><jenis><_>5. <prompt>|-><tingkat kesulitan>|-><jenis>",
+        content: "1. <prompt>|-><tingkat kognitif>|-><jenis><_>2. <prompt>|-><tingkat kognitif>|-><jenis><_>3. <prompt>|-><tingkat kognitif>|-><jenis><_>4. <prompt>|-><tingkat kognitif>|-><jenis><_>5. <prompt>|-><tingkat kognitif>|-><jenis>",
       },
       {
         role: "user",
-        content: "|-[buat list soal matematika dasar]-| |-[tidak ada]-| |-[tingkat kesulitan Acak]-| |-[bertipe Acak]-| |-[jumlah 5 soal]-|",
+        content: "|-[buat list soal matematika dasar]-| |-[tidak ada]-| |-[tingkat kognitif Taksonomi Bloom Acak]-| |-[bertipe Acak]-| |-[jumlah 5 soal]-|",
       },
       {
         role: "assistant",
@@ -227,7 +230,7 @@ function generatePrompt ( data )
       },
       {
         role: "user",
-        content: "|-[buat list soal matematika dasar]-| |-[tidak ada]-| |-[tingkat kesulitan Acak]-| |-[bertipe Acak]-| |-[jumlah 100 soal]-|",
+        content: "|-[buat list soal matematika dasar]-| |-[tidak ada]-| |-[tingkat kognitif Taksonomi Bloom Acak]-| |-[bertipe Acak]-| |-[jumlah 100 soal]-|",
       },
       {
         role: "assistant",
@@ -235,7 +238,7 @@ function generatePrompt ( data )
       },
       {
         role: "user",
-        content: `|-[${prompt}]-| |-[${reference}]-| |-[tingkat kesulitan ${difficulty}]-| |-[bertipe ${type}]-| |-[jumlah ${total} soal]-|`,
+        content: `|-[${prompt}]-| |-[${reference}]-| |-[tingkat kognitif Taksonomi Bloom ${difficulty}]-| |-[bertipe ${type}]-| |-[jumlah ${total} soal]-|`,
       },
     ];
   }
