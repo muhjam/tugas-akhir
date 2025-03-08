@@ -286,7 +286,7 @@ export default function Home() {
                             onClick={() => toggleVisibility(index)} 
                             className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-fit px-5 py-2.5"
                           >
-                            <img src="/ic-arrow.svg" className={`w-[20px] duration-200 ${isShow.includes(index) && ('rotate-180')}`}/>
+                            <IoIosArrowDown className={`text-xl duration-200 ${isShow.includes(index) && ('-rotate-180')}`}/>
                           </button>
                         </div>
                     </div>
@@ -308,6 +308,7 @@ export default function Home() {
                   </div>
                   <div className="mb-[8px]">
                     <label htmlFor="description" className="text-[14px] font-[600]">Deskripsi:</label>
+                    <div className='px-1'>
                     <MDEditor 
                       id="description" 
                       data-color-mode="light" 
@@ -319,9 +320,11 @@ export default function Home() {
                         rehypePlugins: [rehypeKatex],
                       }}
                     />
+                    </div>
                   </div>
                   <div className="mb-[8px]">
                     <label htmlFor="answer" className="text-[14px] font-[600]">Jawaban:</label>
+                    <div className='px-1'>
                     <MDEditor 
                       id="answer" 
                       data-color-mode="light" 
@@ -333,10 +336,10 @@ export default function Home() {
                         rehypePlugins: [rehypeKatex],
                       }}
                     />
-                    
+                  </div>
                   </div>
                   <div className="flex flex-col mb-[8px]">
-                    <label htmlFor="topic" className="text-[14px] font-[600]">Topik:</label>
+                    <label htmlFor="topic" className="text-[14px] font-[600]">Cabang Ilmu:</label>
                     <input 
                       type="text" 
                       id="topic" 
