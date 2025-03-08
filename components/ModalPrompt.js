@@ -8,7 +8,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
     total: 1,
     difficulty: 'Acak',
     type: 'Acak',
-    detail: ''
+    reference: ''
   });
   const abortControllerRef = useRef(null);
 
@@ -18,7 +18,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
 
   async function onGenerate(event) {
     event.preventDefault();
-    const { prompt, difficulty, type, total, detail } = formData;
+    const { prompt, difficulty, type, total, reference } = formData;
     setIsGenerating(true);
   
     abortControllerRef.current = new AbortController();
@@ -30,7 +30,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
           "Content-Type": "application/json",
         },
         signal: abortControllerRef.current.signal, 
-        body: JSON.stringify({ prompt, type, difficulty, detail, mode: "list", total: total }),
+        body: JSON.stringify({ prompt, type, difficulty, reference, mode: "list", total: total }),
       });
   
       const data = await response.json();
@@ -72,7 +72,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
             body: JSON.stringify({ file: base64File }),
           });
           const data = await response.json();
-          handleChange('detail', data.text);
+          handleChange('reference', data.text);
         } catch (error) {
           console.error('Error parsing PDF:', error);
           alert('Failed to parse PDF');
@@ -178,9 +178,9 @@ const handleClose = () => {
             />
           </div>
           <div className="mb-4">
-            {!isParsing && formData?.detail?.length > 0 ? (
+            {!isParsing && formData?.reference?.length > 0 ? (
               <textarea 
-              value={formData.detail} // Tampilkan 'Loading...' saat loading
+              value={formData.reference}
               className='w-full h-[80px]' 
               readOnly={true}
               ></textarea>
@@ -202,7 +202,7 @@ const handleClose = () => {
               disabled={isGenerating || isParsing}
               className={`${isGenerating || isParsing ? 'bg-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5`}
             >
-              Generate
+              {isGenerating ? 'Loading...': 'Generate'}
             </button>
           </div>
         </form>

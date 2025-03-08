@@ -20,7 +20,7 @@ export default function Home() {
   const [isShow, setIsShow] = useState([]);
   const [questions, setQuestions] = useState([{
     prompt: "",
-    difficulty: "Mudah",
+    difficulty: "C1",
     type: "Esai",
     title: "",
     description: "",
@@ -88,7 +88,7 @@ export default function Home() {
   const addQuestion = () => {
     setQuestions([...questions, {
       prompt: "",
-      difficulty: "Mudah",
+      difficulty: "C1",
       type: "Esai",
       title: "",
       description: "",
@@ -126,6 +126,8 @@ export default function Home() {
   
       const response = await result?.json(); 
       const data = response?.result || "";
+
+      console.log(response?.result)
   
       const [title, description, answer, topic] = data?.split("|->").map(item => item.trim());
   
@@ -215,9 +217,12 @@ export default function Home() {
                         onChange={(e) => handleInputChange(index, 'difficulty', e.target.value)} 
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-2.5"
                       >
-                        <option value="Mudah">Mudah</option>
-                        <option value="Normal">Normal</option>
-                        <option value="Sulit">Sulit</option>
+                        <option value="C1">C1</option>
+                        <option value="C2">C2</option>
+                        <option value="C3">C3</option>
+                        <option value="C4">C4</option>
+                        <option value="C5">C5</option>
+                        <option value="C6">C6</option>
                       </select>
                     </div>
                     <div className="flex flex-col justify-center w-full">
@@ -306,10 +311,11 @@ export default function Home() {
                       onChange={(value) => handleInputChange(index, 'answer', value)} 
                       className="focus:outline-none focus:ring-0 focus:border-none"
                       previewOptions={{
-                        remarkPlugins: [remarkMath],
+                        remarkPlugins: [remarkMath], 
                         rehypePlugins: [rehypeKatex],
                       }}
                     />
+                    
                   </div>
                   <div className="flex flex-col mb-[8px]">
                     <label htmlFor="topic" className="text-[14px] font-[600]">Topik:</label>
