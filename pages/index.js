@@ -235,12 +235,12 @@ export default function Home() {
                         onChange={(e) => handleInputChange(index, 'difficulty', e.target.value)} 
                         className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-2.5"
                       >
-                        <option value="C1">C1</option>
-                        <option value="C2">C2</option>
-                        <option value="C3">C3</option>
-                        <option value="C4">C4</option>
-                        <option value="C5">C5</option>
-                        <option value="C6">C6</option>
+                        <option value="C1 (Mengingat)">C1 (Mengingat)</option>
+                        <option value="C2 (Memahami)">C2 (Memahami)</option>
+                        <option value="C3 (Menerapkan)">C3 (Menerapkan)</option>
+                        <option value="C4 (Menganalisis)">C4 (Menganalisis)</option>
+                        <option value="C5 (Mengevaluasi)">C5 (Mengevaluasi)</option>
+                        <option value="C6 (Mencipta)">C6 (Mencipta)</option>
                       </select>
                     </div>
                     <div className="flex flex-col justify-center w-full">

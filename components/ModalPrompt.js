@@ -144,10 +144,12 @@ const handleClose = () => {
               onChange={(e) => handleChange('difficulty', e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md"
             >
-              <option value="Acak">Acak</option>
-              <option value="Mudah">Mudah</option>
-              <option value="Normal">Normal</option>
-              <option value="Sulit">Sulit</option>
+                <option value="C1 (Mengingat)">C1 (Mengingat)</option>
+                <option value="C2 (Memahami)">C2 (Memahami)</option>
+                <option value="C3 (Menerapkan)">C3 (Menerapkan)</option>
+                <option value="C4 (Menganalisis)">C4 (Menganalisis)</option>
+                <option value="C5 (Mengevaluasi)">C5 (Mengevaluasi)</option>
+                <option value="C6 (Mencipta)">C6 (Mencipta)</option>
             </select>
           </div>
           <div className="mb-4">
