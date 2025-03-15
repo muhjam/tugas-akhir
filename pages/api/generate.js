@@ -87,6 +87,14 @@ function generatePrompt ( data )
       "f(x) = $\\frac{x^2 - 1}{x - 1}$ saat  (x)"
       "$$d = \\sqrt{25}$$"
       "$[\\begin{array}{c}10,7 \\\\\\end{array}]$"
+      "$$    
+        \begin{array}{c}
+        \ \ \ 345 \\
+      + \ 678 \\
+      \hline
+        \ 1023 \\
+      \end{array}
+      $$"
 
 
       ---
@@ -186,6 +194,14 @@ function generatePrompt ( data )
     "f(x) = $\\frac{x^2 - 1}{x - 1}$ saat  (x)"
     "$$d = \\\\sqrt{25}$$"
     "$[\\begin{array}{c}10,7 \\\\\\end{array}]$"
+     "$$    
+        \begin{array}{c}
+        \ \ \ 345 \\
+      + \ 678 \\
+      \hline
+        \ 1023 \\
+      \end{array}
+      $$"
     
     ---
     Warnings:
