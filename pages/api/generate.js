@@ -95,6 +95,7 @@ function generatePrompt ( data )
         \ 1023 \\
       \end{array}
       $$"
+      "$$\text{Volume} = \text{panjang} \times \text{lebar} \times \text{tinggi} $$"
 
 
       ---
@@ -203,6 +204,7 @@ function generatePrompt ( data )
         \ 1023 \\
       \end{array}
       $$"
+      "$$\text{Volume} = \text{panjang} \times \text{lebar} \times \text{tinggi} $$"
     
     ---
     Warnings:
