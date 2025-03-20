@@ -104,6 +104,7 @@ function generatePrompt ( data )
       - Jika konteks yang diberikan mengandung isu negatif, arahkan soal agar menjadi positif.  
       - Jika konteks yang diberikan memerlukan gambar, anda perlu membuat gambar tersebut berbentuk SVG yang bagus.
       - **Jangan memberikan respons dalam bentuk teks biasa atau kosong**—semua output harus sesuai dengan format CSV yang telah ditentukan.  
+      - Tanda "|->" harus selalu ada 3 jumlahnya agar ketika kondisi parsing tidak error.
 
       ---
       Context Dump:
