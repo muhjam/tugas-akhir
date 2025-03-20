@@ -294,7 +294,7 @@ export default function Home() {
                 </form>
               </div>
               {/* colabs */}
-                <div className={`duration-300 ${isShow.includes(index) ? 'h-[620px] overflow-scroll' : 'h-0 overflow-hidden'}`}>
+                <div className={`duration-300 ${isShow.includes(index) ? 'h-[1210px] overflow-scroll' : 'h-0 overflow-hidden'}`}>
                   <div className="flex flex-col mb-[8px]">
                     <label htmlFor="title" className="text-[14px] font-[600]">Judul:</label>
                     <input 
@@ -316,6 +316,7 @@ export default function Home() {
                       value={question.description} 
                       onChange={(value) => handleInputChange(index, 'description', value)} 
                       className="focus:outline-none focus:ring-0 focus:border-none"
+                      height={"500px"}
                       previewOptions={{
                         remarkPlugins: [remarkMath], 
                         rehypePlugins: [rehypeKatex],
@@ -333,6 +334,7 @@ export default function Home() {
                       value={question.answer} 
                       onChange={(value) => handleInputChange(index, 'answer', value)} 
                       className="focus:outline-none focus:ring-0 focus:border-none"
+                      height={"500px"}
                       previewOptions={{
                         remarkPlugins: [remarkMath], 
                         rehypePlugins: [rehypeKatex],
