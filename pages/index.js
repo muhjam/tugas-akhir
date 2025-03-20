@@ -311,6 +311,7 @@ export default function Home() {
                     <div className='px-1'>
                     <MDEditor 
                       id="description" 
+                      preview="preview"
                       data-color-mode="light" 
                       value={question.description} 
                       onChange={(value) => handleInputChange(index, 'description', value)} 
@@ -328,6 +329,7 @@ export default function Home() {
                     <MDEditor 
                       id="answer" 
                       data-color-mode="light" 
+                      preview="preview"
                       value={question.answer} 
                       onChange={(value) => handleInputChange(index, 'answer', value)} 
                       className="focus:outline-none focus:ring-0 focus:border-none"
