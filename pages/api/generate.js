@@ -78,6 +78,7 @@ function generatePrompt ( data )
     a_{21} & a_{22} & a_{23} \\\
     \\end{bmatrix}\n
     $$"
+    "$(A \\times B)$"
   `
 
   let systemPrompt;
