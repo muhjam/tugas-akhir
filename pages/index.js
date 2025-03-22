@@ -112,15 +112,20 @@ export default function Home() {
     setIsShow(prev => prev.filter(i => i !== index));
   };
 
-  async function onGenerate(event, index) {
-    event.preventDefault();
-    setIsWaiting(true);
-    const updatedIsGenerating = [...isGenerating];
-    updatedIsGenerating[index] = true;
-    setIsGenerating(updatedIsGenerating);
+  // ... existing code ...
 
-    const { prompt, difficulty, type } = questions[index];
-  
+async function onGenerate(event, index) {
+  event.preventDefault();
+  setIsWaiting(true);
+  const updatedIsGenerating = [...isGenerating];
+  updatedIsGenerating[index] = true;
+  setIsGenerating(updatedIsGenerating);
+
+  const { prompt, difficulty, type } = questions[index];
+  let retryCount = 0;
+  const maxRetries = 3;
+
+  while (retryCount < maxRetries) {
     try {
       const result = await fetch('/api/generate', {
         method: "POST",
@@ -129,13 +134,13 @@ export default function Home() {
         },
         body: JSON.stringify({ prompt, type, difficulty, mode: "detail" }),
       });
-  
-      const response = await result?.json(); 
+
+      const response = await result?.json();
       const data = response?.result || "";
-  
-      const [title, description, answer, topic] = data?.split("|->").map(item => item.trim());
-  
-      if (title && description && answer && topic) {
+
+      const [title = "", description = "", answer = "", topic = ""] = data?.split("|->").map(item => item.trim());
+
+      if (title && description && answer && topic || retryCount >= maxRetries) {
         const updatedQuestions = [...questions];
         updatedQuestions[index] = {
           ...updatedQuestions[index],
@@ -146,32 +151,38 @@ export default function Home() {
         };
         setQuestions(updatedQuestions);
         setIsShow((prev) => [...prev, index]);
+        break; 
       } else {
-        throw new Error("Response format is invalid");
+        retryCount++;
       }
     } catch (error) {
       console.error(error);
-      alert(error.message);
-    } finally {
-      updatedIsGenerating[index] = false; 
-      setIsWaiting(false);
-      setIsGenerating(updatedIsGenerating);
-      setGenerateClickCount((prevCount) => {
-        const newCount = prevCount + 1;
-        if (newCount % 5 === 0) {
-          window.Tally.openPopup('m61EBN',  {
-            layout: 'modal',
-            width: 376,
-            emoji: {
-              text: "👋",
-              animation: "wave"
-            }, 
-          });
-        }
-        return newCount;
-      });
+      if (retryCount >= maxRetries) {
+        alert(error.message);
+      }
     }
   }
+
+  updatedIsGenerating[index] = false;
+  setIsWaiting(false);
+  setIsGenerating(updatedIsGenerating);
+  setGenerateClickCount((prevCount) => {
+    const newCount = prevCount + 1;
+    if (newCount % 5 === 0) {
+      window.Tally.openPopup('m61EBN', {
+        layout: 'modal',
+        width: 376,
+        emoji: {
+          text: "👋",
+          animation: "wave"
+        },
+      });
+    }
+    return newCount;
+  });
+}
+
+// ... existing code ...
 
   const handleLogout = () => {
     localStorage.removeItem('nupkt');

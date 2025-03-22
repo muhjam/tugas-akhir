@@ -57,6 +57,28 @@ function generatePrompt ( data )
   const difficulty = data?.difficuly || "Acak";
   const type = data?.type || "Acak";
   const total = data?.total || "1";
+  const latexExample = `
+    "$$A = \\begin{bmatrix} 2 & 3 & 1 \\ 4 & 0 & -1 \\ 5 & 2 & 3 \\end{bmatrix}$$"
+    "$$\\frac{1}{2} + \\frac{1}{4} - \\frac{1}{8}$$."
+    "f(x) = $\\frac{x^2 - 1}{x - 1}$ saat  (x)"
+    "$$d = \\sqrt{25}$$"
+    "$[\\begin{array}{c}10,7 \\\\\\end{array}]$"
+    "$$\n
+      \\begin{array}{r}
+          345 \\\
+      +  678 \\\
+      \\hline
+          ??? \\\
+      \\end{array}\n
+      $$"
+    "$$\\text{Volume} = \\text{panjang} \\times \\text{lebar} \\times \\text{tinggi}$$"
+    "$$\n
+    A = \\begin{bmatrix} 
+    a_{11} & a_{12} & a_{13} \\\
+    a_{21} & a_{22} & a_{23} \\\
+    \\end{bmatrix}\n
+    $$"
+  `
 
   let systemPrompt;
   let messages;
@@ -82,27 +104,7 @@ function generatePrompt ( data )
 
       Jika ada rumus atau simbol matematika, gunakan format **LaTeX** atau yang mendukung **rehype-katex** dan **remark-math** agar tampilan lebih baik.  
       Contoh latex:  
-      "$$A = \\begin{bmatrix} 2 & 3 & 1 \\ 4 & 0 & -1 \\ 5 & 2 & 3 \\end{bmatrix}$$"
-      "$$\\frac{1}{2} + \\frac{1}{4} - \\frac{1}{8}$$."
-      "f(x) = $\\frac{x^2 - 1}{x - 1}$ saat  (x)"
-      "$$d = \\sqrt{25}$$"
-      "$[\\begin{array}{c}10,7 \\\\\\end{array}]$"
-      "$$    
-        \begin{array}{c}
-        \ \ \ 345 \\
-      + \ 678 \\
-      \hline
-        \ 1023 \\
-      \end{array}
-      $$"
-      "$$\text{Volume} = \text{panjang} \times \text{lebar} \times \text{tinggi} $$"
-      "$$\n
-      A = \begin{bmatrix} 
-      a_{11} & a_{12} & a_{13} \\
-      a_{21} & a_{22} & a_{23} \\
-      \end{bmatrix}\n
-      $$"
-
+      ${latexExample}
 
       ---
       Warnings:
@@ -197,26 +199,7 @@ function generatePrompt ( data )
     
     Jika ada rumus atau simbol matematika, gunakan format **LaTeX** atau yang mendukung **rehype-katex** dan **remark-math** agar tampilan lebih baik.  
     Contoh latex:  
-    "$$A = \\begin{bmatrix} 2 & 3 & 1 \\\\ 4 & 0 & -1 \\\\ 5 & 2 & 3 \\end{bmatrix}$$"
-    "$$\\frac{1}{2} + \\frac{1}{4} - \\frac{1}{8}$$."
-    "f(x) = $\\frac{x^2 - 1}{x - 1}$ saat  (x)"
-    "$$d = \\\\sqrt{25}$$"
-    "$[\\begin{array}{c}10,7 \\\\\\end{array}]$"
-     "$$    
-        \begin{array}{c}
-        \ \ \ 345 \\
-      + \ 678 \\
-      \hline
-        \ 1023 \\
-      \end{array}
-      $$"
-      "$$\text{Volume} = \text{panjang} \times \text{lebar} \times \text{tinggi} $$"
-      "$$\n
-      A = \begin{bmatrix} 
-      a_{11} & a_{12} & a_{13} \\
-      a_{21} & a_{22} & a_{23} \\
-      \end{bmatrix}\n
-      $$"
+    ${latexExample}
     
     ---
     Warnings:
