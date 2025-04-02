@@ -15,7 +15,7 @@
     "@uiw/react-markdown-preview": "^5.1.2",
     "@uiw/react-md-editor": "^4.0.4",
     "@zeit/next-css": "^1.0.1",
-    "axios": "^1.7.4",
+    "axios": "^1.8.4",
     "css-loader": "^7.1.2",
     "dotenv": "^16.4.5",
     "flowbite": "^2.5.1",
