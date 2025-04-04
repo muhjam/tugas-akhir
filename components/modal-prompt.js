@@ -64,7 +64,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
         const base64File = btoa(e.target.result); 
         setIsParsing(true);
         try {
-          const response = await fetch('/api/pdfParse', {
+          const response = await fetch('/api/pdf-parse', {
             method: 'POST',
             headers: {
               'Content-Type': 'application/json',

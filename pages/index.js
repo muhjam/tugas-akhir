@@ -5,14 +5,16 @@ import rehypeKatex from 'rehype-katex';
 import remarkMath from 'remark-math'; 
 import '@uiw/react-md-editor/markdown-editor.css';
 import '@uiw/react-markdown-preview/markdown.css';
-import ModalPrompt from '/components/ModalPrompt';
-import Login from '/components/Login';
+import ModalPrompt from '/components/modal-prompt';
+import Login from '/components/login';
 import users from '../users/index.json';
 import { RiPlayListAddFill } from "react-icons/ri";
 import { LuPlus } from "react-icons/lu";
 import { IoIosStarOutline, IoIosArrowDown } from "react-icons/io";
 import { CiLogout } from "react-icons/ci";
 import { GoTrash } from "react-icons/go";
+import rehypeRaw from "rehype-raw";
+import Editor from '../components/editor';
 
 const MDEditor = dynamic(
   () => import('@uiw/react-md-editor').then((mod) => mod.default),
@@ -226,7 +228,7 @@ async function onGenerate(event, index) {
                       <GoTrash className='text-md text-white'/>
                     </div>
                     )}
-                    <div className="w-full">
+                    <div className="w-full space-y-1">
                       <label htmlFor="prompt" className="text-[14px] font-[600]">Perintah:</label>
                       <input 
                         type="text" 
@@ -239,7 +241,7 @@ async function onGenerate(event, index) {
                         autoComplete="off"
                       />
                     </div>
-                    <div className="flex flex-col justify-center w-full md:max-w-[200px]">
+                    <div className="flex flex-col justify-center w-full md:max-w-[200px] space-y-1">
                       <label className="text-[14px] font-[600] capitalize">tingkat kognitif:</label>
                       <select 
                         value={question.difficulty} 
@@ -254,7 +256,7 @@ async function onGenerate(event, index) {
                         <option value="C6 (Mencipta)">C6 (Mencipta)</option>
                       </select>
                     </div>
-                    <div className="flex flex-col justify-center w-full">
+                    <div className="flex flex-col justify-center w-full space-y-1">
                       <label className="text-[14px] font-[600]">Tipe Soal:</label>
                       <div className="flex gap-2">
                         <select 
@@ -305,8 +307,8 @@ async function onGenerate(event, index) {
                 </form>
               </div>
               {/* colabs */}
-                <div className={`duration-300 ${isShow.includes(index) ? 'h-[1210px] overflow-scroll' : 'h-0 overflow-hidden'}`}>
-                  <div className="flex flex-col mb-[8px]">
+                <div className={`duration-300 px-1 ${isShow.includes(index) ? 'h-[1210px] overflow-y-scroll' : 'h-0 overflow-y-hidden'}`}>
+                  <div className="flex flex-col mb-[8px] space-y-1">
                     <label htmlFor="title" className="text-[14px] font-[600]">Judul:</label>
                     <input 
                       type="text" 
@@ -317,43 +319,13 @@ async function onGenerate(event, index) {
                       required 
                     />
                   </div>
-                  <div className="mb-[8px]">
-                    <label htmlFor="description" className="text-[14px] font-[600]">Deskripsi:</label>
-                    <div className='px-1'>
-                    <MDEditor 
-                      id="description" 
-                      preview="preview"
-                      data-color-mode="light" 
-                      value={question.description} 
-                      onChange={(value) => handleInputChange(index, 'description', value)} 
-                      className="focus:outline-none focus:ring-0 focus:border-none"
-                      height={"500px"}
-                      previewOptions={{
-                        remarkPlugins: [remarkMath], 
-                        rehypePlugins: [rehypeKatex],
-                      }}
-                    />
-                    </div>
+                  <div className="mb-[10px]">
+                      <Editor label={"Deskripsi"} id={"description"} index={index} value={question.description} onChange={(index, id, val ) => handleInputChange(index, id, val)}  />
                   </div>
-                  <div className="mb-[8px]">
-                    <label htmlFor="answer" className="text-[14px] font-[600]">Jawaban:</label>
-                    <div className='px-1'>
-                    <MDEditor 
-                      id="answer" 
-                      data-color-mode="light" 
-                      preview="preview"
-                      value={question.answer} 
-                      onChange={(value) => handleInputChange(index, 'answer', value)} 
-                      className="focus:outline-none focus:ring-0 focus:border-none"
-                      height={"500px"}
-                      previewOptions={{
-                        remarkPlugins: [remarkMath], 
-                        rehypePlugins: [rehypeKatex],
-                      }}
-                    />
+                  <div className="mb-[10px]">
+                  <Editor label={"Jawaban"} id={"answer"} index={index} value={question.answer} onChange={(index, id, val ) => handleInputChange(index, id, val)}  />
                   </div>
-                  </div>
-                  <div className="flex flex-col mb-[8px]">
+                  <div className="flex flex-col mb-[8px] space-y-1">
                     <label htmlFor="topic" className="text-[14px] font-[600]">Cabang Ilmu:</label>
                     <input 
                       type="text" 
