@@ -54,9 +54,12 @@ const processBoldText = (text) => {
 };
 
 const processMarkdown = (text) => {
-    const processedBold = processBoldText(text);
-    return marked.parse(processedBold);
-  };
+  const withLineBreaks = text.replace(/\n/g, "<br/>");
+  const processedBold = processBoldText(withLineBreaks);
+  const parsedMarkdown = marked.parse(processedBold);
+  return parsedMarkdown.replace(/<p>/g, "<span>").replace(/<\/p>/g, "</span>");
+};
+
 
 const renderContent = (text) => {
     const parts = text.split(/(<svg[\s\S]*?<\/svg>)/gs);
@@ -98,7 +101,8 @@ const renderContent = (text) => {
         }
       });
   
-      return <div key={i}>{rendered}</div>;
+      return <React.Fragment key={i}>{rendered}</React.Fragment>;
+
     });
 };
   

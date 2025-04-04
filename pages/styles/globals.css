@@ -32,4 +32,12 @@
   .prose h6 {
     @apply text-base font-medium mt-2;
   }
+
+  .prose p {
+    @apply w-fit;
+  }
   
+  .katex-inline {
+    display: inline-block;
+    vertical-align: middle;
+  }
