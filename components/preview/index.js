@@ -2,6 +2,7 @@ import React from "react";
 import katex from "katex";
 import { marked } from "marked";
 import "katex/dist/katex.min.css";
+import ButtonPreview from "../buttons/button-preview";
 
 const renderLatex = (text, displayMode = false) => {
   try {
@@ -60,55 +61,56 @@ const processMarkdown = (text) => {
   return parsedMarkdown.replace(/<p>/g, "<span>").replace(/<\/p>/g, "</span>");
 };
 
-
 const renderContent = (text) => {
-    const parts = text.split(/(<svg[\s\S]*?<\/svg>)/gs);
-  
-    return parts.map((part, i) => {
-      if (part.startsWith("<svg") && part.endsWith("</svg>")) {
-        const { processedSvg, latexElements } = processSvgWithLatex(part);
-        return (
-          <div key={i} className="relative inline-block">
-            <div dangerouslySetInnerHTML={{ __html: processedSvg }} />
-            {latexElements}
-          </div>
-        );
-      }
-  
-      // Bagi lagi bagian LaTeX
-      const latexParts = part.split(/(\$\$.*?\$\$|\$.*?\$)/gs);
-      const rendered = latexParts.map((latexPart, j) => {
-        if (latexPart.startsWith("$$") && latexPart.endsWith("$$")) {
-          return (
-            <div
-              key={j}
-              className="katex-block"
-              dangerouslySetInnerHTML={{ __html: renderLatex(latexPart.slice(2, -2), true) }}
-            />
-          );
-        } else if (latexPart.startsWith("$") && latexPart.endsWith("$")) {
-          return (
-            <span
-              key={j}
-              className="katex-inline"
-              style={{ display: "inline-block", verticalAlign: "middle" }}
-              dangerouslySetInnerHTML={{ __html: renderLatex(latexPart.slice(1, -1), false) }}
-            />
-          );
-        } else {
-          const html = processMarkdown(latexPart);
-          return <span key={j} dangerouslySetInnerHTML={{ __html: html }} />;
-        }
-      });
-  
-      return <React.Fragment key={i}>{rendered}</React.Fragment>;
+  const parts = text.split(/(<svg[\s\S]*?<\/svg>)/gs);
 
+  return parts.map((part, i) => {
+    if (part.startsWith("<svg") && part.endsWith("</svg>")) {
+      const { processedSvg, latexElements } = processSvgWithLatex(part);
+      return (
+        <div key={i} className="relative inline-block">
+          <div dangerouslySetInnerHTML={{ __html: processedSvg }} />
+          {latexElements}
+        </div>
+      );
+    }
+
+    const latexParts = part.split(/(\$\$.*?\$\$|\$.*?\$)/gs);
+    const rendered = latexParts.map((latexPart, j) => {
+      if (latexPart.startsWith("$$") && latexPart.endsWith("$$")) {
+        return (
+          <div
+            key={j}
+            className="katex-block"
+            dangerouslySetInnerHTML={{ __html: renderLatex(latexPart.slice(2, -2), true) }}
+          />
+        );
+      } else if (latexPart.startsWith("$") && latexPart.endsWith("$")) {
+        return (
+          <span
+            key={j}
+            className="katex-inline"
+            style={{ display: "inline-block", verticalAlign: "middle" }}
+            dangerouslySetInnerHTML={{ __html: renderLatex(latexPart.slice(1, -1), false) }}
+          />
+        );
+      } else {
+        const html = processMarkdown(latexPart);
+        return <span key={j} dangerouslySetInnerHTML={{ __html: html }} />;
+      }
     });
+
+    return <React.Fragment key={i}>{rendered}</React.Fragment>;
+  });
 };
-  
-const Preview = ({ children }) => {
+
+const Preview = ({ children, isEditMode, clickHandler }) => {
   return (
-    <div className="border p-4 rounded overflow-scroll h-[480px] relative">
+    <div className="border border-gray-100 p-4 rounded-[3px] overflow-scroll h-[500px] relative">
+      <div className="absolute top-0 left-0 w-full flex justify-between items-center border-b border-b-gray-100 px-[3px] h-fit">
+        <span className="text-[14px] text-gray-500 py-[2px] ml-1">Preview</span>
+        <ButtonPreview isEditMode={isEditMode} clickHandler={clickHandler} />
+      </div>
       <div className="prose max-w-full">
         {typeof children === "string" ? renderContent(children) : children}
       </div>

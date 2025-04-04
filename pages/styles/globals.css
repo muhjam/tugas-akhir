@@ -41,3 +41,7 @@
     display: inline-block;
     vertical-align: middle;
   }
+
+  .w-md-editor-text {
+    @apply h-full;
+  }

@@ -302,7 +302,7 @@ async function onGenerate(event, index) {
                 </form>
               </div>
               {/* colabs */}
-                <div className={`duration-300 px-1 ${isShow.includes(index) ? 'h-[1210px] overflow-y-scroll' : 'h-0 overflow-y-hidden'}`}>
+                <div className={`duration-300 px-1 ${isShow.includes(index) ? 'h-[1220px] overflow-y-scroll' : 'h-0 overflow-y-hidden'}`}>
                   <div className="flex flex-col mb-[8px] space-y-1">
                     <label htmlFor="title" className="text-[14px] font-[600]">Judul:</label>
                     <input 
