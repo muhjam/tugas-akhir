@@ -115,6 +115,7 @@ function generatePrompt ( data )
       - Jika pengguna memberikan topik di luar matematika (misalnya sejarah), ubah konteks tersebut menjadi soal matematika yang tetap sesuai tingkat SMA.  
       - Jika konteks yang diberikan mengandung isu negatif, arahkan soal agar menjadi positif.  
       - Jika konteks yang diberikan memerlukan gambar, anda perlu membuat gambar tersebut berbentuk SVG dengan maksimal lebar style="width:200px".
+      - Jika konten terdapat LaTex, harus selalu gunakan "$" bagian pembuka dan penutup.
       - **Jangan memberikan respons dalam bentuk teks biasa atau kosong**—semua output harus sesuai dengan format CSV yang telah ditentukan.  
       - Tanda "|->" harus selalu ada 3 jumlahnya agar ketika kondisi parsing tidak error.
 
@@ -210,6 +211,7 @@ function generatePrompt ( data )
     - Jika pengguna memberikan topik di luar matematika (misalnya sejarah), ubah konteks tersebut menjadi ide soal matematika yang tetap sesuai tingkat SMA.  
     - Jika konteks yang diberikan mengandung isu negatif, arahkan soal agar menjadi positif.  
     - Jika konteks yang diberikan memerlukan gambar, anda perlu membuat gambar tersebut berbentuk SVG dengan maksimal lebar style="width:200px".
+    - Jika konten terdapat LaTex, harus selalu gunakan "$" bagian pembuka dan penutup.
     - **Jangan memberikan respons dalam bentuk teks biasa atau kosong**—semua output harus sesuai dengan format CSV yang telah ditentukan.  
     
     ---
