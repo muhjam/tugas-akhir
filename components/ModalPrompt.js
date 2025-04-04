@@ -102,7 +102,7 @@ const handleClose = () => {
 
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={handleOutsideClick}>
-      <div className="bg-white w-full max-w-md p-6 rounded-lg shadow-lg max-h-[500px] overflow-scroll">
+      <div className="bg-white w-full max-w-md px-6 pt-6 rounded-lg shadow-lg max-h-[600px] overflow-scroll">
         <h2 className="text-xl font-semibold mb-4">Generate Perintah Soal</h2>
         <form onSubmit={onGenerate}>
           <div className="mb-4">
@@ -183,7 +183,7 @@ const handleClose = () => {
             {!isParsing && formData?.reference?.length > 0 ? (
               <textarea 
               value={formData.reference}
-              className='w-full h-[80px]' 
+              className='w-full h-[200px]' 
               readOnly={true}
               ></textarea>
             ): isParsing &&(
@@ -191,7 +191,7 @@ const handleClose = () => {
             )}
              
           </div>
-          <div className="flex justify-end gap-2">
+          <div className="flex justify-end gap-2 sticky bottom-0 py-4 bg-white">
             <button
               type="button"
               onClick={handleClose}
