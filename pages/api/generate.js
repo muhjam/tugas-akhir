@@ -58,7 +58,7 @@ function generatePrompt ( data )
   const type = data?.type || "Acak";
   const total = data?.total || "1";
   const latexExample = `
-    "$$A = \\begin{bmatrix} 2 & 3 & 1 \\ 4 & 0 & -1 \\ 5 & 2 & 3 \\end{bmatrix}$$"
+    "$$A = \\begin{bmatrix} 2 & 3 & 1 \\\ 4 & 0 & -1 \\\ 5 & 2 & 3 \\end{bmatrix}$$"
     "$$\\frac{1}{2} + \\frac{1}{4} - \\frac{1}{8}$$."
     "f(x) = $\\frac{x^2 - 1}{x - 1}$ saat  (x)"
     "$$d = \\sqrt{25}$$"
