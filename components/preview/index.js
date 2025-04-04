@@ -1,126 +1,158 @@
 import React from "react";
 import katex from "katex";
-import { marked } from "marked";
 import "katex/dist/katex.min.css";
 import ButtonPreview from "../buttons/button-preview";
+import DOMPurify from "dompurify";
 
 const renderLatex = (text, displayMode = false) => {
   try {
     return katex.renderToString(text, { throwOnError: false, displayMode });
   } catch {
-    return text; 
+    return text;
   }
 };
 
-const processSvgWithLatex = (svgText) => {
-  const latexMatches = [...svgText.matchAll(/<text\s+([^>]+)>(.*?)<\/text>/gs)];
-
-  let processedSvg = svgText;
-  const latexElements = [];
-
-  latexMatches.forEach((match, index) => {
-    const attributes = match[1];
-    const content = match[2];
-
-    if (/\$.*?\$/.test(content)) {
-      const coordsMatch = attributes.match(/x="([\d.]+)"\s+y="([\d.]+)"/);
-      if (coordsMatch) {
-        const [_, x, y] = coordsMatch;
-        const latexHtml = renderLatex(content.replace(/\$/g, ""), false);
-
-        processedSvg = processedSvg.replace(match[0], "");
-
-        latexElements.push(
-          <div
-            key={index}
-            style={{
-              position: "absolute",
-              left: `${x}px`,
-              top: `${y}px`,
-              transform: "translate(-50%, -50%)",
-              whiteSpace: "nowrap",
-            }}
-            dangerouslySetInnerHTML={{ __html: latexHtml }}
-          />
-        );
-      }
-    }
-  });
-
-  return { processedSvg, latexElements };
-};
-
 const convertMarkdownTableToHtml = (markdown) => {
-  const lines = markdown.trim().split('\n');
-  if (lines.length < 2) return markdown; // Not enough lines for a table
+  const lines = markdown.trim().split("\n");
+  if (lines.length < 2) return markdown;
 
   const headerLine = lines[0];
   const separatorLine = lines[1];
   const dataLines = lines.slice(2);
 
-  // Check if the separator line is valid for a table
-  if (!/^(\|[-:]+)+\|$/.test(separatorLine)) return markdown;
+  if (!/^\|[\s-:]+\|([\s-:]+\|)*$/.test(separatorLine)) return markdown;
 
-  const headers = headerLine.split('|').slice(1, -1).map(header => header.trim());
-  const rows = dataLines.map(line => line.split('|').slice(1, -1).map(cell => cell.trim()));
+  const headers = headerLine.split("|").slice(1, -1).map((h) => h.trim());
+  const rows = dataLines.map((line) =>
+    line.split("|").slice(1, -1).map((cell) => cell.trim())
+  );
 
-  let html = '<table><thead><tr>';
-  headers.forEach(header => {
-    html += `<th>${header}</th>`;
+  let html = "<table border='1' style='border-collapse: collapse; width: 100%;'>";
+  html +=
+    "<thead><tr>" +
+    headers
+      .map(
+        (header) =>
+          `<th style='border: 1px solid black; padding: 5px;'>${header}</th>`
+      )
+      .join("") +
+    "</tr></thead><tbody>";
+
+  rows.forEach((row) => {
+    html +=
+      "<tr>" +
+      row
+        .map(
+          (cell) =>
+            `<td style='border: 1px solid black; padding: 5px;'>${cell}</td>`
+        )
+        .join("") +
+      "</tr>";
   });
-  html += '</tr></thead><tbody>';
 
-  rows.forEach(row => {
-    html += '<tr>';
-    row.forEach(cell => {
-      html += `<td>${cell}</td>`;
-    });
-    html += '</tr>';
-  });
-
-  html += '</tbody></table>';
+  html += "</tbody></table>";
   return html;
 };
 
-const renderContent = (text) => {
-  // Split text into parts based on markdown tables
-  const parts = text.split(/(\|.*?\|(?:\n\|[-:]+[-|:]*)+\n(?:\|.*?\|\n)*)/g);
+const renderTextWithLatex = (text) => {
+  const latexParts = text.split(/(\$\$.*?\$\$|\$.*?\$)/gs);
 
-  return parts.map((part, i) => {
-    if (/(\|.*?\|(?:\n\|[-:]+[-|:]*)+\n(?:\|.*?\|\n)*)/.test(part)) {
-      // Convert markdown tables to HTML tables
-      const html = convertMarkdownTableToHtml(part);
-      return <div key={i} dangerouslySetInnerHTML={{ __html: html }} />;
-    } else {
-      // Process LaTeX and convert \n to <br/> for non-table content
-      const latexParts = part.split(/(\$\$.*?\$\$|\$.*?\$)/gs);
-      const rendered = latexParts.map((latexPart, j) => {
-        if (latexPart.startsWith("$$") && latexPart.endsWith("$$")) {
-          return (
-            <div
-              key={j}
-              className="katex-block"
-              dangerouslySetInnerHTML={{ __html: renderLatex(latexPart.slice(2, -2), true) }}
-            />
-          );
-        } else if (latexPart.startsWith("$") && latexPart.endsWith("$")) {
-          return (
-            <span
-              key={j}
-              className="katex-inline"
-              style={{ display: "inline-block", verticalAlign: "middle" }}
-              dangerouslySetInnerHTML={{ __html: renderLatex(latexPart.slice(1, -1), false) }}
-            />
-          );
-        } else {
-          const withLineBreaks = latexPart.replace(/\n/g, "<br/>");
-          return <span key={j} dangerouslySetInnerHTML={{ __html: withLineBreaks }} />;
-        }
-      });
+  return latexParts.map((part, i) => {
+    if (part.startsWith("$$") && part.endsWith("$$")) {
+      const latexContent = part.slice(2, -2);
+      return (
+        <div
+          key={i}
+          className="katex-block"
+          dangerouslySetInnerHTML={{
+            __html: renderLatex(latexContent, true),
+          }}
+        />
+      );
+    }
 
-      return <React.Fragment key={i}>{rendered}</React.Fragment>;
+    else if (part.startsWith("$") && part.endsWith("$")) {
+      const latexContent = part.slice(1, -1);
+      return (
+        <span
+          key={i}
+          className="katex-inline"
+          style={{ display: "inline-block", verticalAlign: "middle" }}
+          dangerouslySetInnerHTML={{
+            __html: renderLatex(latexContent, false),
+          }}
+        />
+      );
+    }
+    // Teks biasa: ubah newline menjadi <br/>
+    else {
+      return (
+        <span
+          key={i}
+          dangerouslySetInnerHTML={{
+            __html: part.replace(/\n/g, "<br/>"),
+          }}
+        />
+      );
     }
   });
+};
+
+const renderContent = (text) => {
+  const pattern =
+    /(<svg[\s\S]*?<\/svg>)|(^\|[^\n]+\|\n\|[-:\s|]+\|\n(?:\|[^\n]+\|\n?)*)/gm;
+
+  let elements = [];
+  let lastIndex = 0;
+  let match;
+
+  while ((match = pattern.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      const before = text.slice(lastIndex, match.index);
+      if (before.trim()) {
+        elements.push(
+          <React.Fragment key={`text-${lastIndex}`}>
+            {renderTextWithLatex(before)}
+          </React.Fragment>
+        );
+      }
+    }
+
+    const svgGroup = match[1];
+    const tableGroup = match[2];
+
+    if (svgGroup) {
+      elements.push(
+        <div
+          key={`svg-${match.index}`}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(svgGroup) }}
+        />
+      );
+    } else if (tableGroup) {
+      const tableHtml = convertMarkdownTableToHtml(tableGroup);
+      elements.push(
+        <div
+          key={`table-${match.index}`}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(tableHtml) }}
+        />
+      );
+    }
+
+    lastIndex = pattern.lastIndex;
+  }
+
+  if (lastIndex < text.length) {
+    const remaining = text.slice(lastIndex);
+    if (remaining.trim()) {
+      elements.push(
+        <React.Fragment key={`remaining-${lastIndex}`}>
+          {renderTextWithLatex(remaining)}
+        </React.Fragment>
+      );
+    }
+  }
+
+  return elements;
 };
 
 const Preview = ({ children, isEditMode, clickHandler }) => {
