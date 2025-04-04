@@ -79,6 +79,8 @@ function generatePrompt ( data )
     \\end{bmatrix}\n
     $$"
     "$(A \\times B)$"
+    "$(log_2{8} = x)$"
+    "$[2^x = 8]$"
   `
 
   let systemPrompt;
