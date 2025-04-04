@@ -33,10 +33,6 @@
     @apply text-base font-medium mt-2;
   }
 
-  .prose p {
-    @apply w-fit;
-  }
-
   .prose span {
     @apply text-[14px];
   }

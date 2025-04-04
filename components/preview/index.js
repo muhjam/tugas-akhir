@@ -50,57 +50,76 @@ const processSvgWithLatex = (svgText) => {
   return { processedSvg, latexElements };
 };
 
-const processBoldText = (text) => {
-  return text.replace(/\*\*(.*?)\*\*/g, "<strong>$1</strong>");
-};
+const convertMarkdownTableToHtml = (markdown) => {
+  const lines = markdown.trim().split('\n');
+  if (lines.length < 2) return markdown; // Not enough lines for a table
 
-const processMarkdown = (text) => {
-  const withLineBreaks = text.replace(/\n/g, "<br/>");
-  const processedBold = processBoldText(withLineBreaks);
-  const parsedMarkdown = marked.parse(processedBold);
-  return parsedMarkdown.replace(/<p>/g, "<span>").replace(/<\/p>/g, "</span>");
+  const headerLine = lines[0];
+  const separatorLine = lines[1];
+  const dataLines = lines.slice(2);
+
+  // Check if the separator line is valid for a table
+  if (!/^(\|[-:]+)+\|$/.test(separatorLine)) return markdown;
+
+  const headers = headerLine.split('|').slice(1, -1).map(header => header.trim());
+  const rows = dataLines.map(line => line.split('|').slice(1, -1).map(cell => cell.trim()));
+
+  let html = '<table><thead><tr>';
+  headers.forEach(header => {
+    html += `<th>${header}</th>`;
+  });
+  html += '</tr></thead><tbody>';
+
+  rows.forEach(row => {
+    html += '<tr>';
+    row.forEach(cell => {
+      html += `<td>${cell}</td>`;
+    });
+    html += '</tr>';
+  });
+
+  html += '</tbody></table>';
+  return html;
 };
 
 const renderContent = (text) => {
-  const parts = text.split(/(<svg[\s\S]*?<\/svg>)/gs);
+  // Split text into parts based on markdown tables
+  const parts = text.split(/(\|.*?\|(?:\n\|[-:]+[-|:]*)+\n(?:\|.*?\|\n)*)/g);
 
   return parts.map((part, i) => {
-    if (part.startsWith("<svg") && part.endsWith("</svg>")) {
-      const { processedSvg, latexElements } = processSvgWithLatex(part);
-      return (
-        <div key={i} className="relative inline-block">
-          <div dangerouslySetInnerHTML={{ __html: processedSvg }} />
-          {latexElements}
-        </div>
-      );
+    if (/(\|.*?\|(?:\n\|[-:]+[-|:]*)+\n(?:\|.*?\|\n)*)/.test(part)) {
+      // Convert markdown tables to HTML tables
+      const html = convertMarkdownTableToHtml(part);
+      return <div key={i} dangerouslySetInnerHTML={{ __html: html }} />;
+    } else {
+      // Process LaTeX and convert \n to <br/> for non-table content
+      const latexParts = part.split(/(\$\$.*?\$\$|\$.*?\$)/gs);
+      const rendered = latexParts.map((latexPart, j) => {
+        if (latexPart.startsWith("$$") && latexPart.endsWith("$$")) {
+          return (
+            <div
+              key={j}
+              className="katex-block"
+              dangerouslySetInnerHTML={{ __html: renderLatex(latexPart.slice(2, -2), true) }}
+            />
+          );
+        } else if (latexPart.startsWith("$") && latexPart.endsWith("$")) {
+          return (
+            <span
+              key={j}
+              className="katex-inline"
+              style={{ display: "inline-block", verticalAlign: "middle" }}
+              dangerouslySetInnerHTML={{ __html: renderLatex(latexPart.slice(1, -1), false) }}
+            />
+          );
+        } else {
+          const withLineBreaks = latexPart.replace(/\n/g, "<br/>");
+          return <span key={j} dangerouslySetInnerHTML={{ __html: withLineBreaks }} />;
+        }
+      });
+
+      return <React.Fragment key={i}>{rendered}</React.Fragment>;
     }
-
-    const latexParts = part.split(/(\$\$.*?\$\$|\$.*?\$)/gs);
-    const rendered = latexParts.map((latexPart, j) => {
-      if (latexPart.startsWith("$$") && latexPart.endsWith("$$")) {
-        return (
-          <div
-            key={j}
-            className="katex-block"
-            dangerouslySetInnerHTML={{ __html: renderLatex(latexPart.slice(2, -2), true) }}
-          />
-        );
-      } else if (latexPart.startsWith("$") && latexPart.endsWith("$")) {
-        return (
-          <span
-            key={j}
-            className="katex-inline"
-            style={{ display: "inline-block", verticalAlign: "middle" }}
-            dangerouslySetInnerHTML={{ __html: renderLatex(latexPart.slice(1, -1), false) }}
-          />
-        );
-      } else {
-        const html = processMarkdown(latexPart);
-        return <span key={j} dangerouslySetInnerHTML={{ __html: html }} />;
-      }
-    });
-
-    return <React.Fragment key={i}>{rendered}</React.Fragment>;
   });
 };
 
