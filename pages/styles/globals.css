@@ -36,6 +36,10 @@
   .prose p {
     @apply w-fit;
   }
+
+  .prose span {
+    @apply text-[14px];
+  }
   
   .katex-inline {
     display: inline-block;
