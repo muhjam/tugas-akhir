@@ -1,19 +1,16 @@
 import { useState, useEffect } from 'react';
 import dynamic from 'next/dynamic';
 import 'katex/dist/katex.min.css'; 
-import rehypeKatex from 'rehype-katex';
-import remarkMath from 'remark-math'; 
 import '@uiw/react-md-editor/markdown-editor.css';
 import '@uiw/react-markdown-preview/markdown.css';
 import ModalPrompt from '/components/modal-prompt';
 import Login from '/components/login';
-import users from '../users/index.json';
+import users from '../mock/users/index.json';
 import { RiPlayListAddFill } from "react-icons/ri";
 import { LuPlus } from "react-icons/lu";
 import { IoIosStarOutline, IoIosArrowDown } from "react-icons/io";
 import { CiLogout } from "react-icons/ci";
 import { GoTrash } from "react-icons/go";
-import rehypeRaw from "rehype-raw";
 import Editor from '../components/editor';
 
 const MDEditor = dynamic(

@@ -6,7 +6,7 @@ import remarkMath from "remark-math";
 import rehypeRaw from "rehype-raw";
 import "@uiw/react-md-editor/markdown-editor.css";
 import "@uiw/react-markdown-preview/markdown.css";
-import Preview from "./preview";
+import Preview from "../preview";
 import { FaRegEdit } from "react-icons/fa";
 import { FaSave } from "react-icons/fa";
 

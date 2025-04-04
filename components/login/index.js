@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import users from '../users/index.json'; 
+import users from '../../mock/users/index.json'; 
 import Swal from 'sweetalert2'; 
 
 const Login = () => {
