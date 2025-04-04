@@ -181,8 +181,6 @@ async function onGenerate(event, index) {
   });
 }
 
-// ... existing code ...
-
   const handleLogout = () => {
     localStorage.removeItem('nupkt');
     localStorage.removeItem('password');
