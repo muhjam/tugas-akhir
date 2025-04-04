@@ -28,74 +28,117 @@ const convertMarkdownTableToHtml = (markdown) => {
   );
 
   let html = "<table border='1' style='border-collapse: collapse; width: 100%;'>";
-  html +=
-    "<thead><tr>" +
-    headers
-      .map(
-        (header) =>
-          `<th style='border: 1px solid black; padding: 5px;'>${header}</th>`
-      )
-      .join("") +
-    "</tr></thead><tbody>";
+  html += "<thead><tr>";
+  html += headers
+    .map(
+      (header) =>
+        `<th style='border: 1px solid black; padding: 5px;'>${header}</th>`
+    )
+    .join("");
+  html += "</tr></thead><tbody>";
 
   rows.forEach((row) => {
-    html +=
-      "<tr>" +
-      row
-        .map(
-          (cell) =>
-            `<td style='border: 1px solid black; padding: 5px;'>${cell}</td>`
-        )
-        .join("") +
-      "</tr>";
+    html += "<tr>";
+    html += row
+      .map(
+        (cell) => `<td style='border: 1px solid black; padding: 5px;'>${cell}</td>`
+      )
+      .join("");
+    html += "</tr>";
   });
 
   html += "</tbody></table>";
   return html;
 };
 
-const renderTextWithLatex = (text) => {
-  const latexParts = text.split(/(\$\$.*?\$\$|\$.*?\$)/gs);
+const processSvgWithLatex = (svgText) => {
+  const latexMatches = [...svgText.matchAll(/<text\s+([^>]+)>(.*?)<\/text>/gs)];
+  let processedSvg = svgText;
+  const latexElements = [];
 
-  return latexParts.map((part, i) => {
-    if (part.startsWith("$$") && part.endsWith("$$")) {
-      const latexContent = part.slice(2, -2);
-      return (
-        <div
-          key={i}
-          className="katex-block"
-          dangerouslySetInnerHTML={{
-            __html: renderLatex(latexContent, true),
-          }}
-        />
-      );
-    }
+  latexMatches.forEach((match, index) => {
+    const attributes = match[1]; 
+    const content = match[2];   
 
-    else if (part.startsWith("$") && part.endsWith("$")) {
-      const latexContent = part.slice(1, -1);
-      return (
-        <span
-          key={i}
-          className="katex-inline"
-          style={{ display: "inline-block", verticalAlign: "middle" }}
-          dangerouslySetInnerHTML={{
-            __html: renderLatex(latexContent, false),
-          }}
-        />
-      );
-    }
-    // Teks biasa: ubah newline menjadi <br/>
-    else {
-      return (
-        <span
-          key={i}
-          dangerouslySetInnerHTML={{
-            __html: part.replace(/\n/g, "<br/>"),
-          }}
-        />
-      );
+    if (/\$.*?\$/.test(content)) {
+      const coordsMatch = attributes.match(/x="([\d.]+)"\s+y="([\d.]+)"/);
+      if (coordsMatch) {
+        const [_, x, y] = coordsMatch;
+        const latexString = content.replace(/\$/g, "");
+        const latexHtml = renderLatex(latexString, false);
+
+        processedSvg = processedSvg.replace(match[0], "");
+
+        latexElements.push(
+          <div
+            key={index}
+            style={{
+              position: "absolute",
+              left: `${x}px`,
+              top: `${y}px`,
+              transform: "translate(-50%, -50%)",
+              whiteSpace: "nowrap",
+            }}
+            dangerouslySetInnerHTML={{ __html: latexHtml }}
+          />
+        );
+      }
     }
   });
+
+  return { processedSvg, latexElements };
+};
+
+const renderSvgWithLatex = (svgString, key) => {
+  const { processedSvg, latexElements } = processSvgWithLatex(svgString);
+  return (
+    <div key={key} style={{ position: "relative", display: "inline-block" }}>
+      <div dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(processedSvg) }} />
+      {latexElements}
+    </div>
+  );
+};
+
+const renderTextWithLatex = (text, key) => {
+  const latexParts = text.split(/(\$\$.*?\$\$|\$.*?\$)/gs);
+  return (
+    <React.Fragment key={key}>
+      {latexParts.map((part, i) => {
+        if (part.startsWith("$$") && part.endsWith("$$")) {
+          const content = part.slice(2, -2);
+          return (
+            <div
+              key={i}
+              className="katex-block"
+              dangerouslySetInnerHTML={{ __html: renderLatex(content, true) }}
+            />
+          );
+        }
+        else if (part.startsWith("$") && part.endsWith("$")) {
+          const content = part.slice(1, -1);
+          return (
+            <span
+              key={i}
+              className="katex-inline"
+              style={{ display: "inline-block", verticalAlign: "middle" }}
+              dangerouslySetInnerHTML={{ __html: renderLatex(content, false) }}
+            />
+          );
+        }
+        // Teks biasa -> ubah newline menjadi <br/>
+        else {
+          return (
+            <span
+              key={i}
+              dangerouslySetInnerHTML={{
+                __html: part.replace(/\n/g, "<br/>"),
+              }}
+            />
+          );
+        }
+      })}
+    </React.Fragment>
+  );
 };
 
 const renderContent = (text) => {
@@ -105,16 +148,13 @@ const renderContent = (text) => {
   let elements = [];
   let lastIndex = 0;
   let match;
+  let keyCounter = 0;
 
   while ((match = pattern.exec(text)) !== null) {
     if (match.index > lastIndex) {
       const before = text.slice(lastIndex, match.index);
       if (before.trim()) {
-        elements.push(
-          <React.Fragment key={`text-${lastIndex}`}>
-            {renderTextWithLatex(before)}
-          </React.Fragment>
-        );
+        elements.push(renderTextWithLatex(before, `txt-${keyCounter++}`));
       }
     }
 
@@ -122,18 +162,13 @@ const renderContent = (text) => {
     const tableGroup = match[2];
 
     if (svgGroup) {
-      elements.push(
-        <div
-          key={`svg-${match.index}`}
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(svgGroup) }}
-        />
-      );
+      elements.push(renderSvgWithLatex(svgGroup, `svg-${keyCounter++}`));
     } else if (tableGroup) {
-      const tableHtml = convertMarkdownTableToHtml(tableGroup);
+      const html = convertMarkdownTableToHtml(tableGroup);
       elements.push(
         <div
-          key={`table-${match.index}`}
-          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(tableHtml) }}
+          key={`table-${keyCounter++}`}
+          dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(html) }}
         />
       );
     }
@@ -144,11 +179,7 @@ const renderContent = (text) => {
   if (lastIndex < text.length) {
     const remaining = text.slice(lastIndex);
     if (remaining.trim()) {
-      elements.push(
-        <React.Fragment key={`remaining-${lastIndex}`}>
-          {renderTextWithLatex(remaining)}
-        </React.Fragment>
-      );
+      elements.push(renderTextWithLatex(remaining, `end-${keyCounter++}`));
     }
   }
 
