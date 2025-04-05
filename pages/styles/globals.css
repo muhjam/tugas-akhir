@@ -43,5 +43,6 @@
   }
 
   .w-md-editor-text {
-    @apply h-full;
+    @apply !min-h-full;
   }
+  
