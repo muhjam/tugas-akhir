@@ -112,95 +112,68 @@ const renderLine = (line, key) => {
     return null;
   }
 
-  const headingMatch = line.match(/^(#{1,6})\s+(.*)$/);
-  if (headingMatch) {
-    const level = headingMatch[1].length;
-    const content = headingMatch[2];
-    const latexParts = content.split(/(\$\$.*?\$\$|\$.*?\$)/gs);
-    const children = latexParts.map((part, i) => {
-      if (part === "") return null;
-      if (part.startsWith("$$") && part.endsWith("$$")) {
-        return (
-          <div
-            key={i}
-            className="katex-block"
-            dangerouslySetInnerHTML={{
-              __html: renderLatex(part.slice(2, -2), true),
-            }}
-          />
-        );
-      } else if (part.startsWith("$") && part.endsWith("$")) {
-        return (
-          <span
-            key={i}
-            className="katex-inline"
-            style={{ display: "inline-block", verticalAlign: "middle" }}
-            dangerouslySetInnerHTML={{
-              __html: renderLatex(part.slice(1, -1), false),
-            }}
-          />
-        );
-      } else {
-        return (
-          <span key={i} dangerouslySetInnerHTML={{ __html: part }} />
-        );
-      }
-    });
-
-    switch (level) {
-      case 1:
-        return <h1 key={key}>{children}</h1>;
-      case 2:
-        return <h2 key={key}>{children}</h2>;
-      case 3:
-        return <h3 key={key}>{children}</h3>;
-      case 4:
-        return <h4 key={key}>{children}</h4>;
-      case 5:
-        return <h5 key={key}>{children}</h5>;
-      case 6:
-        return <h6 key={key}>{children}</h6>;
-      default:
-        return <div key={key}>{children}</div>;
-    }
-  } else {
-    // Bukan heading: proses sebagai teks biasa dengan dukungan LaTeX inline
-    const latexParts = line.split(/(\$\$.*?\$\$|\$.*?\$)/gs);
+  // Cek apakah baris hanya berisi math block (murni $$...$$)
+  const blockMathMatch = line.trim().match(/^\$\$(.*)\$\$$/s);
+  if (blockMathMatch) {
     return (
-      <div key={key}>
-        {latexParts.map((part, i) => {
-          if (part === "") return null;
-          if (part.startsWith("$$") && part.endsWith("$$")) {
-            return (
-              <div
-                key={i}
-                className="katex-block"
-                dangerouslySetInnerHTML={{
-                  __html: renderLatex(part.slice(2, -2), true),
-                }}
-              />
-            );
-          } else if (part.startsWith("$") && part.endsWith("$")) {
-            return (
-              <span
-                key={i}
-                className="katex-inline"
-                style={{ display: "inline-block", verticalAlign: "middle" }}
-                dangerouslySetInnerHTML={{
-                  __html: renderLatex(part.slice(1, -1), false),
-                }}
-              />
-            );
-          } else {
-            return (
-              <span key={i} dangerouslySetInnerHTML={{ __html: part }} />
-            );
-          }
-        })}
-      </div>
+      <div
+        key={key}
+        style={{ textAlign: "center" }}
+        className="katex-block"
+        dangerouslySetInnerHTML={{
+          __html: renderLatex(blockMathMatch[1], true),
+        }}
+      />
     );
   }
+
+  // Bagi baris menjadi bagian teks biasa dan bagian math
+  const latexParts = line.split(/(\$\$.*?\$\$|\$.*?\$)/gs);
+  const hasDoubleDollar = line.includes("$$");
+  const children = latexParts.map((part, i) => {
+    if (part === "") return null;
+    if (part.startsWith("$$") && part.endsWith("$$")) {
+      // Render math dengan $$ sebagai inline
+      return (
+        <span
+          key={i}
+          className="katex-inline"
+          style={{ display: "inline-block", verticalAlign: "middle" }}
+          dangerouslySetInnerHTML={{
+            __html: renderLatex(part.slice(2, -2), false),
+          }}
+        />
+      );
+    } else if (part.startsWith("$") && part.endsWith("$")) {
+      return (
+        <span
+          key={i}
+          className="katex-inline"
+          style={{ display: "inline-block", verticalAlign: "middle" }}
+          dangerouslySetInnerHTML={{
+            __html: renderLatex(part.slice(1, -1), false),
+          }}
+        />
+      );
+    } else {
+      return (
+        <span key={i} dangerouslySetInnerHTML={{ __html: part }} />
+      );
+    }
+  });
+
+  // Jika ada penggunaan $$, bungkus dengan text-align center
+  if (hasDoubleDollar) {
+    return (
+      <div key={key} style={{ textAlign: "center" }}>
+        {children}
+      </div>
+    );
+  } else {
+    return <div key={key}>{children}</div>;
+  }
 };
+
 
 const renderTextWithLatex = (text, key) => {
   const parts = text.split(/(\n+)/); 
