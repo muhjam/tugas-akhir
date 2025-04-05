@@ -83,6 +83,14 @@ function generatePrompt ( data )
     "$[2^x = 8]$"
   `
 
+  const svgExample =`
+    kubus:{<svg width="250" height="250" viewBox="0 0 250 250" xmlns="http://www.w3.org/2000/svg"><polygon points="70,70 170,70 170,170 70,170" fill="none" stroke="black" stroke-width="2"/><polygon points="70,70 40,40 40,140 70,170" fill="none" stroke="black" stroke-width="2"/><polygon points="70,70 170,70 140,40 40,40" fill="none" stroke="black" stroke-width="2"/><line x1="170" y1="70" x2="140" y2="40" stroke="black" stroke-width="2"/><line x1="170" y1="170" x2="140" y2="140" stroke="black" stroke-width="2"/><line x1="140" y1="40" x2="140" y2="140" stroke="black" stroke-width="2"/><line x1="70" y1="170" x2="40" y2="140" stroke="black" stroke-width="2"/><line x1="40" y1="140" x2="140" y2="140" stroke="black" stroke-width="2"/></svg>}
+    balok:{<svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg" fill="none" stroke="black" stroke-width="2"><polygon points="60,80 200,80 200,180 60,180" /><polygon points="60,80 100,40 240,40 200,80" /><polygon points="200,80 240,40 240,140 200,180" /><line x1="60" y1="180" x2="100" y2="140" /><line x1="100" y1="40" x2="100" y2="140" /><line x1="100" y1="140" x2="240" y2="140" /></svg>}
+    tabung:{<svg width="200" height="300" viewBox="0 0 200 300" xmlns="http://www.w3.org/2000/svg"><ellipse cx="100" cy="50" rx="60" ry="20" fill="none" stroke="black" stroke-width="2"/><line x1="40" y1="50" x2="40" y2="250" stroke="black" stroke-width="2"/><line x1="160" y1="50" x2="160" y2="250" stroke="black" stroke-width="2"/><path d="M40 250 A60 20 0 0 1 160 250" fill="none" stroke="black" stroke-width="2" stroke-dasharray="5,5"/><path d="M160 250 A60 20 0 0 1 40 250" fill="none" stroke="black" stroke-width="2"/></svg>}
+    kerucut:{<svg width="200" height="250" viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg"><line x1="100" y1="20" x2="30" y2="200" stroke="black" stroke-width="2"/><line x1="100" y1="20" x2="170" y2="200" stroke="black" stroke-width="2"/><path d="M30 200 Q100 230 170 200" stroke="black" fill="none" stroke-width="2"/><path d="M170 200 Q100 170 30 200" stroke="black" fill="none" stroke-dasharray="6,4" stroke-width="2"/></svg>}
+    lisma segi empat:{<svg width="300" height="300" viewBox="0 0 300 300" xmlns="http://www.w3.org/2000/svg"><polygon points="80,200 200,200 180,240 60,240" fill="none" stroke="black" stroke-width="2" /><line x1="140" y1="80" x2="80" y2="200" stroke="black" stroke-width="2" /><line x1="140" y1="80" x2="200" y2="200" stroke="black" stroke-width="2" /><line x1="140" y1="80" x2="180" y2="240" stroke="black" stroke-width="2" /><line x1="140" y1="80" x2="60" y2="240" stroke="black" stroke-width="2" stroke-dasharray="6,4" /></svg>}
+  `
+
   let systemPrompt;
   let messages;
 
@@ -108,6 +116,9 @@ function generatePrompt ( data )
       Jika ada rumus atau simbol matematika, gunakan format **LaTeX** atau yang mendukung **rehype-katex** dan **remark-math** agar tampilan lebih baik.  
       Contoh latex:  
       ${latexExample}
+
+      contoh gambar svg:
+      ${svgExample}
 
       ---
       Warnings:
@@ -176,7 +187,7 @@ function generatePrompt ( data )
       },
       {
         role: "assistant",
-        content: `Tebak Gambar Bangun Ruang|->Pada gambar di bawah ini terdapat sebuah bangun ruang. Sebutkan nama bangun ruang tersebut.\n\n<svg width="200" height="200" viewBox="0 0 200 200">\n\n<ellipse cx="100" cy="150" rx="50" ry="15" fill="#ADD8E6" stroke="#000" />\n\n<line x1="100" y1="50" x2="50" y2="150" stroke="#000" />\n\n<line x1="100" y1="50" x2="150" y2="150" stroke="#000" />\n\n<line x1="100" y1="50" x2="100" y2="150" stroke="#888" stroke-dasharray="4" />\n\n<circle cx="100" cy="50" r="3" fill="#000" />\n</svg>\n\nPilihan jawaban:\n\\\nA. Kubus\n\\\nB. Balok\n\\\nC. Kerucut\n\\\nD. Limas Segiempat\n\\\nE. Tabung|->Bangun ruang yang ditampilkan pada gambar adalah sebuah Kerucut.\n\nKarakteristik dari kerucut adalah sebagai berikut:\n\n1. Kerucut memiliki satu sisi alas berbentuk lingkaran.\n2. Memiliki satu titik puncak yang tidak berada pada bidang alas.\n3. Selimut kerucut berbentuk bidang lengkung yang menghubungkan tepi alas dengan titik puncak.\n4. Volume kerucut dapat dihitung dengan rumus: $$V = \\frac{1}{3} \\pi r^2 h$$ di mana $r$ adalah jari-jari alas dan $h$ adalah tinggi kerucut.\n5. Luas permukaan kerucut terdiri dari luas alas dan luas selimut, yang dapat dihitung dengan rumus: $$A = \pi r (r + s)$$ di mana $s$ adalah garis pelukis kerucut.\n\nKerucut banyak ditemukan dalam kehidupan sehari-hari, seperti pada bentuk topi ulang tahun atau es krim cone. Berdasarkan karakteristik tersebut, bangun ruang ini adalah:\n\nJawaban yang benar adalah C. Kerucut.|->Geometri`,
+        content: `Tebak Gambar Bangun Ruang|->Pada gambar di bawah ini terdapat sebuah bangun ruang. Sebutkan nama bangun ruang tersebut.\n\n<svg width="200" height="250" viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">\n<line x1="100" y1="20" x2="30" y2="200" stroke="black" stroke-width="2"/>\n<line x1="100" y1="20" x2="170" y2="200" stroke="black" stroke-width="2"/>\n<path d="M30 200 Q100 230 170 200" stroke="black" fill="none" stroke-width="2"/>\n<path d="M170 200 Q100 170 30 200" stroke="black" fill="none" stroke-dasharray="6,4" stroke-width="2"/>\n</svg>\n\nPilihan jawaban:\n\\\nA. Kubus\n\\\nB. Balok\n\\\nC. Kerucut\n\\\nD. Limas Segiempat\n\\\nE. Tabung|->Bangun ruang yang ditampilkan pada gambar adalah sebuah Kerucut.\n\nKarakteristik dari kerucut adalah sebagai berikut:\n\n1. Kerucut memiliki satu sisi alas berbentuk lingkaran.\n2. Memiliki satu titik puncak yang tidak berada pada bidang alas.\n3. Selimut kerucut berbentuk bidang lengkung yang menghubungkan tepi alas dengan titik puncak.\n4. Volume kerucut dapat dihitung dengan rumus: $$V = \\frac{1}{3} \\pi r^2 h$$ di mana $r$ adalah jari-jari alas dan $h$ adalah tinggi kerucut.\n5. Luas permukaan kerucut terdiri dari luas alas dan luas selimut, yang dapat dihitung dengan rumus: $$A = \pi r (r + s)$$ di mana $s$ adalah garis pelukis kerucut.\n\nKerucut banyak ditemukan dalam kehidupan sehari-hari, seperti pada bentuk topi ulang tahun atau es krim cone. Berdasarkan karakteristik tersebut, bangun ruang ini adalah:\n\nJawaban yang benar adalah C. Kerucut.|->Geometri`,
       },
       {
         role: "user",
@@ -204,6 +215,9 @@ function generatePrompt ( data )
     Jika ada rumus atau simbol matematika, gunakan format **LaTeX** atau yang mendukung **rehype-katex** dan **remark-math** agar tampilan lebih baik.  
     Contoh latex:  
     ${latexExample}
+
+    contoh gambar svg:
+    ${svgExample}
     
     ---
     Warnings:
