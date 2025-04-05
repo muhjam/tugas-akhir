@@ -169,7 +169,7 @@ const handleClose = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="file" className="block text-sm font-medium mb-1">
-              Unggah PDF:
+              Unggah Capaian Pembelajaran:
             </label>
             <input
               type="file"
