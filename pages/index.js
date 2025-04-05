@@ -306,7 +306,7 @@ async function onGenerate(event, index) {
                             disabled={isGenerating[index]}
                             className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait ' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full px-5 py-2.5`}
                           >
-                            {isGenerating[index] ? "Menunggu.." : "Buat Soal"}
+                            {isGenerating[index] ? "Membuat..." : "Buat Soal"}
                           </button>
                           <button 
                             type="button" 

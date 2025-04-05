@@ -187,7 +187,7 @@ const handleClose = () => {
               readOnly={true}
               ></textarea>
             ): isParsing &&(
-              <>Loading...</>
+              <>Membaca...</>
             )}
              
           </div>
@@ -204,7 +204,7 @@ const handleClose = () => {
               disabled={isGenerating || isParsing}
               className={`${isGenerating || isParsing ? 'bg-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5`}
             >
-              {isGenerating ? 'Loading...': 'Buat Perintah'}
+              {isGenerating ? 'Membuat...': 'Buat Perintah'}
             </button>
           </div>
         </form>
