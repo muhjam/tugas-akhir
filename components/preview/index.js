@@ -4,9 +4,6 @@ import "katex/dist/katex.min.css";
 import ButtonPreview from "../buttons/button-preview";
 import DOMPurify from "dompurify";
 
-// ======================================================
-// 1. Fungsi untuk Merender LaTeX dengan KaTeX
-// ======================================================
 const renderLatex = (text, displayMode = false) => {
   try {
     return katex.renderToString(text, { throwOnError: false, displayMode });
@@ -15,9 +12,6 @@ const renderLatex = (text, displayMode = false) => {
   }
 };
 
-// ======================================================
-// 2. Fungsi untuk Mengkonversi Markdown Table ke HTML
-// ======================================================
 const convertMarkdownTableToHtml = (markdown) => {
   const lines = markdown.trim().split("\n");
   if (lines.length < 2) return markdown;
@@ -26,7 +20,6 @@ const convertMarkdownTableToHtml = (markdown) => {
   const separatorLine = lines[1];
   const dataLines = lines.slice(2);
 
-  // Pastikan separator hanya berisi spasi, -, dan : (misal: |---|---|)
   if (!/^\|[\s-:]+\|([\s-:]+\|)*$/.test(separatorLine)) return markdown;
 
   const headers = headerLine.split("|").slice(1, -1).map((h) => h.trim());
@@ -36,53 +29,50 @@ const convertMarkdownTableToHtml = (markdown) => {
 
   let html =
     "<table border='1' style='border-collapse: collapse; width: 100%;'>";
-  html += "<thead><tr>" + headers
-    .map(
-      (header) =>
-        `<th style='border: 1px solid black; padding: 5px;'>${header}</th>`
-    )
-    .join("") + "</tr></thead><tbody>";
+  html +=
+    "<thead><tr>" +
+    headers
+      .map(
+        (header) =>
+          `<th style='border: 1px solid black; padding: 5px;'>${header}</th>`
+      )
+      .join("") +
+    "</tr></thead><tbody>";
 
   rows.forEach((row) => {
-    html += "<tr>" + row
-      .map(
-        (cell) =>
-          `<td style='border: 1px solid black; padding: 5px;'>${cell}</td>`
-      )
-      .join("") + "</tr>";
+    html +=
+      "<tr>" +
+      row
+        .map(
+          (cell) =>
+            `<td style='border: 1px solid black; padding: 5px;'>${cell}</td>`
+        )
+        .join("") +
+      "</tr>";
   });
 
   html += "</tbody></table>";
   return html;
 };
 
-// ======================================================
-// 3. Proses SVG: Render SVG dan ekstrak LaTeX dalam <text>
-// ======================================================
 const processSvgWithLatex = (svgText) => {
-  // Cari semua <text ...>...</text> di dalam SVG
   const latexMatches = [...svgText.matchAll(/<text\s+([^>]+)>(.*?)<\/text>/gs)];
   let processedSvg = svgText;
   const latexElements = [];
 
   latexMatches.forEach((match, index) => {
-    const attributes = match[1]; // misalnya: x="70" y="30" font-family="Arial" font-size="12"
-    const content = match[2];    // isi teks
+    const attributes = match[1];
+    const content = match[2]; 
 
-    // Jika isi <text> mengandung LaTeX (ditandai dengan $...$)
     if (/\$.*?\$/.test(content)) {
-      // Ekstrak koordinat x dan y
       const coordsMatch = attributes.match(/x="([\d.]+)"\s+y="([\d.]+)"/);
       if (coordsMatch) {
         const [ , x, y ] = coordsMatch;
-        // Hilangkan tanda $ dari konten agar bisa diproses KaTeX
         const latexString = content.replace(/\$/g, "");
         const latexHtml = renderLatex(latexString, false);
 
-        // Hapus elemen <text> ini dari SVG agar tidak dobel
         processedSvg = processedSvg.replace(match[0], "");
 
-        // Buat elemen LaTeX yang diposisikan secara absolute di atas SVG
         latexElements.push(
           <div
             key={index}
@@ -117,20 +107,18 @@ const renderSvgWithLatex = (svgString, key) => {
   );
 };
 
-// ======================================================
-// 4. Fungsi untuk Merender Teks Biasa (termasuk heading dan LaTeX)
-// ======================================================
-
-// Fungsi untuk merender satu baris teks dengan dukungan heading dan LaTeX inline
 const renderLine = (line, key) => {
-  // Cek apakah baris tersebut adalah heading Markdown
+  if (line.trim() === "") {
+    return null;
+  }
+
   const headingMatch = line.match(/^(#{1,6})\s+(.*)$/);
   if (headingMatch) {
-    const level = headingMatch[1].length; // jumlah '#' menentukan level
+    const level = headingMatch[1].length;
     const content = headingMatch[2];
-    // Proses konten heading untuk LaTeX inline
     const latexParts = content.split(/(\$\$.*?\$\$|\$.*?\$)/gs);
     const children = latexParts.map((part, i) => {
+      if (part === "") return null;
       if (part.startsWith("$$") && part.endsWith("$$")) {
         return (
           <div
@@ -158,7 +146,7 @@ const renderLine = (line, key) => {
         );
       }
     });
-    // Render heading sesuai level
+
     switch (level) {
       case 1:
         return <h1 key={key}>{children}</h1>;
@@ -181,6 +169,7 @@ const renderLine = (line, key) => {
     return (
       <div key={key}>
         {latexParts.map((part, i) => {
+          if (part === "") return null;
           if (part.startsWith("$$") && part.endsWith("$$")) {
             return (
               <div
@@ -213,30 +202,29 @@ const renderLine = (line, key) => {
   }
 };
 
-// Fungsi untuk merender blok teks (yang bukan SVG atau tabel)
-// Di sini kita pisahkan per baris untuk mendeteksi heading dan menambahkan <br/> jika diperlukan.
 const renderTextWithLatex = (text, key) => {
-  const lines = text.split("\n");
+  const parts = text.split(/(\n+)/); 
   return (
     <React.Fragment key={key}>
-      {lines.map((line, index) => (
-        <React.Fragment key={`${key}-${index}`}>
-          {renderLine(line, `${key}-line-${index}`)}
-        </React.Fragment>
-      ))}
+      {parts.map((part, index) => {
+        if (/^\n+$/.test(part)) {
+          const newlineCount = part.length;
+          if (newlineCount === 1) {
+            return null;
+          }
+          const brCount = newlineCount - 1;
+          return Array.from({ length: brCount }, (_, idx) => (
+            <br key={`${key}-br-${index}-${idx}`} />
+          ));
+        } else {
+          return renderLine(part, `${key}-line-${index}`);
+        }
+      })}
     </React.Fragment>
   );
 };
 
-// ======================================================
-// 5. Fungsi renderContent: Memecah input menjadi blok-blok:
-//    - SVG, Tabel, dan Teks Biasa (yang mendukung heading dan LaTeX)
-// ======================================================
 const renderContent = (text) => {
-  // Regex global untuk menangkap:
-  // 1. Blok <svg>...</svg>
-  // 2. Blok tabel Markdown (minimal: header, separator, baris data)
-  // Sisanya dianggap sebagai teks biasa.
   const pattern =
     /(<svg[\s\S]*?<\/svg>)|(^\|[^\n]+\|\n\|[-:\s|]+\|\n(?:\|[^\n]+\|\n?)*)/gm;
   let elements = [];
@@ -273,7 +261,6 @@ const renderContent = (text) => {
     lastIndex = pattern.lastIndex;
   }
 
-  // Jika ada sisa teks setelah match terakhir
   if (lastIndex < text.length) {
     const remaining = text.slice(lastIndex);
     if (remaining.trim()) {
@@ -284,9 +271,6 @@ const renderContent = (text) => {
   return elements;
 };
 
-// ======================================================
-// 6. Komponen Preview
-// ======================================================
 const Preview = ({ children, isEditMode, clickHandler }) => {
   return (
     <div className="border border-gray-100 pb-4 rounded-[3px] overflow-scroll h-[500px] relative">
