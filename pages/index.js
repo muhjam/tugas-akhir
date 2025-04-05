@@ -331,7 +331,7 @@ export default function Home() {
                                   <li 
                                   key={sIndex} 
                                   className="p-2 hover:bg-gray-100 cursor-pointer"
-                                  onClick={() => handleSuggestionClick(index, `${suggestion.label}: ${suggestion.value}`)}
+                                  onClick={() => handleSuggestionClick(index, suggestion.value)}
                                   >
                                   <strong>{suggestion.label}:</strong> {suggestion.value}
                                   </li>
