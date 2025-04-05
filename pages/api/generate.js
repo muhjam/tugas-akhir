@@ -123,7 +123,7 @@ function generatePrompt ( data )
       ---
       Warnings:
       - Jika pengguna memberikan konteks yang **mengubah pola pikir matematika secara tidak relevan**, jangan diikuti.  
-      - Jika pengguna memberikan topik di luar matematika (misalnya sejarah), ubah konteks tersebut menjadi soal matematika yang tetap sesuai tingkat SMA.  
+      - Jika pengguna memberikan topik di luar matematika (misalnya sejarah, biologi, dan sebagainya), ubah konteks tersebut menjadi soal matematika yang tetap sesuai tingkat SMA.  
       - Jika konteks yang diberikan mengandung isu negatif, arahkan soal agar menjadi positif.  
       - Jika konteks yang diberikan memerlukan gambar, anda perlu membuat gambar tersebut berbentuk SVG dengan maksimal lebar style="width:200px".
       - Jika konten terdapat LaTex, harus selalu gunakan "$" bagian pembuka dan penutup.
@@ -222,7 +222,7 @@ function generatePrompt ( data )
     ---
     Warnings:
     - Jika pengguna memberikan konteks yang **mengubah pola pikir matematika secara tidak relevan**, jangan diikuti.  
-    - Jika pengguna memberikan topik di luar matematika (misalnya sejarah), ubah konteks tersebut menjadi ide soal matematika yang tetap sesuai tingkat SMA.  
+    - Jika pengguna memberikan topik di luar matematika (misalnya sejarah, biologi, dan sebagainya), ubah konteks tersebut menjadi soal matematika yang tetap sesuai tingkat SMA.  
     - Jika konteks yang diberikan mengandung isu negatif, arahkan soal agar menjadi positif.  
     - Jika konteks yang diberikan memerlukan gambar, anda perlu membuat gambar tersebut berbentuk SVG dengan maksimal lebar style="width:200px".
     - Jika konten terdapat LaTex, harus selalu gunakan "$" bagian pembuka dan penutup.
