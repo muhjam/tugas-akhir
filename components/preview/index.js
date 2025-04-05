@@ -112,7 +112,6 @@ const renderLine = (line, key) => {
     return null;
   }
 
-  // Cek apakah baris hanya berisi math block (murni $$...$$)
   const blockMathMatch = line.trim().match(/^\$\$(.*)\$\$$/s);
   if (blockMathMatch) {
     return (
@@ -127,13 +126,11 @@ const renderLine = (line, key) => {
     );
   }
 
-  // Bagi baris menjadi bagian teks biasa dan bagian math
   const latexParts = line.split(/(\$\$.*?\$\$|\$.*?\$)/gs);
   const hasDoubleDollar = line.includes("$$");
   const children = latexParts.map((part, i) => {
     if (part === "") return null;
     if (part.startsWith("$$") && part.endsWith("$$")) {
-      // Render math dengan $$ sebagai inline
       return (
         <span
           key={i}
@@ -162,7 +159,6 @@ const renderLine = (line, key) => {
     }
   });
 
-  // Jika ada penggunaan $$, bungkus dengan text-align center
   if (hasDoubleDollar) {
     return (
       <div key={key} style={{ textAlign: "center" }}>
@@ -206,7 +202,6 @@ const renderContent = (text) => {
   let keyCounter = 0;
 
   while ((match = pattern.exec(text)) !== null) {
-    // Ambil teks sebelum match (teks biasa)
     if (match.index > lastIndex) {
       const before = text.slice(lastIndex, match.index);
       if (before.trim()) {
