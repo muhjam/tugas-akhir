@@ -330,7 +330,7 @@ export default function Home() {
                               {filteredSuggestions.map((suggestion, sIndex) => (
                                   <li 
                                   key={sIndex} 
-                                  className="p-2 hover:bg-gray-100 cursor-pointer"
+                                  className="p-2 hover:bg-gray-100 duration-200 cursor-pointer"
                                   onClick={() => handleSuggestionClick(index, suggestion.value)}
                                   >
                                   <strong>{suggestion.label}:</strong> {suggestion.value}
