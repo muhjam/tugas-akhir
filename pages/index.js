@@ -20,7 +20,6 @@ const MDEditor = dynamic(
 
 export default function Home() {
   const [isGenerating, setIsGenerating] = useState([]);
-  const [isWaiting, setIsWaiting] = useState(false);
   const [isShow, setIsShow] = useState([]);
   const [questions, setQuestions] = useState([{
     prompt: "",
@@ -111,60 +110,80 @@ export default function Home() {
     setIsShow(prev => prev.filter(i => i !== index));
   };
 
-  // ... existing code ...
+let generateQueue = Promise.resolve();
+
+function addToQueue(task) {
+  generateQueue = generateQueue
+    .then(() => task())
+    .catch((err) => {
+      console.error('Error di queue:', err);
+    });
+  return generateQueue;
+}
 
 async function onGenerate(event, index) {
   event.preventDefault();
-  setIsWaiting(true);
-  const updatedIsGenerating = [...isGenerating];
-  updatedIsGenerating[index] = true;
-  setIsGenerating(updatedIsGenerating);
-
-  const { prompt, difficulty, type } = questions[index];
-  let retryCount = 0;
-  const maxRetries = 3;
-
-  while (retryCount < maxRetries) {
-    try {
-      const result = await fetch('/api/generate', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ prompt, type, difficulty, mode: "detail" }),
-      });
-
-      const response = await result?.json();
-      const data = response?.result || "";
-
-      const [title = "", description = "", answer = "", topic = ""] = data?.split("|->").map(item => item.trim());
-
-      if (title && description && answer && topic || retryCount >= maxRetries) {
-        const updatedQuestions = [...questions];
-        updatedQuestions[index] = {
-          ...updatedQuestions[index],
-          title,
-          description,
-          answer,
-          topic,
-        };
-        setQuestions(updatedQuestions);
-        setIsShow((prev) => [...prev, index]);
-        break; 
-      } else {
-        retryCount++;
-      }
-    } catch (error) {
-      console.error(error);
-      if (retryCount >= maxRetries) {
-        alert(error.message);
+  
+  // Update state menggunakan callback
+  setIsGenerating((prev) => {
+    const newIsGenerating = [...prev];
+    newIsGenerating[index] = true;
+    return newIsGenerating;
+  });
+  
+  await addToQueue(async () => {
+    const { prompt, difficulty, type } = questions[index];
+    let retryCount = 0;
+    const maxRetries = 3;
+  
+    while (retryCount < maxRetries) {
+      try {
+        const result = await fetch('/api/generate', {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({ prompt, type, difficulty, mode: "detail" }),
+        });
+  
+        const response = await result.json();
+        const data = response?.result || "";
+  
+        const [title = "", description = "", answer = "", topic = ""] = data
+          .split("|->")
+          .map(item => item.trim());
+  
+        if ((title && description && answer && topic) || retryCount >= maxRetries) {
+          setQuestions((prevQuestions) => {
+            const newQuestions = [...prevQuestions];
+            newQuestions[index] = {
+              ...newQuestions[index],
+              title,
+              description,
+              answer,
+              topic,
+            };
+            return newQuestions;
+          });
+          setIsShow((prev) => [...prev, index]);
+          break;
+        } else {
+          retryCount++;
+        }
+      } catch (error) {
+        console.error(error);
+        if (retryCount >= maxRetries) {
+          alert(error.message);
+        }
       }
     }
-  }
-
-  updatedIsGenerating[index] = false;
-  setIsWaiting(false);
-  setIsGenerating(updatedIsGenerating);
+  });
+  
+  setIsGenerating((prev) => {
+    const newIsGenerating = [...prev];
+    newIsGenerating[index] = false;
+    return newIsGenerating;
+  });
   setGenerateClickCount((prevCount) => {
     const newCount = prevCount + 1;
     if (newCount % 5 === 0) {
@@ -199,7 +218,7 @@ async function onGenerate(event, index) {
       <div className='flex flex-col justify-between w-full h-[100dvh]'>
         <div>
       <ModalPrompt isOpen={isModalOpen} onClose={closeModal} onSubmit={handleModalSubmit} />
-      <div className="p-[8px] md:p-[24px] flex justify-center">
+      <div className="p-[8px] lg:p-[24px] flex justify-center">
         <div className="flex justify-center mb-[8px]">
           <div className="max-w-[500px] w-full">
             <h1 className="text-[24px] font-[600] text-center">Pembuatan Soal Matematika Otomatis</h1>
@@ -212,14 +231,14 @@ async function onGenerate(event, index) {
       </div>
 
       <div className="max-w-[1080px] w-full container mx-auto">
-        <div className="p-[8px] md:p-[24px] flex flex-col justify-center">
+        <div className="p-[8px] lg:p-[24px] flex flex-col justify-center">
           {questions.map((question, index) => (
-            <div className="max-w-[1080px] w-full shadow-md p-2 md:p-4" key={index}>
+            <div className="max-w-[1080px] w-full shadow-md p-2 lg:p-4" key={index}>
               <div className="flex flex-col mb-[8px]">
                 <form onSubmit={(e) => onGenerate(e, index)}>
-                  <div className="flex flex-col md:flex-row md:items-center gap-2">
+                  <div className="flex flex-col lg:flex-row lg:items-center gap-2">
                     {questions.length > 1 &&(
-                    <div className="w-[40px] md:w-[60px] hover:opacity-[0.8] cursor-pointer bg-red-500 p-2 rounded-md flex items-center justify-center" onClick={() => removeQuestion(index)}>
+                    <div className="w-[40px] lg:w-[60px] hover:opacity-[0.8] cursor-pointer bg-red-500 p-2 rounded-md flex items-center justify-center" onClick={() => removeQuestion(index)}>
                       <GoTrash className='text-md text-white'/>
                     </div>
                     )}
@@ -236,12 +255,12 @@ async function onGenerate(event, index) {
                         autoComplete="off"
                       />
                     </div>
-                    <div className="flex flex-col justify-center w-full md:max-w-[200px] space-y-1">
+                    <div className="flex flex-col justify-center w-full lg:max-w-[200px] space-y-1">
                       <label className="text-[14px] font-[600] capitalize">tingkat kognitif:</label>
                       <select 
                         value={question.difficulty} 
                         onChange={(e) => handleInputChange(index, 'difficulty', e.target.value)} 
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-2.5"
+                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-2.5 cursor-pointer"
                       >
                         <option value="C1 (Mengingat)">C1 (Mengingat)</option>
                         <option value="C2 (Memahami)">C2 (Memahami)</option>
@@ -257,18 +276,18 @@ async function onGenerate(event, index) {
                         <select 
                           value={question.type} 
                           onChange={(e) => handleInputChange(index, 'type', e.target.value)} 
-                          className="bg-gray-50 w-full md:max-w-[200px] border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-2.5"
+                          className="bg-gray-50 w-full lg:max-w-[200px] border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-2.5 cursor-pointer"
                         >
                           <option value="Esai">Esai</option>
                           <option value="PG">PG</option>
                         </select>
-                        <div className="md:flex items-center gap-2 justify-end w-full md:w-auto hidden">
+                        <div className="lg:flex items-center gap-2 justify-end w-full lg:w-[180px] ms-auto hidden">
                           <button 
                             type="submit" 
-                            disabled={isGenerating[index] || isWaiting}
-                            className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait' : isWaiting ? 'bg-green-600' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5`}
+                            disabled={isGenerating[index]}
+                            className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-[180px] px-5 py-2.5`}
                           >
-                             {isGenerating[index] ? "Loading.." : "Generate"}
+                             {isGenerating[index] ? "Membuat.." : "Buat Soal"}
                           </button>
                           <button 
                             type="button" 
@@ -280,14 +299,14 @@ async function onGenerate(event, index) {
                         </div>
                       </div>
                     </div>
-                    <div className="flex flex-col justify-center w-full md:max-w-[200px] md:hidden">
-                      <div className="flex items-center gap-2 justify-end w-full md:w-auto md:hidden">
+                    <div className="flex flex-col justify-center w-full lg:hidden">
+                      <div className="flex items-center gap-2 justify-end w-full lg:hidden">
                           <button 
                             type="submit" 
-                            disabled={isGenerating[index] || isWaiting}
-                            className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait ' : isWaiting ? 'bg-green-600' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full px-5 py-2.5`}
+                            disabled={isGenerating[index]}
+                            className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait ' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full px-5 py-2.5`}
                           >
-                            {isGenerating[index] ? "Loading.." : "Generate"}
+                            {isGenerating[index] ? "Menunggu.." : "Buat Soal"}
                           </button>
                           <button 
                             type="button" 
@@ -335,31 +354,31 @@ async function onGenerate(event, index) {
             </div>
           ))}
         </div>
-        <div className="flex justify-between items-center px-2 md:pl-6 md:pr-5 gap-2 w-full mb-2 mt-2 md:mt-0">
+        <div className="flex justify-between items-center px-2 lg:pl-6 lg:pr-5 gap-2 w-full mb-2 mt-2 lg:mt-0">
         <a      
           href={`#tally-open=m61EBN&tally-layout=modal&tally-emoji-text=👋&tally-emoji-animation=wave&nuptk=${nuptk}&nama=${nama}`}
-          className="bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-md text-sm md:w-auto px-5 py-2.5 flex items-center justify-between gap-1" >
+          className="bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-md text-sm lg:w-auto px-5 py-2.5 flex items-center justify-between gap-1" >
               <IoIosStarOutline className='text-xl'/>
-              <span className="md:block hidden">Review</span>
+              <span className="lg:block hidden">Tanggapan</span>
             </a>
             <div className="flex justify-end gap-2">
           <button 
             type="button" 
             onClick={openModal} 
-            className="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md text-sm w-full lg:w-auto px-5 py-2.5"
           >
             <RiPlayListAddFill className='text-xl'/>
           </button>
           <button 
             type="button" 
             onClick={addQuestion} 
-            className="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md text-sm w-full md:w-auto px-5 py-2.5 flex justify-between items-center gap-1"
+            className="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md text-sm w-full lg:w-auto px-5 py-2.5 flex justify-between items-center gap-1"
           >
             <LuPlus className='text-xl'/>
           </button>
           </div>
         </div>
-        <div className="flex md:hidden justify-between md:justify-end px-2 md:px-0 md:pr-5 gap-2 w-full mb-4">
+        <div className="flex lg:hidden justify-between lg:justify-end px-2 lg:px-0 lg:pr-5 gap-2 w-full mb-4">
         </div>
       </div>
       </div>
@@ -370,7 +389,7 @@ async function onGenerate(event, index) {
         className="bg-red-500 hover:bg-red-600 text-white font-medium rounded-md text-sm w-fit px-5 py-2.5 flex justify-between items-center gap-1 m-2"
       >
         <CiLogout className="text-xl"/>
-        Logout
+        Keluar
       </button>
       </div>
       </div>

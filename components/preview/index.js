@@ -107,11 +107,77 @@ const renderSvgWithLatex = (svgString, key) => {
   );
 };
 
+const renderBoldAndLatex = (text, keyPrefix) => {
+  const parts = [];
+  let lastIndex = 0;
+  const boldRegex = /\*\*(.*?)\*\*/gs;
+  let match;
+  while ((match = boldRegex.exec(text)) !== null) {
+    if (match.index > lastIndex) {
+      parts.push({
+        text: text.slice(lastIndex, match.index),
+        bold: false,
+      });
+    }
+    parts.push({
+      text: match[1],
+      bold: true,
+    });
+    lastIndex = boldRegex.lastIndex;
+  }
+  if (lastIndex < text.length) {
+    parts.push({
+      text: text.slice(lastIndex),
+      bold: false,
+    });
+  }
+
+  return parts.map((part, idx) => {
+    const inlineParts = part.text.split(/(\$\$.*?\$\$|\$.*?\$)/gs);
+    const children = inlineParts.map((p, i) => {
+      if (p === "") return null;
+      if (p.startsWith("$$") && p.endsWith("$$")) {
+        return (
+          <span
+            key={`${idx}-${i}`}
+            className="katex-inline"
+            style={{ display: "inline-block", verticalAlign: "middle" }}
+            dangerouslySetInnerHTML={{
+              __html: renderLatex(p.slice(2, -2), true),
+            }}
+          />
+        );
+      } else if (p.startsWith("$") && p.endsWith("$")) {
+        return (
+          <span
+            key={`${idx}-${i}`}
+            className="katex-inline"
+            style={{ display: "inline-block", verticalAlign: "middle" }}
+            dangerouslySetInnerHTML={{
+              __html: renderLatex(p.slice(1, -1), false),
+            }}
+          />
+        );
+      } else {
+        return (
+          <span key={`${idx}-${i}`} dangerouslySetInnerHTML={{ __html: p }} />
+        );
+      }
+    });
+    return part.bold ? (
+      <strong key={`${keyPrefix}-${idx}`}>{children}</strong>
+    ) : (
+      <React.Fragment key={`${keyPrefix}-${idx}`}>{children}</React.Fragment>
+    );
+  });
+};
+
 const renderLine = (line, key) => {
   if (line.trim() === "") {
     return null;
   }
 
+  // Jika seluruh line merupakan block math dengan $$...$$, langsung render dengan align center
   const blockMathMatch = line.trim().match(/^\$\$(.*)\$\$$/s);
   if (blockMathMatch) {
     return (
@@ -126,45 +192,12 @@ const renderLine = (line, key) => {
     );
   }
 
-  const latexParts = line.split(/(\$\$.*?\$\$|\$.*?\$)/gs);
-  const hasDoubleDollar = line.includes("$$");
-  const children = latexParts.map((part, i) => {
-    if (part === "") return null;
-    if (part.startsWith("$$") && part.endsWith("$$")) {
-      return (
-        <span
-          key={i}
-          className="katex-inline"
-          style={{ display: "inline-block", verticalAlign: "middle" }}
-          dangerouslySetInnerHTML={{
-            __html: renderLatex(part.slice(2, -2), false),
-          }}
-        />
-      );
-    } else if (part.startsWith("$") && part.endsWith("$")) {
-      return (
-        <span
-          key={i}
-          className="katex-inline"
-          style={{ display: "inline-block", verticalAlign: "middle" }}
-          dangerouslySetInnerHTML={{
-            __html: renderLatex(part.slice(1, -1), false),
-          }}
-        />
-      );
-    } else {
-      return (
-        <span key={i} dangerouslySetInnerHTML={{ __html: part }} />
-      );
-    }
-  });
+  // Gunakan fungsi renderBoldAndLatex untuk menggabungkan bold & inline LaTeX
+  const children = renderBoldAndLatex(line, key);
 
-  if (hasDoubleDollar) {
-    return (
-      <div key={key} style={{ textAlign: "center" }}>
-        {children}
-      </div>
-    );
+  // Jika terdapat "$$" di dalam line, gunakan textAlign center
+  if (line.includes("$$")) {
+    return <div key={key} style={{ textAlign: "center" }}>{children}</div>;
   } else {
     return <div key={key}>{children}</div>;
   }

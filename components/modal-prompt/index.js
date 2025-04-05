@@ -103,7 +103,7 @@ const handleClose = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={handleOutsideClick}>
       <div className="bg-white w-full max-w-md px-6 pt-6 rounded-lg shadow-lg max-h-[600px] overflow-scroll">
-        <h2 className="text-xl font-semibold mb-4">Generate Perintah Soal</h2>
+        <h2 className="text-xl font-semibold mb-4">Membuat Perintah Soal AI Otomatis</h2>
         <form onSubmit={onGenerate}>
           <div className="mb-4">
             <label htmlFor="prompt" className="block text-sm font-medium mb-1">
@@ -115,7 +115,7 @@ const handleClose = () => {
               value={formData.prompt}
               onChange={(e) => handleChange('prompt', e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md"
-              placeholder="Contoh: Tentang matematika dasar"
+              placeholder="Contoh: Ujian Tengah Semester Matematika"
               required
             />
           </div>
@@ -204,7 +204,7 @@ const handleClose = () => {
               disabled={isGenerating || isParsing}
               className={`${isGenerating || isParsing ? 'bg-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5`}
             >
-              {isGenerating ? 'Loading...': 'Generate'}
+              {isGenerating ? 'Loading...': 'Buat Perintah'}
             </button>
           </div>
         </form>
