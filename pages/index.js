@@ -79,7 +79,8 @@ export default function Home() {
   const [nama, setNama] = useState("");
   const [generateClickCount, setGenerateClickCount] = useState(0);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
-const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(null);
+  const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(null);
+  const [isFoucused, setIsFocused] = useState(false);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -315,8 +316,11 @@ const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(null);
                             value={question.prompt} 
                             onChange={(e) => handleInputChange(index, 'prompt', e.target.value)} 
                             onFocus={() => {
+                              setIsFocused(true);
                               setFilteredSuggestions(suggestionList);
-                              setActiveSuggestionIndex(index);
+                              setTimeout(() => {
+                                  setActiveSuggestionIndex(index);
+                              }, 200);
                             }}
                             onBlur={() => {
                               setTimeout(() => {
