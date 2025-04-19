@@ -79,7 +79,7 @@ export default function Home() {
   const [nama, setNama] = useState("");
   const [generateClickCount, setGenerateClickCount] = useState(0);
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
-  const [showSuggestions, setShowSuggestions] = useState(false);
+const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(null);
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -131,17 +131,16 @@ export default function Home() {
     const updatedQuestions = [...questions];
     updatedQuestions[index][field] = value;
     setQuestions(updatedQuestions);
-
+  
     if (field === "prompt") {
       if (value.trim() === "") {
         setFilteredSuggestions([]);
-        setShowSuggestions(false);
       } else {
-        const filtered = suggestionList.filter(suggestion =>
-          suggestion.toLowerCase().includes(value.toLowerCase())
+        const filtered = suggestionList.filter(s =>
+          s.value.toLowerCase().includes(value.toLowerCase()) ||
+          s.label.toLowerCase().includes(value.toLowerCase())
         );
         setFilteredSuggestions(filtered);
-        setShowSuggestions(true);
       }
     }
   };
@@ -151,7 +150,6 @@ export default function Home() {
     updatedQuestions[indexQuestion].prompt = suggestion;
     setQuestions(updatedQuestions);
     setFilteredSuggestions([]);
-    setShowSuggestions(false);
   };
 
   const addQuestion = () => {
@@ -248,6 +246,7 @@ export default function Home() {
       newIsGenerating[index] = false;
       return newIsGenerating;
     });
+
     setGenerateClickCount((prevCount) => {
       const newCount = prevCount + 1;
       if (newCount % 5 === 0) {
@@ -315,28 +314,27 @@ export default function Home() {
                             onChange={(e) => handleInputChange(index, 'prompt', e.target.value)} 
                             onFocus={() => {
                               setFilteredSuggestions(suggestionList);
-                              setShowSuggestions(true);
+                              setActiveSuggestionIndex(index);
                             }}
                             onBlur={() => {
-                              setTimeout(() => setShowSuggestions(false), 100);
+                              setTimeout(() => setActiveSuggestionIndex(null), 100);
                             }}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 focus:outline-none" 
                             placeholder="Masukan perintah untuk membuat soal" 
                             required 
                             autoComplete="off"
                           />
-                          {showSuggestions && filteredSuggestions.length > 0 && (
+                         {activeSuggestionIndex === index && filteredSuggestions.length > 0 && (
                             <ul className="absolute z-[11] w-full bg-white border border-gray-300 rounded-md max-h-48 overflow-y-auto">
-                              {filteredSuggestions.map((suggestion, sIndex) => (
-                                  <li 
-                                  key={sIndex} 
-                                  className="p-2 hover:bg-gray-100 duration-200 cursor-pointer"
-                                  onClick={() => handleSuggestionClick(index, suggestion.value)}
-                                  >
-                                  <strong>{suggestion.label}:</strong> {suggestion.value}
-                                  </li>
+                              {filteredSuggestions.map((s, sIndex) => (
+                                <li
+                                  key={sIndex}
+                                  className="p-2 hover:bg-gray-100 cursor-pointer"
+                                  onClick={() => handleSuggestionClick(index, s.value)}
+                                >
+                                  <strong>{s.label}:</strong> {s.value}
+                                </li>
                               ))}
-
                             </ul>
                           )}
                         </div>
