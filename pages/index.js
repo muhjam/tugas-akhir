@@ -269,6 +269,8 @@ const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(null);
     setIsLoggedIn(false);
   };
 
+  console.log(activeSuggestionIndex)
+
   return (
     <>
       {isLoading ? ( 
@@ -317,7 +319,11 @@ const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(null);
                               setActiveSuggestionIndex(index);
                             }}
                             onBlur={() => {
-                              setTimeout(() => setActiveSuggestionIndex(null), 100);
+                              setTimeout(() => {
+                                if (activeSuggestionIndex === index) {
+                                  setActiveSuggestionIndex(null);
+                                }
+                              }, 100);
                             }}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 focus:outline-none" 
                             placeholder="Masukan perintah untuk membuat soal" 
