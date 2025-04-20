@@ -65,10 +65,10 @@ function generatePrompt ( data )
     "$[\\begin{array}{c}10,7 \\\\\\end{array}]$"
     "$$\n
       \\begin{array}{r}
-          345 \\\
-      +  678 \\\
+          345 \\\\
+      +  678 \\\\
       \\hline
-          ??? \\\
+          ??? \\\\
       \\end{array}\n
       $$"
     "$$\\text{Volume} = \\text{panjang} \\times \\text{lebar} \\times \\text{tinggi}$$"

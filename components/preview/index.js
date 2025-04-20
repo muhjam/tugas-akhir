@@ -62,12 +62,12 @@ const processSvgWithLatex = (svgText) => {
 
   latexMatches.forEach((match, index) => {
     const attributes = match[1];
-    const content = match[2]; 
+    const content = match[2];
 
     if (/\$.*?\$/.test(content)) {
       const coordsMatch = attributes.match(/x="([\d.]+)"\s+y="([\d.]+)"/);
       if (coordsMatch) {
-        const [ , x, y ] = coordsMatch;
+        const [, x, y] = coordsMatch;
         const latexString = content.replace(/\$/g, "");
         const latexHtml = renderLatex(latexString, false);
 
@@ -114,28 +114,19 @@ const renderBoldAndLatex = (text, keyPrefix) => {
   let match;
   while ((match = boldRegex.exec(text)) !== null) {
     if (match.index > lastIndex) {
-      parts.push({
-        text: text.slice(lastIndex, match.index),
-        bold: false,
-      });
+      parts.push({ text: text.slice(lastIndex, match.index), bold: false });
     }
-    parts.push({
-      text: match[1],
-      bold: true,
-    });
+    parts.push({ text: match[1], bold: true });
     lastIndex = boldRegex.lastIndex;
   }
   if (lastIndex < text.length) {
-    parts.push({
-      text: text.slice(lastIndex),
-      bold: false,
-    });
+    parts.push({ text: text.slice(lastIndex), bold: false });
   }
 
   return parts.map((part, idx) => {
     const inlineParts = part.text.split(/(\$\$.*?\$\$|\$.*?\$)/gs);
     const children = inlineParts.map((p, i) => {
-      if (p === "") return null;
+      if (!p) return null;
       if (p.startsWith("$$") && p.endsWith("$$")) {
         return (
           <span
@@ -147,7 +138,8 @@ const renderBoldAndLatex = (text, keyPrefix) => {
             }}
           />
         );
-      } else if (p.startsWith("$") && p.endsWith("$")) {
+      }
+      if (p.startsWith("$") && p.endsWith("$")) {
         return (
           <span
             key={`${idx}-${i}`}
@@ -158,26 +150,20 @@ const renderBoldAndLatex = (text, keyPrefix) => {
             }}
           />
         );
-      } else {
-        return (
-          <span key={`${idx}-${i}`} dangerouslySetInnerHTML={{ __html: p }} />
-        );
       }
+      return <span key={`${idx}-${i}`}>{p}</span>;
     });
     return part.bold ? (
       <strong key={`${keyPrefix}-${idx}`}>{children}</strong>
     ) : (
       <React.Fragment key={`${keyPrefix}-${idx}`}>{children}</React.Fragment>
     );
-  });
+  }).flat();
 };
 
 const renderLine = (line, key) => {
-  if (line.trim() === "") {
-    return null;
-  }
+  if (line.trim() === "") return null;
 
-  // Jika seluruh line merupakan block math dengan $$...$$, langsung render dengan align center
   const blockMathMatch = line.trim().match(/^\$\$(.*)\$\$$/s);
   if (blockMathMatch) {
     return (
@@ -192,35 +178,25 @@ const renderLine = (line, key) => {
     );
   }
 
-  // Gunakan fungsi renderBoldAndLatex untuk menggabungkan bold & inline LaTeX
   const children = renderBoldAndLatex(line, key);
-
-  // Jika terdapat "$$" di dalam line, gunakan textAlign center
   if (line.includes("$$")) {
     return <div key={key} style={{ textAlign: "center" }}>{children}</div>;
-  } else {
-    return <div key={key}>{children}</div>;
   }
+  return <div key={key}>{children}</div>;
 };
 
-
 const renderTextWithLatex = (text, key) => {
-  const parts = text.split(/(\n+)/); 
+  const parts = text.split(/(\n+)/);
   return (
     <React.Fragment key={key}>
-      {parts.map((part, index) => {
+      {parts.map((part, idx) => {
         if (/^\n+$/.test(part)) {
-          const newlineCount = part.length;
-          if (newlineCount === 1) {
-            return null;
-          }
-          const brCount = newlineCount - 1;
-          return Array.from({ length: brCount }, (_, idx) => (
-            <br key={`${key}-br-${index}-${idx}`} />
+          const brCount = part.length - 1;
+          return Array.from({ length: brCount }, (_, i) => (
+            <br key={`${key}-br-${idx}-${i}`} />
           ));
-        } else {
-          return renderLine(part, `${key}-line-${index}`);
         }
+        return renderLine(part, `${key}-line-${idx}`);
       })}
     </React.Fragment>
   );
@@ -228,7 +204,7 @@ const renderTextWithLatex = (text, key) => {
 
 const renderContent = (text) => {
   const pattern =
-    /(<svg[\s\S]*?<\/svg>)|(^\|[^\n]+\|\n\|[-:\s|]+\|\n(?:\|[^\n]+\|\n?)*)/gm;
+    /(<svg[\s\S]*?<\/svg>)|(\$\$[\s\S]+?\$\$)|(^\|[^\n]+\|\n\|[-:\s|]+\|\n(?:\|[^\n]+\|\n?)*)/gm;
   let elements = [];
   let lastIndex = 0;
   let match;
@@ -243,10 +219,21 @@ const renderContent = (text) => {
     }
 
     const svgGroup = match[1];
-    const tableGroup = match[2];
+    const blockMath = match[2];
+    const tableGroup = match[3];
 
     if (svgGroup) {
       elements.push(renderSvgWithLatex(svgGroup, `svg-${keyCounter++}`));
+    } else if (blockMath) {
+      const latex = blockMath.slice(2, -2).trim();
+      elements.push(
+        <div
+          key={`math-${keyCounter++}`}
+          className="katex-block"
+          style={{ textAlign: "center" }}
+          dangerouslySetInnerHTML={{ __html: renderLatex(latex, true) }}
+        />
+      );
     } else if (tableGroup) {
       const html = convertMarkdownTableToHtml(tableGroup);
       elements.push(
