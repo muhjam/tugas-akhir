@@ -450,7 +450,7 @@ export default function Home() {
             <div className="flex justify-between items-center px-2 lg:pl-6 lg:pr-5 gap-2 w-full mb-2 mt-2 lg:mt-0">
               <a      
                 href={`#tally-open=m61EBN&tally-layout=modal&tally-emoji-text=👋&tally-emoji-animation=wave&nuptk=${nuptk}&nama=${nama}`}
-                className="bg-yellow-400 hover:bg-yellow-500 text-white font-medium rounded-md text-sm lg:w-auto px-5 py-2.5 flex items-center justify-between gap-1" >
+                className="bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-md text-sm lg:w-auto px-5 py-2.5 flex items-center justify-between gap-1" >
                   <IoIosStarOutline className='text-xl'/>
                   <span className="lg:block hidden">Tanggapan</span>
               </a>

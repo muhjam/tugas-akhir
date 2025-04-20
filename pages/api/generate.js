@@ -1,13 +1,13 @@
 
 require('dotenv').config();
-const { OpenAIClient, AzureKeyCredential } = require('@azure/openai')
+const { AzureKeyCredential } = require('@azure/openai')
 const { default: ModelClient } = require("@azure-rest/ai-inference")
 
 const key = process.env.AZURE_KEY_GPT4
 const endpoint = process.env.AZURE_ENDPOINT_GPT4
 const path = process.env.AZURE_COMPLETIONPATH_GPT4
 
-let client = new ModelClient(endpoint, new AzureKeyCredential(key));
+const client = new ModelClient(endpoint, new AzureKeyCredential(key));
 
 export default async function (req, res) {
   const {prompt, mode, difficuly, reference, type, total}  = req.body || '';
