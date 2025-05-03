@@ -256,7 +256,7 @@ const handleClose = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="file" className="block text-sm font-medium mb-1">
-              Unggah Capaian Pembelajaran:
+              Unggah Silabus:
             </label>
             <input
               type="file"
