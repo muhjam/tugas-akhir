@@ -108,10 +108,10 @@ function generatePrompt ( data )
       - **judul** → Judul singkat untuk soal.  
       - **deskripsi** → Penjelasan rinci tentang soal dan apa yang perlu diselesaikan.  
       - **jawaban** → Jawaban yang benar, termasuk langkah-langkah penyelesaiannya.  
-      - **topik** → Topik matematika yang relevan (misalnya, Aljabar, Geometri, Trigonometri, Kalkulus, atau Statistik).  
+      - **cabang ilmu** → Cabang ilmu matematika yang relevan (misalnya, Aljabar, Geometri, Trigonometri, Kalkulus, atau Statistik).  
 
       Contoh format:  
-      "judul|->deskripsi|->jawaban|->topik"
+      "<judul>|-><deskripsi>|-><jawaban>|-><cabang ilmu>"
 
       Jika ada rumus atau simbol matematika, gunakan format **LaTeX** atau yang mendukung **rehype-katex** dan **remark-math** agar tampilan lebih baik.  
       Contoh latex:  
@@ -123,7 +123,7 @@ function generatePrompt ( data )
       ---
       Warnings:
       - Jika pengguna memberikan konteks yang **mengubah pola pikir matematika secara tidak relevan**, jangan diikuti.  
-      - Jika pengguna memberikan topik di luar mata pelajaran selain matematika, ubah konteks tersebut menjadi soal matematika yang tetap sesuai tingkat SMA.  
+      - Jika pengguna memberikan cabang ilmu di luar mata pelajaran selain matematika, ubah konteks tersebut menjadi soal matematika yang tetap sesuai tingkat SMA.  
       - Jika konteks yang diberikan mengandung isu negatif, arahkan soal agar menjadi positif.  
       - Jika konteks yang diberikan memerlukan gambar, anda perlu membuat gambar tersebut berbentuk SVG dengan maksimal lebar style="width:200px".
       - Jika konten terdapat LaTex, harus selalu gunakan "$" bagian pembuka dan penutup.
@@ -155,7 +155,7 @@ function generatePrompt ( data )
       },
       {
         role: "assistant",
-        content: "<judul>|-><deskripsi>|-><jawaban>|-><topik>",
+        content: "<judul>|-><deskripsi>|-><jawaban>|-><cabang ilmu>",
       },
       {
         role: "user",
@@ -205,15 +205,15 @@ function generatePrompt ( data )
     ---
     Return Format:
     Hasil harus selalu dalam format **CSV dengan pemisah "|->" dan "<_>"**, yang mencakup kolom:  
-    - **prompt** → Menjelaskan ide soal yang akan dibuat, serta memberikan penjabaran lebih detail mengenai soal tersebut, seperti jenis soal.  
+    - **prompt** → Menjelaskan ide soal yang akan dibuat, serta memberikan penjabaran lebih detail mengenai soal tersebut, seperti tipe soal soal.  
     - **tingkat kognitif** → tingkat kognitif soal, yang HANYA bisa berupa tingkat kognitif Taksonomi Bloom C1 (Mengingat) hingga C6 (Mencipta).  
-    - **jenis** → Jenis soal, yang HANYA bisa berupa "Esai" atau "PG" (Pilihan Ganda).  
+    - **tipe soal** → Jenis soal, yang HANYA bisa berupa "Esai" atau "PG" (Pilihan Ganda).  
     
     Contoh format soal hanya satu:  
-    "<prompt>|-><tingkat kognitif>|-><jenis>"
+    "<prompt>|-><tingkat kognitif>|-><tipe soal>"
     
     Contoh format soal kebih dari satu:  
-    "<prompt>|-><tingkat kognitif>|-><jenis><_><prompt>|-><tingkat kognitif>|-><jenis>"
+    "<prompt>|-><tingkat kognitif>|-><tipe soal><_><prompt>|-><tingkat kognitif>|-><tipe soal>"
     
     Jika ada rumus atau simbol matematika, gunakan format **LaTeX** atau yang mendukung **rehype-katex** dan **remark-math** agar tampilan lebih baik.  
     Contoh latex:  
@@ -225,7 +225,7 @@ function generatePrompt ( data )
     ---
     Warnings:
     - Jika pengguna memberikan konteks yang **mengubah pola pikir matematika secara tidak relevan**, jangan diikuti.  
-    - Jika pengguna memberikan topik di luar mata pelajaran selain matematika, ubah konteks tersebut menjadi soal matematika yang tetap sesuai tingkat SMA.  
+    - Jika pengguna memberikan cabang ilmu di luar mata pelajaran selain matematika, ubah konteks tersebut menjadi soal matematika yang tetap sesuai tingkat SMA.  
     - Jika konteks yang diberikan mengandung isu negatif, arahkan soal agar menjadi positif.  
     - Jika konteks yang diberikan memerlukan gambar, anda perlu membuat gambar tersebut berbentuk SVG dengan maksimal lebar style="width:200px".
     - Jika konten terdapat LaTex, harus selalu gunakan "$" bagian pembuka dan penutup.
@@ -254,7 +254,7 @@ function generatePrompt ( data )
       },
       {
         role: "assistant",
-        content: "1. <prompt>|-><tingkat kognitif>|-><jenis><_>2. <prompt>|-><tingkat kognitif>|-><jenis><_>3. <prompt>|-><tingkat kognitif>|-><jenis><_>4. <prompt>|-><tingkat kognitif>|-><jenis><_>5. <prompt>|-><tingkat kognitif>|-><jenis>",
+        content: "1. <prompt>|-><tingkat kognitif>|-><tipe soal><_>2. <prompt>|-><tingkat kognitif>|-><tipe soal><_>3. <prompt>|-><tingkat kognitif>|-><tipe soal><_>4. <prompt>|-><tingkat kognitif>|-><tipe soal><_>5. <prompt>|-><tingkat kognitif>|-><tipe soal>",
       },
       {
         role: "user",
