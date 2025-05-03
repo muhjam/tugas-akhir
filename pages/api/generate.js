@@ -117,7 +117,7 @@ function generatePrompt ( data )
       Contoh latex:  
       ${latexExample}
 
-      contoh gambar svg:
+      Contoh gambar svg:
       ${svgExample}
 
       ---
@@ -204,19 +204,22 @@ function generatePrompt ( data )
     
     ---
     Return Format:
-    Hasil harus selalu dalam format **CSV dengan pemisah "|->"**, yang mencakup kolom:  
+    Hasil harus selalu dalam format **CSV dengan pemisah "|->" dan "<_>"**, yang mencakup kolom:  
     - **prompt** → Menjelaskan ide soal yang akan dibuat, serta memberikan penjabaran lebih detail mengenai soal tersebut, seperti jenis soal.  
     - **tingkat kognitif** → tingkat kognitif soal, yang HANYA bisa berupa tingkat kognitif Taksonomi Bloom C1 (Mengingat) hingga C6 (Mencipta).  
     - **jenis** → Jenis soal, yang HANYA bisa berupa "Esai" atau "PG" (Pilihan Ganda).  
     
-    Contoh format:  
+    Contoh format soal hanya satu:  
     "<prompt>|-><tingkat kognitif>|-><jenis>"
+    
+    Contoh format soal kebih dari satu:  
+    "<prompt>|-><tingkat kognitif>|-><jenis><_><prompt>|-><tingkat kognitif>|-><jenis>"
     
     Jika ada rumus atau simbol matematika, gunakan format **LaTeX** atau yang mendukung **rehype-katex** dan **remark-math** agar tampilan lebih baik.  
     Contoh latex:  
     ${latexExample}
 
-    contoh gambar svg:
+    Contoh gambar svg:
     ${svgExample}
     
     ---

@@ -1,5 +1,48 @@
 import { useState, useRef } from 'react';
 
+const suggestionList = [
+  {
+    label: "Algebra",
+    value: "Buatkan soal yang menguji pemahaman siswa tentang konsep dasar aljabar, termasuk operasi dan persamaan aljabar."
+  },
+  {
+    label: "Trigonometry",
+    value: "Buatkan soal yang melatih kemampuan siswa dalam memahami dan menerapkan konsep trigonometri, seperti sudut dan identitas trigonometri."
+  },
+  {
+    label: "Calculus",
+    value: "Rancang soal yang menguji keterampilan siswa dalam kalkulus, termasuk diferensiasi dan integrasi fungsi."
+  },
+  {
+    label: "Geometry",
+    value: "Buatkan soal yang menilai pemahaman siswa tentang konsep geometri, termasuk bentuk, ukuran, dan sifat ruang."
+  },
+  {
+    label: "Statistics",
+    value: "Kembangkan soal yang menguji kemampuan siswa dalam statistika, termasuk analisis data dan interpretasi hasil statistik."
+  },
+  {
+    label: "Probability",
+    value: "Buat soal yang melatih siswa dalam memahami konsep probabilitas dan penerapannya dalam berbagai situasi."
+  },
+  {
+    label: "Number Theory",
+    value: "Rancang soal yang menguji pengetahuan siswa tentang teori bilangan, termasuk faktor, kelipatan, dan bilangan prima."
+  },
+  {
+    label: "Linear Algebra",
+    value: "Buatkan soal yang menguji pemahaman siswa tentang aljabar linear, termasuk matriks dan vektor."
+  },
+  {
+    label: "Discrete Mathematics",
+    value: "Kembangkan soal yang melatih siswa dalam konsep matematika diskrit, seperti graf dan kombinatorik."
+  },
+  {
+    label: "Mathematical Logic",
+    value: "Buat soal yang menguji kemampuan siswa dalam logika matematika, termasuk proposisi dan pembuktian."
+  },
+];
+
 const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
   const [isGenerating, setIsGenerating] = useState(false); 
   const [isParsing, setIsParsing] = useState(false);
@@ -10,10 +53,38 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
     type: 'Acak',
     reference: ''
   });
+  const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const abortControllerRef = useRef(null);
 
   const handleChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
+
+    if (field === 'prompt') {
+      if (value.trim() === "") {
+        setFilteredSuggestions([]);
+      } else {
+        const filtered = suggestionList.filter(s =>
+          s.value.toLowerCase().includes(value.toLowerCase()) ||
+          s.label.toLowerCase().includes(value.toLowerCase())
+        );
+        setFilteredSuggestions(filtered);
+      }
+    }
+  };
+
+  const handleFocus = () => {
+    setFilteredSuggestions(suggestionList);
+  };
+
+  const handleBlur = () => {
+    setTimeout(() => {
+      setFilteredSuggestions(null);
+    }, 100);
+  };
+
+  const handleSuggestionClick = (suggestion) => {
+    setFormData({ ...formData, prompt: suggestion });
+    setFilteredSuggestions([]);
   };
 
   async function onGenerate(event) {
@@ -105,7 +176,7 @@ const handleClose = () => {
       <div className="bg-white w-full max-w-md px-6 pt-6 rounded-lg shadow-lg max-h-[600px] overflow-scroll">
         <h2 className="text-xl font-semibold mb-4">Membuat Perintah Soal AI Otomatis</h2>
         <form onSubmit={onGenerate}>
-          <div className="mb-4">
+        <div className="mb-4 relative">
             <label htmlFor="prompt" className="block text-sm font-medium mb-1">
               Perintah:
             </label>
@@ -114,10 +185,26 @@ const handleClose = () => {
               id="prompt"
               value={formData.prompt}
               onChange={(e) => handleChange('prompt', e.target.value)}
+              onFocus={handleFocus}
+              onBlur={handleBlur}
               className="w-full p-2 border border-gray-300 rounded-md"
               placeholder="Contoh: Ujian Tengah Semester Matematika"
+              autoComplete="off"
               required
             />
+            {filteredSuggestions?.length > 0 && (
+              <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md max-h-48 overflow-y-auto">
+                {filteredSuggestions.map((s, index) => (
+                  <li
+                    key={index}
+                    className="p-2 hover:bg-gray-100 cursor-pointer"
+                    onClick={() => handleSuggestionClick(s.value)}
+                  >
+                    <strong>{s.label}:</strong> {s.value}
+                  </li>
+                ))}
+              </ul>
+            )}
           </div>
           <div className="mb-4">
             <label htmlFor="total" className="block text-sm font-medium mb-1">
