@@ -136,7 +136,7 @@ function generatePrompt ( data )
       "|-[perintah dan aturan]-| |-[tingkat kognitif Taksonomi Bloom]-| |-[tipe soal]-|"
 
       Misalnya:  
-      "|-[Buat soal tentang integral dengan aplikasi dalam ekonomi]-| |-[Tingkat kognitif Taksonomi Bloom C4]-| |-[Pilihan Ganda]-|"
+      "|-[Buat soal tentang integral dengan aplikasi dalam ekonomi]-| |-[Tingkat kognitif Taksonomi Bloom C1 (Mengingat)]-| |-[Pilihan Ganda]-|"
       Sistem harus memahami pola ini dan menghasilkan soal matematika yang sesuai.  
 
       Selain itu, sistem harus dapat menangani berbagai permintaan pengguna dengan fleksibilitas, tetapi tetap menjaga standar akademik SMA Indonesia.  
