@@ -1,4 +1,4 @@
-import { useState, useRef } from 'react';
+import { useState, useRef, useEffect } from 'react';
 
 const suggestionList = [
   {
@@ -55,6 +55,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
   });
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const abortControllerRef = useRef(null);
+  const blurTimeoutRef = useRef(null);
 
   const handleChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
@@ -77,12 +78,24 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
   };
 
   const handleBlur = () => {
-    setTimeout(() => {
-      setFilteredSuggestions(null);
-    }, 100);
+    blurTimeoutRef.current = setTimeout(() => {
+      setFilteredSuggestions([]);
+    }, 200);
   };
 
+  // Cleanup timeout on unmount
+  useEffect(() => {
+    return () => {
+      if (blurTimeoutRef.current) {
+        clearTimeout(blurTimeoutRef.current);
+      }
+    };
+  }, []);
+
   const handleSuggestionClick = (suggestion) => {
+    if (blurTimeoutRef.current) {
+      clearTimeout(blurTimeoutRef.current);
+    }
     setFormData({ ...formData, prompt: suggestion });
     setFilteredSuggestions([]);
   };
