@@ -146,11 +146,17 @@ export default function Home() {
     }
   };
 
-  const handleSuggestionClick = (indexQuestion, suggestion) => {
-    const updatedQuestions = [...questions];
-    updatedQuestions[indexQuestion].prompt = suggestion;
-    setQuestions(updatedQuestions);
-    setFilteredSuggestions([]);
+  const handleSuggestionClick = (indexQuestion, suggestion, e) => {
+    e.preventDefault();
+    e.stopPropagation();
+    
+    setTimeout(() => {
+      const updatedQuestions = [...questions];
+      updatedQuestions[indexQuestion].prompt = suggestion;
+      setQuestions(updatedQuestions);
+      setFilteredSuggestions([]);
+      setActiveSuggestionIndex(null);
+    }, 100);
   };
 
   const addQuestion = () => {
@@ -340,7 +346,7 @@ export default function Home() {
                                 <li
                                   key={sIndex}
                                   className="p-2 hover:bg-gray-100 cursor-pointer"
-                                  onClick={() => handleSuggestionClick(index, s.value)}
+                                  onMouseDown={(e) => handleSuggestionClick(index, s.value, e)}
                                 >
                                   <strong>{s.label}:</strong> {s.value}
                                 </li>
