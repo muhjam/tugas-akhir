@@ -3,43 +3,43 @@ import { useState, useRef, useEffect } from 'react';
 const suggestionList = [
   {
     label: "Algebra",
-    value: "Buatkan soal yang menguji pemahaman siswa tentang konsep dasar aljabar, termasuk operasi dan persamaan aljabar."
+    value: "Create an assessment that tests students' understanding of basic algebra concepts, including operations and algebraic equations."
   },
   {
     label: "Trigonometry",
-    value: "Buatkan soal yang melatih kemampuan siswa dalam memahami dan menerapkan konsep trigonometri, seperti sudut dan identitas trigonometri."
+    value: "Create an assessment that trains students in understanding and applying trigonometric concepts, such as angles and trigonometric identities."
   },
   {
     label: "Calculus",
-    value: "Rancang soal yang menguji keterampilan siswa dalam kalkulus, termasuk diferensiasi dan integrasi fungsi."
+    value: "Design an assessment that tests students' skills in calculus, including function differentiation and integration."
   },
   {
     label: "Geometry",
-    value: "Buatkan soal yang menilai pemahaman siswa tentang konsep geometri, termasuk bentuk, ukuran, dan sifat ruang."
+    value: "Create an assessment that evaluates students' understanding of geometric concepts, including shapes, sizes, and spatial properties."
   },
   {
     label: "Statistics",
-    value: "Kembangkan soal yang menguji kemampuan siswa dalam statistika, termasuk analisis data dan interpretasi hasil statistik."
+    value: "Develop an assessment that tests students' skills in statistics, including data analysis and interpretation of statistical results."
   },
   {
     label: "Probability",
-    value: "Buat soal yang melatih siswa dalam memahami konsep probabilitas dan penerapannya dalam berbagai situasi."
+    value: "Create an assessment that trains students in understanding probability concepts and their applications in various situations."
   },
   {
     label: "Number Theory",
-    value: "Rancang soal yang menguji pengetahuan siswa tentang teori bilangan, termasuk faktor, kelipatan, dan bilangan prima."
+    value: "Design an assessment that tests students' knowledge of number theory, including factors, multiples, and prime numbers."
   },
   {
     label: "Linear Algebra",
-    value: "Buatkan soal yang menguji pemahaman siswa tentang aljabar linear, termasuk matriks dan vektor."
+    value: "Create an assessment that tests students' understanding of linear algebra, including matrices and vectors."
   },
   {
     label: "Discrete Mathematics",
-    value: "Kembangkan soal yang melatih siswa dalam konsep matematika diskrit, seperti graf dan kombinatorik."
+    value: "Develop an assessment that trains students in discrete mathematics concepts, such as graphs and combinatorics."
   },
   {
     label: "Mathematical Logic",
-    value: "Buat soal yang menguji kemampuan siswa dalam logika matematika, termasuk proposisi dan pembuktian."
+    value: "Create an assessment that tests students' skills in mathematical logic, including propositions and proofs."
   },
 ];
 
@@ -187,11 +187,11 @@ const handleClose = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={handleOutsideClick}>
       <div className="bg-white w-full max-w-md px-6 pt-6 rounded-lg shadow-lg max-h-[600px] overflow-scroll">
-        <h2 className="text-xl font-semibold mb-4">Membuat Perintah Soal AI Otomatis</h2>
+        <h2 className="text-xl font-semibold mb-4">Create AI-Generated Prompt Ideas</h2>
         <form onSubmit={onGenerate}>
         <div className="mb-4 relative">
             <label htmlFor="prompt" className="block text-sm font-medium mb-1">
-              Perintah:
+              Prompt:
             </label>
             <input
               type="text"
@@ -221,7 +221,7 @@ const handleClose = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="total" className="block text-sm font-medium mb-1">
-              Jumlah Soal:
+              Number of assessment:
             </label>
             <input
               type="number"
@@ -236,7 +236,7 @@ const handleClose = () => {
           </div>
           <div className="mb-4">
             <label htmlFor="difficulty" className="block text-sm font-medium mb-1 capitalize">
-              tingkat kognitif:
+              Cognitive Level:
             </label>
             <select
               id="difficulty"
@@ -244,17 +244,18 @@ const handleClose = () => {
               onChange={(e) => handleChange('difficulty', e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md"
             >
-                <option value="Acak">Acak</option>
-                <option value="C2 (Memahami)">C2 (Memahami)</option>
-                <option value="C3 (Menerapkan)">C3 (Menerapkan)</option>
-                <option value="C4 (Menganalisis)">C4 (Menganalisis)</option>
-                <option value="C5 (Mengevaluasi)">C5 (Mengevaluasi)</option>
-                <option value="C6 (Mencipta)">C6 (Mencipta)</option>
+              <option value="Random">Random</option>
+              <option value="C1 (Remember)">C1 (Remember)</option>
+              <option value="C2 (Understand)">C2 (Understand)</option>
+              <option value="C3 (Apply)">C3 (Apply)</option>
+              <option value="C4 (Analyze)">C4 (Analyze)</option>
+              <option value="C5 (Evaluate)">C5 (Evaluate)</option>
+              <option value="C6 (Create)">C6 (Create)</option>
             </select>
           </div>
           <div className="mb-4">
             <label htmlFor="type" className="block text-sm font-medium mb-1">
-              Tipe Soal:
+              Question Type:
             </label>
             <select
               id="type"
@@ -262,14 +263,14 @@ const handleClose = () => {
               onChange={(e) => handleChange('type', e.target.value)}
               className="w-full p-2 border border-gray-300 rounded-md"
             >
-              <option value="Acak">Acak</option>
+              <option value="Random">Random</option>
+              <option value="Multiple Choice">Multiple Choice</option>
               <option value="Essay">Essay</option>
-              <option value="PG">PG</option>
             </select>
           </div>
           <div className="mb-4">
             <label htmlFor="file" className="block text-sm font-medium mb-1">
-              Unggah Silabus:
+              Upload Syllabus:
             </label>
             <input
               type="file"
@@ -287,7 +288,7 @@ const handleClose = () => {
               readOnly={true}
               ></textarea>
             ): isParsing &&(
-              <>Membaca...</>
+              <>Reading...</>
             )}
              
           </div>
@@ -297,14 +298,14 @@ const handleClose = () => {
               onClick={handleClose}
               className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
             >
-              Batal
+              Cancel
             </button>
             <button
               type="submit"
               disabled={isGenerating || isParsing}
               className={`${isGenerating || isParsing ? 'bg-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5`}
             >
-              {isGenerating ? 'Membuat...': 'Buat Perintah'}
+              {isGenerating ? 'Generating...' : 'Generate'}
             </button>
           </div>
         </form>

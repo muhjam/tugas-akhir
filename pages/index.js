@@ -12,50 +12,50 @@ import { CiLogout } from "react-icons/ci";
 import { GoTrash } from "react-icons/go";
 import Editor from '../components/editor';
 
-const suggestionList = [
+  const suggestionList = [
   {
-    label: "Soal Simple",
-    value: "Buatkan satu soal matematika tingkat SMA tentang [...]."
+    label: "Simple Assessment",
+    value: "Create one high school level math assessment about [...]"
   },
   {
-    label: "Soal Bergambar",
-    value: "Buatkan satu soal matematika tingkat SMA tentang [...], sertakan gambar pada soal serta informasinya."
+    label: "Assessment with Image",
+    value: "Create one high school level math assessment about [...] including an image and its information."
   },
   {
-    label: "Soal Bermodel",
-    value: "Buat satu soal latihan ujian matematika model [UNBK/UTBK/SBMPTN] untuk tingkat SMA dengan topik [...]. Gunakan gaya bahasa dan struktur soal yang mirip dengan soal asli ujian. Sertakan opsi jawaban (jika ada) dan pembahasannya."
+    label: "Exam-Style Assessment",
+    value: "Create a practice exam math assessment in the style of [UNBK/UTBK/SBMPTN] for high school level about [...]. Use language and assessment structure similar to actual exam questions. Include answer options (if any) and explanations."
   },
   {
-    label: "Soal HOTS",
-    value: "Buatkan soal matematika tingkat SMA yang menuntut keterampilan berpikir tingkat tinggi (HOTS), seperti analisis, sintesis, atau evaluasi, dengan topik [...]. Sertakan soal, jawaban, dan alasan mengapa soal tersebut masuk kategori HOTS."
+    label: "HOTS Assessment",
+    value: "Create a high school level math assessment that requires higher-order thinking skills (HOTS) such as analysis, synthesis, or evaluation, about [...]. Include the assessment, answer, and explanation of why this is considered a HOTS assessment."
   },
   {
-    label: "Soal Singkat",
-    value: "Buatkan satu soal matematika isian singkat untuk siswa SMA tentang [...]. Soal harus memiliki jawaban akhir berupa angka atau ekspresi matematika. Sertakan juga kunci jawaban dan langkah-langkah penyelesaiannya."
+    label: "Short Answer Assessment",
+    value: "Create one short-answer math assessment for high school students about [...]. The assessment should have a final answer in the form of a number or mathematical expression. Also include the answer key and solution steps."
   },
   {
-    label: "Soal Cerita",
-    value: "Buat satu soal cerita kontekstual matematika tingkat SMA yang berkaitan dengan kehidupan sehari-hari, dengan topik [...]. Soal harus mengandung narasi dan membutuhkan pemahaman konsep matematika. Sertakan juga jawabannya lengkap dengan pembahasan."
+    label: "Word Assessment",
+    value: "Create a contextual math word assessment for high school level related to daily life, about [...]. The assessment should contain a narrative and require understanding of mathematical concepts. Also include the complete answer with explanation."
   },
   {
-    label: "Soal Fungsi Kuadrat dan Grafiknya",
-    value: "Buatlah sebuah soal mengenai fungsi kuadrat yang mencakup analisis grafik, akar-akar persamaan, dan hubungan koefisien dengan bentuk parabola. Sertakan penjelasan konsep, langkah-langkah penyelesaian, serta interpretasi hasil agar siswa dapat memahami perubahan bentuk grafik akibat variasi koefisien."
+    label: "Quadratic Function and Graph Assessment",
+    value: "Create an assessment about quadratic functions that includes graph analysis, equation roots, and the relationship between coefficients and parabola shape. Include concept explanations, solution steps, and result interpretation to help students understand how coefficient variations affect the graph's shape."
   },
   {
-    label: "Soal Limit Fungsi Aljabar",
-    value: "Kembangkan soal mengenai limit fungsi aljabar, misalnya limit fungsi polinomial atau rasional saat mendekati titik tertentu. Berikan langkah-langkah perhitungan, penjelasan konsep limit, serta diskusi mengenai bagaimana limit berperan dalam analisis kelangsungan fungsi."
+    label: "Algebraic Limit Assessment",
+    value: "Develop an assessment about algebraic limits, such as limits of polynomial or rational functions approaching a certain point. Include calculation steps, limit concept explanations, and discussion of how limits function in continuity analysis."
   },
   {
-    label: "Soal Turunan Fungsi",
-    value: "Buat soal yang menantang siswa untuk menghitung turunan dari fungsi (bisa fungsi aljabar atau trigonometri) dan mengaitkannya dengan aplikasi grafik (misalnya mencari titik maksimum, minimum, atau titik belok). Sertakan uraian tentang aturan turunan dan interpretasi grafik dari hasil turunan."
+    label: "Function Derivative Assessment",
+    value: "Create a challenging assessment for students to calculate the derivative of a function (could be algebraic or trigonometric) and relate it to graphical applications (e.g., finding maximum, minimum, or inflection points). Include explanations of derivative rules and graphical interpretations of the derivative results."
   },
   {
-    label: "Soal Integral Tak Tentu",
-    value: "Rancang soal integral tak tentu dari fungsi aljabar yang sederhana, misalnya fungsi polinomial. Sertakan langkah-langkah pengintegrasian, teknik substitusi (jika perlu), dan penjelasan mengenai antiturunan, sehingga siswa memahami hubungan antara fungsi asli dan integralnya."
+    label: "Indefinite Integral Assessment",
+    value: "Design an indefinite integral assessment of a simple algebraic function, such as a polynomial function. Include integration steps, substitution techniques (if needed), and explanations about antiderivatives, so students understand the relationship between the original function and its integral."
   },
   {
-    label: "Soal Statistika dan Pengolahan Data",
-    value: "Buat soal yang berkaitan dengan statistika dasar, seperti perhitungan nilai rata-rata, median, modus, serta simpangan baku dari sekumpulan data nyata. Sertakan penjelasan metode pengolahan data dan interpretasi hasil untuk membantu siswa mengaitkan konsep statistika dengan aplikasi di dunia nyata."
+    label: "Statistics and Data Processing Assessment",
+    value: "Create an assessment related to basic statistics, such as calculating mean, median, mode, and standard deviation from a set of real data. Include explanations of data processing methods and result interpretations to help students connect statistical concepts with real-world applications."
   },
 ];
 
@@ -65,8 +65,8 @@ export default function Home() {
   const [isShow, setIsShow] = useState([]);
   const [questions, setQuestions] = useState([{
     prompt: "",
-    difficulty: "C1 (Mengingat)",
-    type: "Esai",
+    difficulty: "C1 (Remember)",
+    type: "Essay",
     title: "",
     description: "",
     answer: "",
@@ -108,12 +108,23 @@ export default function Home() {
 
   const handleModalSubmit = (data) => {
     data?.map((item) => {
+      // Translate difficulty and type to English
+      const translatedDifficulty = item?.difficulty
+        .replace('Mengingat', 'Remember')
+        .replace('Memahami', 'Understand')
+        .replace('Menerapkan', 'Apply')
+        .replace('Menganalisis', 'Analyze')
+        .replace('Mengevaluasi', 'Evaluate')
+        .replace('Mencipta', 'Create');
+      
+      const translatedType = item?.type === 'Esai' ? 'Essay' : item?.type;
+      
       setQuestions((prev) => [
         ...prev,
         {
           prompt: item?.prompt,
-          difficulty: item?.difficulty,
-          type: item?.type,
+          difficulty: translatedDifficulty || item?.difficulty,
+          type: translatedType || item?.type,
           title: "",
           description: "",
           answer: "",
@@ -162,8 +173,8 @@ export default function Home() {
   const addQuestion = () => {
     setQuestions([...questions, {
       prompt: "",
-      difficulty: "C1 (Mengingat)",
-      type: "Esai",
+      difficulty: "C1 (Remember)",
+      type: "Essay",
       title: "",
       description: "",
       answer: "",
@@ -293,10 +304,10 @@ export default function Home() {
           <div className="p-[8px] lg:p-[24px] flex justify-center">
             <div className="flex justify-center mb-[8px]">
               <div className="max-w-[500px] w-full">
-                <h1 className="text-[24px] font-[600] text-center">Pembuatan Soal Matematika Otomatis</h1>
+                <h1 className="text-[24px] font-[600] text-center">Automatic Math Problem Generator</h1>
                 <h2 className="text-[14px] text-gray-800 font-[500] text-center">
-                  Pembuatan soal matematika tingkat SMA otomatis menggunakan AI <br />
-                  dikembangkan oleh <a href="https://www.instagram.com/muhamadjamaludinpad/" className="font-[600] hover:underline">Jamjam</a>.
+                  Automatic high school level math problem generation using AI <br />
+                  developed by <a href="https://www.instagram.com/muhamadjamaludinpad/" className="font-[600] hover:underline">Jamjam</a>.
                 </h2>
               </div>
             </div>
@@ -315,7 +326,7 @@ export default function Home() {
                           </div>
                         )}
                         <div className="w-full space-y-1 relative">
-                          <label htmlFor="prompt" className="text-[14px] font-[600]">Perintah:</label>
+                          <label htmlFor="prompt" className="text-[14px] font-[600]">Prompt:</label>
                           <input 
                             type="text" 
                             id="prompt" 
@@ -336,7 +347,7 @@ export default function Home() {
                               }, 100);
                             }}
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 focus:outline-none" 
-                            placeholder="Masukan perintah untuk membuat soal" 
+                            placeholder="Enter command to Generate" 
                             required 
                             autoComplete="off"
                           />
@@ -355,30 +366,30 @@ export default function Home() {
                           )}
                         </div>
                         <div className="flex flex-col justify-center w-full lg:max-w-[200px] space-y-1">
-                          <label className="text-[14px] font-[600] capitalize">tingkat kognitif:</label>
+                          <label className="text-[14px] font-[600] capitalize">Cognitive Level:</label>
                           <select 
                             value={question.difficulty} 
                             onChange={(e) => handleInputChange(index, 'difficulty', e.target.value)} 
                             className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-2.5 cursor-pointer"
                           >
-                            <option value="C1 (Mengingat)">C1 (Mengingat)</option>
-                            <option value="C2 (Memahami)">C2 (Memahami)</option>
-                            <option value="C3 (Menerapkan)">C3 (Menerapkan)</option>
-                            <option value="C4 (Menganalisis)">C4 (Menganalisis)</option>
-                            <option value="C5 (Mengevaluasi)">C5 (Mengevaluasi)</option>
-                            <option value="C6 (Mencipta)">C6 (Mencipta)</option>
+                            <option value="C1 (Remember)">C1 (Remember)</option>
+                            <option value="C2 (Understand)">C2 (Understand)</option>
+                            <option value="C3 (Apply)">C3 (Apply)</option>
+                            <option value="C4 (Analyze)">C4 (Analyze)</option>
+                            <option value="C5 (Evaluate)">C5 (Evaluate)</option>
+                            <option value="C6 (Create)">C6 (Create)</option>
                           </select>
                         </div>
                         <div className="flex flex-col justify-center w-full space-y-1">
-                          <label className="text-[14px] font-[600]">Tipe Soal:</label>
+                          <label className="text-[14px] font-[600]">Question Type:</label>
                           <div className="flex gap-2">
                             <select 
                               value={question.type} 
                               onChange={(e) => handleInputChange(index, 'type', e.target.value)} 
                               className="bg-gray-50 w-full lg:max-w-[200px] border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-2.5 cursor-pointer"
                             >
-                              <option value="Esai">Esai</option>
-                              <option value="PG">PG</option>
+                              <option value="Essay">Essay</option>
+                              <option value="Multiple Choice">Multiple Choice</option>
                             </select>
                             <div className="lg:flex items-center gap-2 justify-end w-full lg:w-[180px] ms-auto hidden">
                               <button 
@@ -386,7 +397,7 @@ export default function Home() {
                                 disabled={isGenerating[index]}
                                 className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-[180px] px-5 py-2.5`}
                               >
-                                {isGenerating[index] ? "Membuat.." : "Buat Soal"}
+                                {isGenerating[index] ? "Generating..." : "Generate"}
                               </button>
                               <button 
                                 type="button" 
@@ -405,7 +416,7 @@ export default function Home() {
                                 disabled={isGenerating[index]}
                                 className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait ' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full px-5 py-2.5`}
                               >
-                                {isGenerating[index] ? "Membuat..." : "Buat Soal"}
+                                {isGenerating[index] ? "Generating..." : "Generate"}
                               </button>
                               <button 
                                 type="button" 
@@ -422,7 +433,7 @@ export default function Home() {
                   {/* Bagian tambahan untuk input judul, deskripsi, dll */}
                   <div className={`duration-300 px-1 ${isShow.includes(index) ? 'h-[1220px] overflow-y-scroll' : 'h-0 overflow-y-hidden'}`}>
                     <div className="flex flex-col mb-[8px] space-y-1">
-                      <label htmlFor="title" className="text-[14px] font-[600]">Judul:</label>
+                      <label htmlFor="title" className="text-[14px] font-[600]">Title:</label>
                       <input 
                         type="text" 
                         id="title" 
@@ -433,13 +444,13 @@ export default function Home() {
                       />
                     </div>
                     <div className="mb-[10px]">
-                        <Editor label={"Deskripsi"} id={"description"} index={index} value={question.description} onChange={(index, id, val ) => handleInputChange(index, id, val)}  />
+                        <Editor label={"Description"} id={"description"} index={index} value={question.description} onChange={(index, id, val ) => handleInputChange(index, id, val)}  />
                     </div>
                     <div className="mb-[10px]">
-                      <Editor label={"Jawaban"} id={"answer"} index={index} value={question.answer} onChange={(index, id, val ) => handleInputChange(index, id, val)}  />
+                      <Editor label={"Answer"} id={"answer"} index={index} value={question.answer} onChange={(index, id, val ) => handleInputChange(index, id, val)}  />
                     </div>
                     <div className="flex flex-col mb-[8px] space-y-1">
-                      <label htmlFor="topic" className="text-[14px] font-[600]">Cabang Ilmu:</label>
+                      <label htmlFor="topic" className="text-[14px] font-[600]">Topic:</label>
                       <input 
                         type="text" 
                         id="topic" 
@@ -458,7 +469,7 @@ export default function Home() {
                 href={`#tally-open=m61EBN&tally-layout=modal&tally-emoji-text=👋&tally-emoji-animation=wave&nuptk=${nuptk}&nama=${nama}`}
                 className="bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-md text-sm lg:w-auto px-5 py-2.5 flex items-center justify-between gap-1" >
                   <IoIosStarOutline className='text-xl'/>
-                  <span className="lg:block hidden">Tanggapan</span>
+                  <span className="lg:block hidden">Feedback</span>
               </a>
               <div className="flex justify-end gap-2">
                 <button 
@@ -488,7 +499,7 @@ export default function Home() {
             className="bg-red-500 hover:bg-red-600 text-white font-medium rounded-md text-sm w-fit px-5 py-2.5 flex justify-between items-center gap-1 m-2"
           >
             <CiLogout className="text-xl"/>
-            Keluar
+            Logout
           </button>
         </div>
       </div>
