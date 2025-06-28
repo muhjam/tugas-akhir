@@ -3,8 +3,12 @@ const { i18n } = require('./next-i18next.config');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
-  i18n,
   reactStrictMode: false,
+  i18n,
+  webpack: (config) => {
+    config.resolve.fallback = { fs: false };
+    return config;
+  },
   publicRuntimeConfig: {
     default_timezone: 'Asia/Jakarta',
   },
