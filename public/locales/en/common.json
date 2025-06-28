@@ -9,7 +9,7 @@
     "generate": "Generate",
     "cancel": "Cancel",
     "uploading": "Uploading...",
-    "generating": "Generating...",
+    "generating": "Generating",
     "uploadPdf": "Upload PDF"
   },
   "difficulties": {

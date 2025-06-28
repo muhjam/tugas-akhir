@@ -262,7 +262,7 @@ const handleClose = () => {
               type="number"
               id="total"
               min="1"
-              max="10"
+              max="100"
               value={formData.total}
               onChange={(e) => handleChange('total', parseInt(e.target.value))}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
