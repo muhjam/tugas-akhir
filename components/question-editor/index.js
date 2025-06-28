@@ -45,11 +45,11 @@ export default function QuestionEditor({
                   onChange={(e) => onInputChange(index, 'prompt', e.target.value)} 
                   onFocus={(e) => onTextareaFocus(index, e)}
                   onBlur={() => {
-                    // Immediately hide suggestions when textarea loses focus
-                    if (activeSuggestionIndex === index) {
-                      // This should trigger the parent to hide suggestions
-                      onInputChange(index, 'prompt', question.prompt);
-                    }
+                    setTimeout(() => {
+                      if (activeSuggestionIndex === index) {
+                        onTextareaFocus(null, {}); 
+                      }
+                    }, 200);
                   }}
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200 min-h-[100px] resize-y" 
                   placeholder={t('main.commandPlaceholder')}
