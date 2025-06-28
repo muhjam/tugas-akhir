@@ -12,7 +12,7 @@ export default function SuggestionList({
 
   return (
     <div 
-      className="fixed z-[9999] bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto"
+      className="absolute top-0 z-[999] bg-white border border-gray-200 rounded-lg shadow-lg max-h-48 overflow-y-auto"
       style={{
         top: suggestionPosition.top,
         left: suggestionPosition.left,

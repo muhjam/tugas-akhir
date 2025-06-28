@@ -410,7 +410,7 @@ export default function Home() {
           <div className="flex-grow mt-16">
             <ModalPrompt isOpen={isModalOpen} onClose={closeModal} onSubmit={handleModalSubmit} />
             
-            <div className="max-w-[1080px] w-full container mx-auto px-1 lg:px-4 py-6">
+            <div className="max-w-[1080px] w-full container mx-auto px-1 lg:px-4 py-6 relative">
               <div className="space-y-6">
                 {questions.map((question, index) => (
                   <QuestionEditor
