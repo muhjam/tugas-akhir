@@ -187,8 +187,8 @@ const handleClose = () => {
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={handleOutsideClick}>
-      <div className="bg-white w-full max-w-md px-6 pt-6 rounded-lg shadow-lg max-h-[600px] overflow-scroll">
+    <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50 px-1" onClick={handleOutsideClick}>
+      <div className="bg-white w-full md:max-w-md px-2 md:px-6 pt-6 rounded-lg shadow-lg max-h-[600px] overflow-y-scroll overflow-x-hidden">
         <h2 className="text-xl font-semibold mb-4">{t('modal.title')}</h2>
         <form onSubmit={onGenerate}>
           <div className="mb-4 relative">
