@@ -1,24 +1,10 @@
+const removeImports = require("next-remove-imports")();
 const { i18n } = require('./next-i18next.config');
 
 /** @type {import('next').NextConfig} */
 const nextConfig = {
   i18n,
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        fs: false,
-      };
-    }
-
-    config.module.rules.push({
-      test: /\.css$/,
-      use: ['style-loader', 'css-loader'],
-    });
-
-    return config;
-  },
-  reactStrictMode: true,
+  reactStrictMode: false,
   publicRuntimeConfig: {
     default_timezone: 'Asia/Jakarta',
   },
@@ -37,4 +23,4 @@ const nextConfig = {
   }
 };
 
-module.exports = nextConfig;
+module.exports = removeImports(nextConfig);

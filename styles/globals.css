@@ -1,0 +1,65 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+html,
+body {
+  padding: 0;
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
+    Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
+}
+
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+* {
+  box-sizing: border-box;
+}
+
+.prose table {
+  @apply table-auto border-collapse border border-gray-400;
+}
+
+.prose th, .prose td {
+  @apply border border-gray-400 px-4 py-2;
+}
+
+.prose h1 span {
+  @apply !text-4xl font-bold mb-4 mt-6;
+}
+
+.prose h2 span {
+  @apply !text-3xl font-semibold mb-3 mt-5;
+}
+
+.prose h3 span {
+  @apply !text-2xl font-semibold mb-2 mt-4;
+}
+
+.prose h4 span {
+  @apply !text-xl font-medium mb-2 mt-3;
+}
+
+.prose h5 span {
+  @apply !text-lg font-medium mb-1 mt-2;
+}
+
+.prose h6 span {
+  @apply !text-base font-medium mt-2;
+}
+
+.prose span {
+  @apply text-[14px];
+}
+
+.katex-inline {
+  display: inline-block;
+  vertical-align: middle;
+}
+
+.w-md-editor-text {
+  @apply !min-h-full;
+} 

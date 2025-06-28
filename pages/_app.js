@@ -2,7 +2,7 @@
 import Head from "next/head";
 import { appWithTranslation } from 'next-i18next';
 import { useEffect } from 'react';
-import './styles/globals.css';
+import '../styles/globals.css';
 import 'katex/dist/katex.min.css';
 import '@uiw/react-md-editor/markdown-editor.css';
 
