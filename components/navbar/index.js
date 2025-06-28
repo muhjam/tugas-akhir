@@ -35,7 +35,7 @@ const Navbar = ({ showLogout = false, onLogout }) => {
                 onClick={handleLogout}
                 className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors duration-200"
               >
-                <CiLogout className="text-xl"/>
+                <CiLogout className="text-2xl md:text-xl"/>
                 <span className="hidden sm:block">{t('main.logout')}</span>
               </button>
             )}
