@@ -13,7 +13,7 @@ export default function Footer({ t }) {
             target="_blank"
             rel="noopener noreferrer"
           >
-            Jamjam
+            {" "}Jamjam
           </a>
         </p>
       </div>

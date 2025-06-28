@@ -26,8 +26,8 @@ function MyApp({ Component, pageProps }) {
     <>
       <Head>
         {/* Primary Meta Tags */}
-        <title>Jam Math - AI-Powered Math Problem Generator</title>
-        <meta name="title" content="Jamjam Math Quest - AI-Powered Math Problem Generator" />
+        <title>Math Time - AI-Powered Math Problem Generator</title>
+        <meta name="title" content="JamMath Time Quest - AI-Powered Math Problem Generator" />
         <meta name="description" content="Generate custom math problems and worksheets with AI. Perfect for teachers, students, and parents looking for personalized math exercises." />
         <meta name="keywords" content="math problems, math generator, AI math, education, mathematics, worksheets, math exercises, learning math" />
         <meta name="author" content="Math Quest Team" />

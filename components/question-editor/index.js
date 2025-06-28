@@ -19,7 +19,7 @@ export default function QuestionEditor({
 }) {
   return (
     <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-200 hover:shadow-md">
-      <div className="p-6">
+      <div className="p-4 md:p-6">
         <form onSubmit={(e) => onGenerate(e, index)}>
           <div className="flex flex-col lg:flex-row lg:items-start gap-4">
             {onRemove && (

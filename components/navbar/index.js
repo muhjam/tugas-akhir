@@ -24,7 +24,7 @@ const Navbar = ({ showLogout = false, onLogout }) => {
       <div className="max-w-[1080px] mx-auto">
         <div className="flex justify-between items-center h-16 px-4">
           <div className="flex items-center gap-3">
-            <img src="/math.png" alt="Jam Math Logo" className="w-8 h-8" />
+            <img src="/math.png" alt="Math Time Logo" className="w-8 h-8" />
             <span className="font-bold text-gray-800 text-lg">{t('main.title')}</span>
           </div>
           <div className="flex items-center gap-2">
