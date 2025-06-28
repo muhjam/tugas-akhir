@@ -303,7 +303,7 @@ useEffect(() => {
             {isParsing && <p className="text-sm text-gray-600 mt-1">{t('modal.uploading')}</p>}
           </div>
 
-          <div className="flex justify-end space-x-2 pb-4">
+          <div className="sticky bottom-0 left-0 right-0 bg-white pt-2 flex justify-end space-x-2 pb-2.5">
             <button
               type="button"
               onClick={handleClose}
