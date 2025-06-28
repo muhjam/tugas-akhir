@@ -136,19 +136,6 @@ export default function Home() {
     }
   };
 
-  const handleSuggestionClick = (indexQuestion, suggestion, e) => {
-    e.preventDefault();
-    e.stopPropagation();
-    
-    setTimeout(() => {
-      const updatedQuestions = [...questions];
-      updatedQuestions[indexQuestion].prompt = suggestion;
-      setQuestions(updatedQuestions);
-      setFilteredSuggestions([]);
-      setActiveSuggestionIndex(null);
-    }, 100);
-  };
-
   const addQuestion = () => {
     setQuestions([...questions, {
       prompt: "",

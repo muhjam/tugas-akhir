@@ -228,7 +228,7 @@ useEffect(() => {
                     className="p-2 hover:bg-gray-100 cursor-pointer"
                     onClick={() => handleSuggestionClick(suggestion.value)}
                   >
-                    <div className="font-medium">{suggestion.label}</div>
+                    <div className="font-medium text-blue-600">{suggestion.label}</div>
                     <div className="text-sm text-gray-600">{suggestion.value}</div>
                   </div>
                 ))}
