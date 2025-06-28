@@ -1,7 +1,7 @@
 {
   "modal": {
-    "title": "Create AI Automated Question Command",
-    "prompt": "Command:",
+    "title": "Create AI Automated Question Instructions",
+    "prompt": "Instruction:",
     "difficulty": "Difficulty",
     "type": "Type",
     "total": "Total Questions",
@@ -124,15 +124,15 @@
     }
   },
   "main": {
-    "title": "Automatic Math Question Generator",
+    "title": "Jam Math",
     "subtitle": "AI-powered automatic math question generation for high school level",
     "developedBy": "Developed by",
     "command": "Instruction:",
     "commandPlaceholder": "Enter your instruction to generate questions",
     "cognitiveLevel": "Cognitive Level:",
     "questionType": "Question Type:",
-    "createQuestion": "Generate Question",
-    "creating": "Generating...",
+    "createQuestion": "Generate",
+    "creating": "Generating",
     "title_field": "Title:",
     "description": "Description",
     "answer": "Answer",

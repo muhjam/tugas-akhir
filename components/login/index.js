@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { useTranslation } from 'next-i18next';
 import users from '../../mock/users/index.json'; 
 import Swal from 'sweetalert2';
-import LanguageSwitcher from '../language-switcher';
+import Navbar from '../navbar';
 
 const Login = () => {
     const { t } = useTranslation('common');
@@ -32,19 +32,17 @@ const Login = () => {
     };
 
     return (
-        <section className="bg-gray-50">
-            <div className="flex flex-col items-center justify-center px-6 py-8 mx-auto md:h-screen lg:py-0">
-                <div className="flex items-center justify-between w-full max-w-md mb-6">
-                    <a href="#" className="flex items-center text-2xl font-semibold text-gray-900">
-                        <img className="w-[200px]" src="/math.png" alt="logo" />
-                    </a>
-                    <LanguageSwitcher />
-                </div>
-                <div className="w-full bg-white rounded-lg shadow md:mt-0 sm:max-w-md xl:p-0">
-                    <div className="p-6 space-y-4 md:space-y-6 sm:p-8 w-full">
-                        <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 md:text-2xl">
-                            {t('login.title')}
-                        </h1>
+        <div className='flex flex-col justify-between w-full min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50'>
+            <Navbar />
+
+            {/* Main Content */}
+            <div className="flex-grow flex items-center justify-center px-4 py-8 mt-16">
+                <div className="w-full max-w-md">
+                    <div className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden">
+                        <div className="p-6">
+                            <h1 className="text-xl font-bold leading-tight tracking-tight text-gray-900 mb-6">
+                                {t('login.title')}
+                            </h1>
                         <form onSubmit={handleLogin} className="flex flex-col items-center w-full gap-4">
                             <div className='w-full'>
                                 <label htmlFor="nuptk" className="block mb-2 text-sm font-medium text-gray-900">{t('login.nuptk')}</label>
@@ -79,10 +77,11 @@ const Login = () => {
                                 {t('login.loginButton')}
                             </button>
                         </form>
+                        </div>
                     </div>
                 </div>
             </div>
-        </section>
+        </div>
     );
 };
 

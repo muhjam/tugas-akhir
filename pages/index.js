@@ -7,12 +7,11 @@ import users from '../mock/users/index.json';
 import { RiPlayListAddFill } from "react-icons/ri";
 import { LuPlus } from "react-icons/lu";
 import { IoIosStarOutline, IoIosArrowDown } from "react-icons/io";
-import { CiLogout } from "react-icons/ci";
 import { GoTrash } from "react-icons/go";
 import { FaHome } from "react-icons/fa";
 import { IoMdSettings } from "react-icons/io";
 import Editor from '../components/editor';
-import LanguageSwitcher from '../components/language-switcher';
+import Navbar from '../components/navbar';
 
 export default function Home() {
   const { t, ready, i18n } = useTranslation('common');
@@ -29,6 +28,14 @@ export default function Home() {
   }]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Check if user is logged in on component mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const nupkt = localStorage.getItem('nupkt');
+      setIsLoggedIn(!!nupkt);
+    }
+  }, []);
   const [isLoading, setIsLoading] = useState(true);
   const [nuptk, setNupkt] = useState("");
   const [nama, setNama] = useState("");
@@ -401,34 +408,13 @@ export default function Home() {
         <Login/>
       ) : (
         <div className='flex flex-col justify-between w-full min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50'>
-          {/* Fixed Navigation Bar at Top */}
-          <div className="fixed top-0 left-0 right-0 bg-white border-b border-gray-200 shadow-sm z-50">
-            <div className="max-w-[1080px] mx-auto">
-              <div className="flex justify-between items-center h-16 px-4">
-                <div className="flex items-center gap-3">
-                  <img src="/math.png" alt="Math Quest Logo" className="w-8 h-8" />
-                  <span className="font-bold text-gray-800 text-lg hidden sm:block">{t('main.title')}</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <LanguageSwitcher />
-                  <button 
-                    type="button" 
-                    onClick={handleLogout}
-                    className="flex items-center gap-2 px-4 py-2 bg-red-500 hover:bg-red-600 text-white rounded-lg transition-colors duration-200"
-                  >
-                    <CiLogout className="text-xl"/>
-                    <span className="hidden sm:block">{t('main.logout')}</span>
-                  </button>
-                </div>
-              </div>
-            </div>
-          </div>
+          <Navbar showLogout={isLoggedIn} onLogout={handleLogout} />
 
           {/* Main Content */}
           <div className="flex-grow mt-16">
             <ModalPrompt isOpen={isModalOpen} onClose={closeModal} onSubmit={handleModalSubmit} />
             
-            <div className="max-w-[1080px] w-full container mx-auto px-4 py-6">
+            <div className="max-w-[1080px] w-full container mx-auto px-1 lg:px-4 py-6">
               <div className="space-y-6">
                 {questions.map((question, index) => (
                   <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-200 hover:shadow-md">
@@ -521,7 +507,7 @@ export default function Home() {
                       </form>
                     </div>
                     
-                    <div className={`transition-all duration-300 ${isShow.includes(index) ? 'max-h-[1000px] opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
+                    <div className={`transition-all duration-300 ${isShow.includes(index) ? 'max-h-[1280px] opacity-100' : 'max-h-0 opacity-0'} overflow-hidden`}>
                       <div className="p-6 pt-0 space-y-4">
                         <div className="space-y-2">
                           <label className="block text-sm font-semibold text-gray-700">{t('main.title_field')}</label>

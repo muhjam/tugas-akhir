@@ -17,7 +17,7 @@ const LanguageSwitcher = () => {
       aria-label={t('language.switch')}
     >
       <IoLanguage className="text-xl" />
-      <span>{t('language.' + (i18n.language === 'en' ? 'id' : 'en'))}</span>
+      <span>{t('language.' + (i18n.language === 'en' ? 'en' : 'id'))}</span>
     </button>
   );
 };
