@@ -42,7 +42,6 @@ export default function Home() {
   const [isFoucused, setIsFocused] = useState(false);
   const [suggestionPosition, setSuggestionPosition] = useState({ top: 0, left: 0, width: 0 });
   const textareaRefs = useRef({});
-  const [currentLanguage, setCurrentLanguage] = useState('id');
 
   // Create dynamic suggestion list based on current language using useMemo
   const suggestionList = useMemo(() => {
@@ -142,8 +141,8 @@ export default function Home() {
       ]
     };
     
-    return suggestions[currentLanguage] || suggestions.id;
-  }, [currentLanguage]); // Update when language changes
+    return suggestions[i18n.language] || suggestions.id;
+  }, [i18n.language]); // Update when language changes
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -303,7 +302,7 @@ export default function Home() {
             headers: {
               "Content-Type": "application/json",
             },
-            body: JSON.stringify({ prompt, type, difficulty, mode: "detail" }),
+            body: JSON.stringify({ prompt, type, difficulty, mode: "detail", lang: i18n.language }),
           });
     
           const response = await result.json();

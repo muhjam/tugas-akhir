@@ -116,7 +116,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
           "Content-Type": "application/json",
         },
         signal: abortControllerRef.current.signal, 
-        body: JSON.stringify({ prompt, type, difficulty, reference, mode: "list", total: total }),
+        body: JSON.stringify({ prompt, type, difficulty, reference, mode: "list", total: total, lang: i18n.language }),
       });
   
       const data = await response.json();
@@ -204,6 +204,9 @@ const handleClose = () => {
               onBlur={handleBlur}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
+              autoCorrect="off"
+              autoCapitalize="off"
+              autoComplete="off"
             />
             {filteredSuggestions.length > 0 && (
               <div className="absolute z-10 w-full bg-white border rounded-lg shadow-lg mt-1 max-h-60 overflow-auto">
