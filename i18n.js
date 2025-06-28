@@ -24,24 +24,13 @@ i18n
     
     // Deteksi bahasa
     detection: {
-      // Urutan deteksi bahasa
       order: ['localStorage', 'navigator'],
-      
-      // Kunci yang digunakan di localStorage
       lookupLocalStorage: 'language',
-      
-      // Cache bahasa yang terdeteksi
       caches: ['localStorage'],
-      
-      // Hanya deteksi bahasa yang didukung
-      checkWhitelist: true
     },
     
     // Bahasa yang didukung
     supportedLngs: ['id', 'en'],
-    
-    // Jangan gunakan fallbackLng untuk bahasa yang tidak didukung
-    load: 'languageOnly',
     
     // Konfigurasi interpolasi
     interpolation: {
@@ -52,18 +41,6 @@ i18n
     react: {
       useSuspense: false,
     },
-    
-    // Opsi tambahan
-    cleanCode: true,
-    nonExplicitSupportedLngs: false,
-    keySeparator: '.',
-    nsSeparator: ':',
   });
-
-// Set bahasa default jika belum diatur
-if (typeof window !== 'undefined' && !localStorage.getItem('language')) {
-  localStorage.setItem('language', 'id');
-  i18n.changeLanguage('id');
-}
 
 export default i18n;

@@ -1,6 +1,5 @@
 import { IoLanguage } from "react-icons/io5";
 import { useTranslation } from 'react-i18next';
-import { useEffect } from 'react';
 
 const LanguageSwitcher = () => {
   const { t, i18n } = useTranslation('common');
@@ -8,28 +7,8 @@ const LanguageSwitcher = () => {
   // Handle language change
   const toggleLanguage = () => {
     const newLang = i18n.language === 'en' ? 'id' : 'en';
-    
-    // Update i18n
     i18n.changeLanguage(newLang);
-    
-    // Save to localStorage
-    if (typeof window !== 'undefined') {
-      localStorage.setItem('language', newLang);
-      // Update HTML lang attribute
-      document.documentElement.lang = newLang;
-    }
   };
-
-  // Update language on mount
-  useEffect(() => {
-    if (typeof window !== 'undefined') {
-      const savedLang = localStorage.getItem('language');
-      if (savedLang && savedLang !== i18n.language) {
-        i18n.changeLanguage(savedLang);
-        document.documentElement.lang = savedLang;
-      }
-    }
-  }, [i18n]);
 
   return (
     <button
