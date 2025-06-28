@@ -6,14 +6,15 @@ export default function Footer({ t }) {
       <div className="max-w-[1080px] mx-auto px-4 text-center text-sm text-gray-600">
         <p>{t('main.subtitle')}</p>
         <p className="mt-1">
-          {t('main.developedBy')} 
+          {t('main.developedBy')}
+          {" "} 
           <a 
             href="https://www.instagram.com/muhamadjamaludinpad/" 
             className="font-semibold text-blue-600 hover:text-blue-800 hover:underline"
             target="_blank"
             rel="noopener noreferrer"
           >
-            {" "}Jamjam
+            Jamjam
           </a>
         </p>
       </div>
