@@ -1,11 +1,8 @@
 import React, { useState } from "react";
 import dynamic from "next/dynamic";
-import "katex/dist/katex.min.css";
 import rehypeKatex from "rehype-katex";
 import remarkMath from "remark-math";
 import rehypeRaw from "rehype-raw";
-import "@uiw/react-md-editor/markdown-editor.css";
-import "@uiw/react-markdown-preview/markdown.css";
 import Preview from "../preview";
 import ButtonPreview from "../buttons/button-preview";
 

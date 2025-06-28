@@ -1,0 +1,158 @@
+{
+  "modal": {
+    "title": "Membuat Perintah Soal AI Otomatis",
+    "prompt": "Perintah:",
+    "difficulty": "Tingkat Kesulitan",
+    "type": "Jenis Soal",
+    "total": "Jumlah Soal",
+    "reference": "Referensi",
+    "generate": "Generate",
+    "cancel": "Batal",
+    "uploading": "Mengunggah...",
+    "generating": "Membuat...",
+    "uploadPdf": "Unggah PDF"
+  },
+  "difficulties": {
+    "random": "Acak",
+    "easy": "Mudah",
+    "medium": "Sedang",
+    "hard": "Sulit"
+  },
+  "types": {
+    "random": "Acak",
+    "multipleChoice": "Pilihan Ganda",
+    "essay": "Essay"
+  },
+  "suggestions": {
+    "simple": {
+      "label": "Soal Simple",
+      "value": "Buatkan satu soal matematika tingkat SMA tentang [...]."
+    },
+    "illustrated": {
+      "label": "Soal Bergambar",
+      "value": "Buatkan satu soal matematika tingkat SMA tentang [...], sertakan gambar pada soal serta informasinya."
+    },
+    "examModel": {
+      "label": "Soal Bermodel",
+      "value": "Buat satu soal latihan ujian matematika model [UNBK/UTBK/SBMPTN] untuk tingkat SMA dengan topik [...]. Gunakan gaya bahasa dan struktur soal yang mirip dengan soal asli ujian. Sertakan opsi jawaban (jika ada) dan pembahasannya."
+    },
+    "hots": {
+      "label": "Soal HOTS",
+      "value": "Buatkan soal matematika tingkat SMA yang menuntut keterampilan berpikir tingkat tinggi (HOTS), seperti analisis, sintesis, atau evaluasi, dengan topik [...]. Sertakan soal, jawaban, dan alasan mengapa soal tersebut masuk kategori HOTS."
+    },
+    "shortAnswer": {
+      "label": "Soal Singkat",
+      "value": "Buatkan satu soal matematika isian singkat untuk siswa SMA tentang [...]. Soal harus memiliki jawaban akhir berupa angka atau ekspresi matematika. Sertakan juga kunci jawaban dan langkah-langkah penyelesaiannya."
+    },
+    "story": {
+      "label": "Soal Cerita",
+      "value": "Buat satu soal cerita kontekstual matematika tingkat SMA yang berkaitan dengan kehidupan sehari-hari, dengan topik [...]. Soal harus mengandung narasi dan membutuhkan pemahaman konsep matematika. Sertakan juga jawabannya lengkap dengan pembahasan."
+    },
+    "quadratic": {
+      "label": "Soal Fungsi Kuadrat",
+      "value": "Buatlah sebuah soal mengenai fungsi kuadrat yang mencakup analisis grafik, akar-akar persamaan, dan hubungan koefisien dengan bentuk parabola. Sertakan penjelasan konsep, langkah-langkah penyelesaian, serta interpretasi hasil agar siswa dapat memahami perubahan bentuk grafik akibat variasi koefisien."
+    },
+    "limit": {
+      "label": "Soal Limit Fungsi",
+      "value": "Kembangkan soal mengenai limit fungsi aljabar, misalnya limit fungsi polinomial atau rasional saat mendekati titik tertentu. Berikan langkah-langkah perhitungan, penjelasan konsep limit, serta diskusi mengenai bagaimana limit berperan dalam analisis kelangsungan fungsi."
+    },
+    "derivative": {
+      "label": "Soal Turunan Fungsi",
+      "value": "Buat soal yang menantang siswa untuk menghitung turunan dari fungsi (bisa fungsi aljabar atau trigonometri) dan mengaitkannya dengan aplikasi grafik (misalnya mencari titik maksimum, minimum, atau titik belok). Sertakan uraian tentang aturan turunan dan interpretasi grafik dari hasil turunan."
+    },
+    "integral": {
+      "label": "Soal Integral",
+      "value": "Rancang soal integral tak tentu dari fungsi aljabar yang sederhana, misalnya fungsi polinomial. Sertakan langkah-langkah pengintegrasian, teknik substitusi (jika perlu), dan penjelasan mengenai antiturunan, sehingga siswa memahami hubungan antara fungsi asli dan integralnya."
+    },
+    "statistics": {
+      "label": "Soal Statistika",
+      "value": "Buat soal yang berkaitan dengan statistika dasar, seperti perhitungan nilai rata-rata, median, modus, serta simpangan baku dari sekumpulan data nyata. Sertakan penjelasan metode pengolahan data dan interpretasi hasil untuk membantu siswa mengaitkan konsep statistika dengan aplikasi di dunia nyata."
+    },
+    "algebra": {
+      "label": "Aljabar",
+      "value": "Buatkan soal yang menguji pemahaman siswa tentang konsep dasar aljabar, termasuk operasi dan persamaan aljabar."
+    },
+    "trigonometry": {
+      "label": "Trigonometri",
+      "value": "Buatkan soal yang melatih kemampuan siswa dalam memahami dan menerapkan konsep trigonometri, seperti sudut dan identitas trigonometri."
+    },
+    "calculus": {
+      "label": "Kalkulus",
+      "value": "Rancang soal yang menguji keterampilan siswa dalam kalkulus, termasuk diferensiasi dan integrasi fungsi."
+    },
+    "geometry": {
+      "label": "Geometri",
+      "value": "Buatkan soal yang menilai pemahaman siswa tentang konsep geometri, termasuk bentuk, ukuran, dan sifat ruang."
+    },
+    "probability": {
+      "label": "Probabilitas",
+      "value": "Buat soal yang melatih siswa dalam memahami konsep probabilitas dan penerapannya dalam berbagai situasi."
+    },
+    "numberTheory": {
+      "label": "Teori Bilangan",
+      "value": "Rancang soal yang menguji pengetahuan siswa tentang teori bilangan, termasuk faktor, kelipatan, dan bilangan prima."
+    },
+    "linearAlgebra": {
+      "label": "Aljabar Linear",
+      "value": "Buatkan soal yang menguji pemahaman siswa tentang aljabar linear, termasuk matriks dan vektor."
+    },
+    "discreteMath": {
+      "label": "Matematika Diskrit",
+      "value": "Kembangkan soal yang melatih siswa dalam konsep matematika diskrit, seperti graf dan kombinatorik."
+    },
+    "mathLogic": {
+      "label": "Logika Matematika",
+      "value": "Buat soal yang menguji kemampuan siswa dalam logika matematika, termasuk proposisi dan pembuktian."
+    }
+  },
+  "login": {
+    "title": "Masuk untuk Guru",
+    "nuptk": "NUPTK atau Email",
+    "nuptkPlaceholder": "Nomor Unik Pendidik dan Tenaga Kependidikan",
+    "password": "Kata Sandi",
+    "passwordPlaceholder": "••••••••",
+    "loginButton": "Masuk",
+    "success": {
+      "title": "Login Berhasil!",
+      "welcomeMale": "Selamat Datang, Bapak {{name}}!",
+      "welcomeFemale": "Selamat Datang, Ibu {{name}}!"
+    },
+    "error": {
+      "title": "Login Gagal",
+      "message": "NUPTK atau Password Salah",
+      "tryAgain": "Coba Lagi"
+    }
+  },
+  "main": {
+    "title": "Jam Math",
+    "subtitle": "Pembuatan soal matematika tingkat SMA otomatis menggunakan AI",
+    "developedBy": "Dikembangkan oleh",
+    "command": "Perintah:",
+    "commandPlaceholder": "Masukan perintah untuk membuat soal",
+    "cognitiveLevel": "Tingkat Kognitif:",
+    "questionType": "Tipe Soal:",
+    "createQuestion": "Buat Soal",
+    "creating": "Membuat...",
+    "title_field": "Judul:",
+    "description": "Deskripsi",
+    "answer": "Jawaban",
+    "branch": "Cabang Ilmu:",
+    "feedback": "Tanggapan",
+    "logout": "Keluar",
+    "addQuestion": "Tambah Soal",
+    "generate": "Buat Otomatis",
+    "cognitive": {
+      "c1": "C1 (Mengingat)",
+      "c2": "C2 (Memahami)",
+      "c3": "C3 (Menerapkan)",
+      "c4": "C4 (Menganalisis)",
+      "c5": "C5 (Mengevaluasi)",
+      "c6": "C6 (Mencipta)"
+    }
+  },
+  "language": {
+    "en": "EN",
+    "id": "ID",
+    "switch": "Ganti bahasa"
+  }
+} 

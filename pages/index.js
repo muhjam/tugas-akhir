@@ -1,72 +1,23 @@
-import { useState, useEffect } from 'react';
-import 'katex/dist/katex.min.css'; 
-import '@uiw/react-md-editor/markdown-editor.css';
-import '@uiw/react-markdown-preview/markdown.css';
+import { useState, useEffect, useRef, useMemo } from 'react';
+import { useTranslation } from 'next-i18next';
+import { serverSideTranslations } from 'next-i18next/serverSideTranslations';
 import ModalPrompt from '/components/modal-prompt';
 import Login from '/components/login';
 import users from '../mock/users/index.json';
-import { RiPlayListAddFill } from "react-icons/ri";
-import { LuPlus } from "react-icons/lu";
-import { IoIosStarOutline, IoIosArrowDown } from "react-icons/io";
-import { CiLogout } from "react-icons/ci";
-import { GoTrash } from "react-icons/go";
-import Editor from '../components/editor';
-
-  const suggestionList = [
-  {
-    label: "Simple Assessment",
-    value: "Create one high school level math assessment about [...]"
-  },
-  {
-    label: "Assessment with Image",
-    value: "Create one high school level math assessment about [...] including an image and its information."
-  },
-  {
-    label: "Exam-Style Assessment",
-    value: "Create a practice exam math assessment in the style of [UNBK/UTBK/SBMPTN] for high school level about [...]. Use language and assessment structure similar to actual exam questions. Include answer options (if any) and explanations."
-  },
-  {
-    label: "HOTS Assessment",
-    value: "Create a high school level math assessment that requires higher-order thinking skills (HOTS) such as analysis, synthesis, or evaluation, about [...]. Include the assessment, answer, and explanation of why this is considered a HOTS assessment."
-  },
-  {
-    label: "Short Answer Assessment",
-    value: "Create one short-answer math assessment for high school students about [...]. The assessment should have a final answer in the form of a number or mathematical expression. Also include the answer key and solution steps."
-  },
-  {
-    label: "Word Assessment",
-    value: "Create a contextual math word assessment for high school level related to daily life, about [...]. The assessment should contain a narrative and require understanding of mathematical concepts. Also include the complete answer with explanation."
-  },
-  {
-    label: "Quadratic Function and Graph Assessment",
-    value: "Create an assessment about quadratic functions that includes graph analysis, equation roots, and the relationship between coefficients and parabola shape. Include concept explanations, solution steps, and result interpretation to help students understand how coefficient variations affect the graph's shape."
-  },
-  {
-    label: "Algebraic Limit Assessment",
-    value: "Develop an assessment about algebraic limits, such as limits of polynomial or rational functions approaching a certain point. Include calculation steps, limit concept explanations, and discussion of how limits function in continuity analysis."
-  },
-  {
-    label: "Function Derivative Assessment",
-    value: "Create a challenging assessment for students to calculate the derivative of a function (could be algebraic or trigonometric) and relate it to graphical applications (e.g., finding maximum, minimum, or inflection points). Include explanations of derivative rules and graphical interpretations of the derivative results."
-  },
-  {
-    label: "Indefinite Integral Assessment",
-    value: "Design an indefinite integral assessment of a simple algebraic function, such as a polynomial function. Include integration steps, substitution techniques (if needed), and explanations about antiderivatives, so students understand the relationship between the original function and its integral."
-  },
-  {
-    label: "Statistics and Data Processing Assessment",
-    value: "Create an assessment related to basic statistics, such as calculating mean, median, mode, and standard deviation from a set of real data. Include explanations of data processing methods and result interpretations to help students connect statistical concepts with real-world applications."
-  },
-];
-
+import Navbar from '../components/navbar';
+import QuestionEditor from '../components/question-editor';
+import SuggestionList from '../components/suggestion-list';
+import BottomNavigation from '../components/bottom-navigation';
+import Footer from '../components/footer';
 
 export default function Home() {
+  const { t, ready, i18n } = useTranslation('common');
   const [isGenerating, setIsGenerating] = useState([]);
   const [isShow, setIsShow] = useState([]);
   const [questions, setQuestions] = useState([{
     prompt: "",
-    difficulty: "C1 (Remember)",
-    type: "Essay",
+    difficulty: "c1",
+    type: "essay",
     title: "",
     description: "",
     answer: "",
@@ -74,6 +25,14 @@ export default function Home() {
   }]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+
+  // Check if user is logged in on component mount
+  useEffect(() => {
+    if (typeof window !== 'undefined') {
+      const nupkt = localStorage.getItem('nupkt');
+      setIsLoggedIn(!!nupkt);
+    }
+  }, []);
   const [isLoading, setIsLoading] = useState(true);
   const [nuptk, setNupkt] = useState("");
   const [nama, setNama] = useState("");
@@ -81,6 +40,110 @@ export default function Home() {
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const [activeSuggestionIndex, setActiveSuggestionIndex] = useState(null);
   const [isFoucused, setIsFocused] = useState(false);
+  const [suggestionPosition, setSuggestionPosition] = useState({ top: 0, left: 0, width: 0 });
+  const textareaRefs = useRef({});
+  const [currentLanguage, setCurrentLanguage] = useState('id');
+
+  // Create dynamic suggestion list based on current language using useMemo
+  const suggestionList = useMemo(() => {
+    // Define suggestions for each language
+    const suggestions = {
+      id: [
+        {
+          label: "Soal Simple",
+          value: "Buatkan satu soal matematika tingkat SMA tentang [...]."
+        },
+        {
+          label: "Soal Bergambar", 
+          value: "Buatkan satu soal matematika tingkat SMA tentang [...], sertakan gambar pada soal serta informasinya."
+        },
+        {
+          label: "Soal Bermodel",
+          value: "Buat satu soal latihan ujian matematika model [UNBK/UTBK/SBMPTN] untuk tingkat SMA dengan topik [...]. Gunakan gaya bahasa dan struktur soal yang mirip dengan soal asli ujian. Sertakan opsi jawaban (jika ada) dan pembahasannya."
+        },
+        {
+          label: "Soal HOTS",
+          value: "Buatkan soal matematika tingkat SMA yang menuntut keterampilan berpikir tingkat tinggi (HOTS), seperti analisis, sintesis, atau evaluasi, dengan topik [...]. Sertakan soal, jawaban, dan alasan mengapa soal tersebut masuk kategori HOTS."
+        },
+        {
+          label: "Soal Singkat",
+          value: "Buatkan satu soal matematika isian singkat untuk siswa SMA tentang [...]. Soal harus memiliki jawaban akhir berupa angka atau ekspresi matematika. Sertakan juga kunci jawaban dan langkah-langkah penyelesaiannya."
+        },
+        {
+          label: "Soal Cerita", 
+          value: "Buat satu soal cerita kontekstual matematika tingkat SMA yang berkaitan dengan kehidupan sehari-hari, dengan topik [...]. Soal harus mengandung narasi dan membutuhkan pemahaman konsep matematika. Sertakan juga jawabannya lengkap dengan pembahasan."
+        },
+        {
+          label: "Soal Fungsi Kuadrat",
+          value: "Buatlah sebuah soal mengenai fungsi kuadrat yang mencakup analisis grafik, akar-akar persamaan, dan hubungan koefisien dengan bentuk parabola. Sertakan penjelasan konsep, langkah-langkah penyelesaian, serta interpretasi hasil agar siswa dapat memahami perubahan bentuk grafik akibat variasi koefisien."
+        },
+        {
+          label: "Soal Limit Fungsi",
+          value: "Kembangkan soal mengenai limit fungsi aljabar, misalnya limit fungsi polinomial atau rasional saat mendekati titik tertentu. Berikan langkah-langkah perhitungan, penjelasan konsep limit, serta diskusi mengenai bagaimana limit berperan dalam analisis kelangsungan fungsi."
+        },
+        {
+          label: "Soal Turunan Fungsi",
+          value: "Buat soal yang menantang siswa untuk menghitung turunan dari fungsi (bisa fungsi aljabar atau trigonometri) dan mengaitkannya dengan aplikasi grafik (misalnya mencari titik maksimum, minimum, atau titik belok). Sertakan uraian tentang aturan turunan dan interpretasi grafik dari hasil turunan."
+        },
+        {
+          label: "Soal Integral",
+          value: "Rancang soal integral tak tentu dari fungsi aljabar yang sederhana, misalnya fungsi polinomial. Sertakan langkah-langkah pengintegrasian, teknik substitusi (jika perlu), dan penjelasan mengenai antiturunan, sehingga siswa memahami hubungan antara fungsi asli dan integralnya."
+        },
+        {
+          label: "Soal Statistika",
+          value: "Buat soal yang berkaitan dengan statistika dasar, seperti perhitungan nilai rata-rata, median, modus, serta simpangan baku dari sekumpulan data nyata. Sertakan penjelasan metode pengolahan data dan interpretasi hasil untuk membantu siswa mengaitkan konsep statistika dengan aplikasi di dunia nyata."
+        }
+      ],
+      en: [
+        {
+          label: "Simple Question",
+          value: "Create a simple high school math question about [...]."
+        },
+        {
+          label: "Illustrated Question",
+          value: "Create a high school math question about [...] that includes diagrams, charts, or visual elements to support the problem."
+        },
+        {
+          label: "Exam-Style Question",
+          value: "Create a practice question in the style of [SAT/ACT/AP] exams for high school level on the topic of [...]. Use language and structure similar to actual exam questions. Include answer choices (if applicable) and detailed explanations."
+        },
+        {
+          label: "HOTS Question",
+          value: "Create a high school math question that requires higher-order thinking skills (HOTS), such as analysis, synthesis, or evaluation, on the topic of [...]. Include the question, answer, and explanation of why this qualifies as a HOTS question."
+        },
+        {
+          label: "Short Answer Question",
+          value: "Create a short-answer math question for high school students about [...]. The question should have a final answer in the form of a number or mathematical expression. Include the answer key and step-by-step solution."
+        },
+        {
+          label: "Word Problem",
+          value: "Create a contextual word problem for high school math related to real-life situations, focusing on [...]. The problem should include a narrative and require understanding of mathematical concepts. Provide the complete answer with detailed explanation."
+        },
+        {
+          label: "Quadratic Function Question",
+          value: "Create a question about quadratic functions that covers graph analysis, equation roots, and the relationship between coefficients and parabola shape. Include concept explanations, solution steps, and result interpretation to help students understand how coefficient variations affect graph shape."
+        },
+        {
+          label: "Function Limit Question",
+          value: "Develop a question about algebraic function limits, such as polynomial or rational function limits approaching specific points. Provide calculation steps, limit concept explanations, and discussion on how limits play a role in analyzing function continuity."
+        },
+        {
+          label: "Function Derivative Question",
+          value: "Create a challenging question for students to calculate derivatives of functions (algebraic or trigonometric) and relate them to graph applications (finding maximum, minimum, or inflection points). Include derivative rules and graph interpretation of derivative results."
+        },
+        {
+          label: "Integral Question",
+          value: "Design an indefinite integral question for simple algebraic functions, such as polynomial functions. Include integration steps, substitution techniques (if needed), and antiderivative explanations, helping students understand the relationship between original functions and their integrals."
+        },
+        {
+          label: "Statistics Question",
+          value: "Create a question related to basic statistics, such as calculating mean, median, mode, and standard deviation from real data sets. Include data processing method explanations and result interpretations to help students connect statistical concepts with real-world applications."
+        }
+      ]
+    };
+    
+    return suggestions[currentLanguage] || suggestions.id;
+  }, [currentLanguage]); // Update when language changes
 
   const openModal = () => setIsModalOpen(true);
   const closeModal = () => setIsModalOpen(false);
@@ -104,27 +167,44 @@ export default function Home() {
     script.async = true;
     document.body.appendChild(script);
     setIsLoading(false);
-  }, []);
+  }, []); // Run only once on mount
+
+  // Handle language changes
+  useEffect(() => {
+    if (ready && questions.length > 0) {
+      setQuestions(prevQuestions => prevQuestions.map(q => ({
+        ...q,
+        difficulty: "c1",
+        type: "essay"
+      })));
+    }
+  }, [ready, t, i18n.language]); // Re-run when language changes
+
+  // Listen for custom language change events
+  useEffect(() => {
+    const handleLanguageChange = (event) => {
+      const { language } = event.detail;
+      if (language && ready) {
+        setQuestions(prevQuestions => prevQuestions.map(q => ({
+          ...q,
+          difficulty: "c1",
+          type: "essay"
+        })));
+      }
+    };
+
+    window.addEventListener('languageChanged', handleLanguageChange);
+    return () => window.removeEventListener('languageChanged', handleLanguageChange);
+  }, [ready, t]);
 
   const handleModalSubmit = (data) => {
     data?.map((item) => {
-      // Translate difficulty and type to English
-      const translatedDifficulty = item?.difficulty
-        .replace('Mengingat', 'Remember')
-        .replace('Memahami', 'Understand')
-        .replace('Menerapkan', 'Apply')
-        .replace('Menganalisis', 'Analyze')
-        .replace('Mengevaluasi', 'Evaluate')
-        .replace('Mencipta', 'Create');
-      
-      const translatedType = item?.type === 'Esai' ? 'Essay' : item?.type;
-      
       setQuestions((prev) => [
         ...prev,
         {
           prompt: item?.prompt,
-          difficulty: translatedDifficulty || item?.difficulty,
-          type: translatedType || item?.type,
+          difficulty: item?.difficulty || "c1",
+          type: item?.type || "essay",
           title: "",
           description: "",
           answer: "",
@@ -173,8 +253,8 @@ export default function Home() {
   const addQuestion = () => {
     setQuestions([...questions, {
       prompt: "",
-      difficulty: "C1 (Remember)",
-      type: "Essay",
+      difficulty: "c1",
+      type: "essay",
       title: "",
       description: "",
       answer: "",
@@ -287,223 +367,102 @@ export default function Home() {
     setIsLoggedIn(false);
   };
 
-  console.log(activeSuggestionIndex)
+  const handleTextareaFocus = (index, event) => {
+    setIsFocused(true);
+    setFilteredSuggestions(suggestionList);
+    
+    // Get textarea position
+    const rect = event.target.getBoundingClientRect();
+    setSuggestionPosition({
+      top: rect.bottom + window.scrollY,
+      left: rect.left + window.scrollX,
+      width: rect.width
+    });
+    
+    setTimeout(() => {
+      setActiveSuggestionIndex(index);
+    }, 200);
+  };
+
+  if (isLoading || !ready) {
+    return (
+      <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center">
+        <div className="text-center">
+          <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto mb-4"></div>
+          <p className="text-gray-600">Loading...</p>
+        </div>
+      </div>
+    );
+  }
 
   return (
-    <>
+    <div key={i18n.language}>
       {isLoading ? ( 
-        <div className="flex items-center justify-center w-full h-screen bg-white">
+        <div className="flex items-center justify-center w-full h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
           <h1 className="text-gray-500">Loading...</h1>
         </div>
       ) : !isLoggedIn ? ( 
         <Login/>
       ) : (
-      <div className='flex flex-col justify-between w-full h-[100dvh]'>
-        <div>
-          <ModalPrompt isOpen={isModalOpen} onClose={closeModal} onSubmit={handleModalSubmit} />
-          <div className="p-[8px] lg:p-[24px] flex justify-center">
-            <div className="flex justify-center mb-[8px]">
-              <div className="max-w-[500px] w-full">
-                <h1 className="text-[24px] font-[600] text-center">Automatic Math Problem Generator</h1>
-                <h2 className="text-[14px] text-gray-800 font-[500] text-center">
-                  Automatic high school level math problem generation using AI <br />
-                  developed by <a href="https://www.instagram.com/muhamadjamaludinpad/" className="font-[600] hover:underline">Jamjam</a>.
-                </h2>
+        <div className='flex flex-col justify-between w-full min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50'>
+          <Navbar showLogout={isLoggedIn} onLogout={handleLogout} />
+
+          {/* Main Content */}
+          <div className="flex-grow mt-16">
+            <ModalPrompt isOpen={isModalOpen} onClose={closeModal} onSubmit={handleModalSubmit} />
+            
+            <div className="max-w-[1080px] w-full container mx-auto px-1 lg:px-4 py-6">
+              <div className="space-y-6">
+                {questions.map((question, index) => (
+                  <QuestionEditor
+                    key={index}
+                    index={index}
+                    question={question}
+                    isGenerating={isGenerating}
+                    isShow={isShow}
+                    onRemove={questions.length > 1 ? removeQuestion : null}
+                    onInputChange={handleInputChange}
+                    onGenerate={onGenerate}
+                    onToggleVisibility={toggleVisibility}
+                    onTextareaFocus={handleTextareaFocus}
+                    textareaRefs={textareaRefs}
+                    activeSuggestionIndex={activeSuggestionIndex}
+                    t={t}
+                  />
+                ))}
               </div>
             </div>
           </div>
 
-          <div className="max-w-[1080px] w-full container mx-auto">
-            <div className="p-[8px] lg:p-[24px] flex flex-col justify-center">
-              {questions.map((question, index) => (
-                <div className="max-w-[1080px] w-full shadow-md p-2 lg:p-4" key={index}>
-                  <div className="flex flex-col mb-[8px]">
-                    <form onSubmit={(e) => onGenerate(e, index)}>
-                      <div className="flex flex-col lg:flex-row lg:items-center gap-2">
-                        {questions.length > 1 && (
-                          <div className="w-[40px] lg:w-[60px] hover:opacity-[0.8] cursor-pointer bg-red-500 p-2 rounded-md flex items-center justify-center" onClick={() => removeQuestion(index)}>
-                            <GoTrash className='text-md text-white'/>
-                          </div>
-                        )}
-                        <div className="w-full space-y-1 relative">
-                          <label htmlFor="prompt" className="text-[14px] font-[600]">Prompt:</label>
-                          <input 
-                            type="text" 
-                            id="prompt" 
-                            value={question.prompt} 
-                            onChange={(e) => handleInputChange(index, 'prompt', e.target.value)} 
-                            onFocus={() => {
-                              setIsFocused(true);
-                              setFilteredSuggestions(suggestionList);
-                              setTimeout(() => {
-                                  setActiveSuggestionIndex(index);
-                              }, 200);
-                            }}
-                            onBlur={() => {
-                              setTimeout(() => {
-                                if (activeSuggestionIndex === index) {
-                                  setActiveSuggestionIndex(null);
-                                }
-                              }, 100);
-                            }}
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 focus:outline-none" 
-                            placeholder="Enter command to Generate" 
-                            required 
-                            autoComplete="off"
-                          />
-                         {activeSuggestionIndex === index && filteredSuggestions.length > 0 && (
-                            <ul className="absolute z-[11] w-full bg-white border border-gray-300 rounded-md max-h-48 overflow-y-auto">
-                              {filteredSuggestions.map((s, sIndex) => (
-                                <li
-                                  key={sIndex}
-                                  className="p-2 hover:bg-gray-100 cursor-pointer"
-                                  onMouseDown={(e) => handleSuggestionClick(index, s.value, e)}
-                                >
-                                  <strong>{s.label}:</strong> {s.value}
-                                </li>
-                              ))}
-                            </ul>
-                          )}
-                        </div>
-                        <div className="flex flex-col justify-center w-full lg:max-w-[200px] space-y-1">
-                          <label className="text-[14px] font-[600] capitalize">Cognitive Level:</label>
-                          <select 
-                            value={question.difficulty} 
-                            onChange={(e) => handleInputChange(index, 'difficulty', e.target.value)} 
-                            className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-2.5 cursor-pointer"
-                          >
-                            <option value="C1 (Remember)">C1 (Remember)</option>
-                            <option value="C2 (Understand)">C2 (Understand)</option>
-                            <option value="C3 (Apply)">C3 (Apply)</option>
-                            <option value="C4 (Analyze)">C4 (Analyze)</option>
-                            <option value="C5 (Evaluate)">C5 (Evaluate)</option>
-                            <option value="C6 (Create)">C6 (Create)</option>
-                          </select>
-                        </div>
-                        <div className="flex flex-col justify-center w-full space-y-1">
-                          <label className="text-[14px] font-[600]">Question Type:</label>
-                          <div className="flex gap-2">
-                            <select 
-                              value={question.type} 
-                              onChange={(e) => handleInputChange(index, 'type', e.target.value)} 
-                              className="bg-gray-50 w-full lg:max-w-[200px] border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 p-2.5 cursor-pointer"
-                            >
-                              <option value="Essay">Essay</option>
-                              <option value="Multiple Choice">Multiple Choice</option>
-                            </select>
-                            <div className="lg:flex items-center gap-2 justify-end w-full lg:w-[180px] ms-auto hidden">
-                              <button 
-                                type="submit" 
-                                disabled={isGenerating[index]}
-                                className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-[180px] px-5 py-2.5`}
-                              >
-                                {isGenerating[index] ? "Generating..." : "Generate"}
-                              </button>
-                              <button 
-                                type="button" 
-                                onClick={() => toggleVisibility(index)} 
-                                className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5"
-                              >
-                                <IoIosArrowDown className={`text-xl duration-200 ${isShow.includes(index) && ('-rotate-180')}`}/>
-                              </button>
-                            </div>
-                          </div>
-                        </div>
-                        <div className="flex flex-col justify-center w-full lg:hidden">
-                          <div className="flex items-center gap-2 justify-end w-full lg:hidden">
-                              <button 
-                                type="submit" 
-                                disabled={isGenerating[index]}
-                                className={`${isGenerating[index] ? 'bg-gray-300 cursor-wait ' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full px-5 py-2.5`}
-                              >
-                                {isGenerating[index] ? "Generating..." : "Generate"}
-                              </button>
-                              <button 
-                                type="button" 
-                                onClick={() => toggleVisibility(index)} 
-                                className="bg-sky-500 hover:bg-sky-600 text-white font-medium rounded-md text-sm w-fit px-5 py-2.5"
-                              >
-                                <IoIosArrowDown className={`text-xl duration-200 ${isShow.includes(index) && ('-rotate-180')}`}/>
-                              </button>
-                            </div>
-                        </div>
-                      </div>
-                    </form>
-                  </div>
-                  {/* Bagian tambahan untuk input judul, deskripsi, dll */}
-                  <div className={`duration-300 px-1 ${isShow.includes(index) ? 'h-[1220px] overflow-y-scroll' : 'h-0 overflow-y-hidden'}`}>
-                    <div className="flex flex-col mb-[8px] space-y-1">
-                      <label htmlFor="title" className="text-[14px] font-[600]">Title:</label>
-                      <input 
-                        type="text" 
-                        id="title" 
-                        value={question.title} 
-                        onChange={(e) => handleInputChange(index, 'title', e.target.value)} 
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 focus:outline-none" 
-                        required 
-                      />
-                    </div>
-                    <div className="mb-[10px]">
-                        <Editor label={"Description"} id={"description"} index={index} value={question.description} onChange={(index, id, val ) => handleInputChange(index, id, val)}  />
-                    </div>
-                    <div className="mb-[10px]">
-                      <Editor label={"Answer"} id={"answer"} index={index} value={question.answer} onChange={(index, id, val ) => handleInputChange(index, id, val)}  />
-                    </div>
-                    <div className="flex flex-col mb-[8px] space-y-1">
-                      <label htmlFor="topic" className="text-[14px] font-[600]">Topic:</label>
-                      <input 
-                        type="text" 
-                        id="topic" 
-                        value={question.topic} 
-                        onChange={(e) => handleInputChange(index, 'topic', e.target.value)} 
-                        className="bg-gray-50 border border-gray-300 text-gray-900 text-sm rounded-md focus:ring-blue-500 focus:border-blue-500 block w-full p-2.5 focus:outline-none" 
-                        required 
-                      />
-                    </div>
-                  </div>
-                </div>
-              ))}
-            </div>
-            <div className="flex justify-between items-center px-2 lg:pl-6 lg:pr-5 gap-2 w-full mb-2 mt-2 lg:mt-0">
-              <a      
-                href={`#tally-open=m61EBN&tally-layout=modal&tally-emoji-text=👋&tally-emoji-animation=wave&nuptk=${nuptk}&nama=${nama}`}
-                className="bg-yellow-500 hover:bg-yellow-600 text-white font-medium rounded-md text-sm lg:w-auto px-5 py-2.5 flex items-center justify-between gap-1" >
-                  <IoIosStarOutline className='text-xl'/>
-                  <span className="lg:block hidden">Feedback</span>
-              </a>
-              <div className="flex justify-end gap-2">
-                <button 
-                  type="button" 
-                  onClick={openModal} 
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md text-sm w-full lg:w-auto px-5 py-2.5"
-                >
-                  <RiPlayListAddFill className='text-xl'/>
-                </button>
-                <button 
-                  type="button" 
-                  onClick={addQuestion} 
-                  className="bg-blue-500 hover:bg-blue-600 text-white font-medium rounded-md text-sm w-full lg:w-auto px-5 py-2.5 flex justify-between items-center gap-1"
-                >
-                  <LuPlus className='text-xl'/>
-                </button>
-              </div>
-            </div>
-            <div className="flex lg:hidden justify-between lg:justify-end px-2 lg:px-0 lg:pr-5 gap-2 w-full mb-4">
-            </div>
-          </div>
+          {/* Suggestion List */}
+          <SuggestionList
+            activeSuggestionIndex={activeSuggestionIndex}
+            filteredSuggestions={filteredSuggestions}
+            suggestionPosition={suggestionPosition}
+            onSuggestionClick={handleSuggestionClick}
+          />
+
+          {/* Bottom Navigation */}
+          <BottomNavigation
+            nuptk={nuptk}
+            nama={nama}
+            onOpenModal={openModal}
+            onAddQuestion={addQuestion}
+            t={t}
+          />
+
+          {/* Footer */}
+          <Footer t={t} />
         </div>
-        <div>
-          <button 
-            type="button" 
-            onClick={handleLogout}
-            className="bg-red-500 hover:bg-red-600 text-white font-medium rounded-md text-sm w-fit px-5 py-2.5 flex justify-between items-center gap-1 m-2"
-          >
-            <CiLogout className="text-xl"/>
-            Logout
-          </button>
-        </div>
-      </div>
       )}
-    </>
+    </div>
   );
+}
+
+export async function getStaticProps({ locale }) {
+  return {
+    props: {
+      ...(await serverSideTranslations(locale || 'id', ['common'])),
+    },
+  };
 }
