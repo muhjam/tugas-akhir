@@ -652,10 +652,13 @@ export default function Home() {
   );
 }
 
-export async function getStaticProps({ locale }) {
+export async function getServerSideProps({ req, locale }) {
+  // Get language from cookie if available
+  const language = req.cookies?.NEXT_LOCALE || locale || 'id';
+  
   return {
     props: {
-      ...(await serverSideTranslations(locale || 'id', ['common'])),
+      ...(await serverSideTranslations(language, ['common'])),
     },
   };
 }

@@ -1,6 +1,7 @@
 import { IoLanguage } from "react-icons/io5";
 import { useState, useEffect } from 'react';
 import { useRouter } from 'next/router';
+import Cookies from 'js-cookie';
 
 const LanguageSwitcher = () => {
   const [currentLanguage, setCurrentLanguage] = useState('id');
@@ -13,6 +14,8 @@ const LanguageSwitcher = () => {
 
   const changeLanguage = (newLanguage) => {
     localStorage.setItem('language', newLanguage);
+    // Set language cookie
+    Cookies.set('NEXT_LOCALE', newLanguage, { path: '/' });
     setCurrentLanguage(newLanguage);
     window.location.reload(); // Force reload to apply new language
   };
