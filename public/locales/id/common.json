@@ -149,5 +149,10 @@
       "c5": "C5 (Mengevaluasi)",
       "c6": "C6 (Mencipta)"
     }
+  },
+  "language": {
+    "en": "EN",
+    "id": "ID",
+    "switch": "Ganti bahasa"
   }
 } 

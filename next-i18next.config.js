@@ -1,12 +1,23 @@
 module.exports = {
+  // Konfigurasi dasar i18n
   i18n: {
     defaultLocale: 'id',
     locales: ['id', 'en'],
-    localeDetection: false,
+    localePath: './public/locales',
   },
-  fallbackLng: 'id',
-  debug: false,
+  
+  // Opsi tambahan
+  debug: process.env.NODE_ENV === 'development',
   reloadOnPrerender: process.env.NODE_ENV === 'development',
   defaultNS: 'common',
-  localePath: './public/locales',
-} 
+  
+  // Konfigurasi React
+  react: {
+    useSuspense: false,
+  },
+  
+  // Nonaktifkan fitur yang tidak diperlukan
+  localeSubpaths: {},
+  use: [],
+  initImmediate: false
+};

@@ -18,7 +18,15 @@ export default function Home() {
   const { t, ready, i18n } = useTranslation('common');
   const [isGenerating, setIsGenerating] = useState([]);
   const [isShow, setIsShow] = useState([]);
-  const [questions, setQuestions] = useState([]);
+  const [questions, setQuestions] = useState([{
+    prompt: "",
+    difficulty: "c1",
+    type: "essay",
+    title: "",
+    description: "",
+    answer: "",
+    topic: ""
+  }]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
@@ -137,26 +145,6 @@ export default function Home() {
   const closeModal = () => setIsModalOpen(false);
 
   useEffect(() => {
-    // Set current language from localStorage and initialize i18n
-    const storedLanguage = localStorage.getItem('language') || 'id';
-    setCurrentLanguage(storedLanguage);
-    
-    // Set i18n language
-    if (ready && i18n.language !== storedLanguage) {
-      i18n.changeLanguage(storedLanguage);
-    }
-    
-    // Initialize questions with translations after component mounts
-    setQuestions([{
-      prompt: "",
-      difficulty: t('cognitive.c1'),
-      type: t('types.essay'),
-      title: "",
-      description: "",
-      answer: "",
-      topic: ""
-    }]);
-
     // Logika login
     const storedNupkt = localStorage.getItem('nupkt');
     const storedPassword = localStorage.getItem('password');
@@ -175,29 +163,35 @@ export default function Home() {
     script.async = true;
     document.body.appendChild(script);
     setIsLoading(false);
+  }, []); // Run only once on mount
 
-    // Listen for language changes
+  // Handle language changes
+  useEffect(() => {
+    if (ready && questions.length > 0) {
+      setQuestions(prevQuestions => prevQuestions.map(q => ({
+        ...q,
+        difficulty: "c1",
+        type: "essay"
+      })));
+    }
+  }, [ready, t, i18n.language]); // Re-run when language changes
+
+  // Listen for custom language change events
+  useEffect(() => {
     const handleLanguageChange = (event) => {
-      const newLanguage = event.detail || localStorage.getItem('language') || 'id';
-      setCurrentLanguage(newLanguage);
-      
-      // Update i18n language
-      if (i18n.language !== newLanguage) {
-        i18n.changeLanguage(newLanguage);
+      const { language } = event.detail;
+      if (language && ready) {
+        setQuestions(prevQuestions => prevQuestions.map(q => ({
+          ...q,
+          difficulty: "c1",
+          type: "essay"
+        })));
       }
     };
 
-    // Add event listener for storage changes (when language changes in other components)
-    window.addEventListener('storage', handleLanguageChange);
-    
-    // Custom event for same-tab language changes
     window.addEventListener('languageChanged', handleLanguageChange);
-
-    return () => {
-      window.removeEventListener('storage', handleLanguageChange);
-      window.removeEventListener('languageChanged', handleLanguageChange);
-    };
-  }, [t, ready, i18n]); // Add i18n as dependency
+    return () => window.removeEventListener('languageChanged', handleLanguageChange);
+  }, [ready, t]);
 
   const handleModalSubmit = (data) => {
     data?.map((item) => {
@@ -205,8 +199,8 @@ export default function Home() {
         ...prev,
         {
           prompt: item?.prompt,
-          difficulty: item?.difficulty,
-          type: item?.type,
+          difficulty: item?.difficulty || "c1",
+          type: item?.type || "essay",
           title: "",
           description: "",
           answer: "",
@@ -255,8 +249,8 @@ export default function Home() {
   const addQuestion = () => {
     setQuestions([...questions, {
       prompt: "",
-      difficulty: t('cognitive.c1'),
-      type: t('types.essay'),
+      difficulty: "c1",
+      type: "essay",
       title: "",
       description: "",
       answer: "",
@@ -398,7 +392,7 @@ export default function Home() {
   }
 
   return (
-    <>
+    <div key={i18n.language}>
       {isLoading ? ( 
         <div className="flex items-center justify-center w-full h-screen bg-gradient-to-br from-blue-50 to-indigo-50">
           <h1 className="text-gray-500">Loading...</h1>
@@ -483,12 +477,12 @@ export default function Home() {
                                   onChange={(e) => handleInputChange(index, 'difficulty', e.target.value)} 
                                   className="w-full px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                                 >
-                                  <option value={t('cognitive.c1')}>{t('cognitive.c1')}</option>
-                                  <option value={t('cognitive.c2')}>{t('cognitive.c2')}</option>
-                                  <option value={t('cognitive.c3')}>{t('cognitive.c3')}</option>
-                                  <option value={t('cognitive.c4')}>{t('cognitive.c4')}</option>
-                                  <option value={t('cognitive.c5')}>{t('cognitive.c5')}</option>
-                                  <option value={t('cognitive.c6')}>{t('cognitive.c6')}</option>
+                                  <option value="c1">{t('main.cognitive.c1')}</option>
+                                  <option value="c2">{t('main.cognitive.c2')}</option>
+                                  <option value="c3">{t('main.cognitive.c3')}</option>
+                                  <option value="c4">{t('main.cognitive.c4')}</option>
+                                  <option value="c5">{t('main.cognitive.c5')}</option>
+                                  <option value="c6">{t('main.cognitive.c6')}</option>
                                 </select>
                               </div>
                               
@@ -500,8 +494,8 @@ export default function Home() {
                                     onChange={(e) => handleInputChange(index, 'type', e.target.value)} 
                                     className="flex-1 px-4 py-2 border border-gray-200 rounded-lg focus:ring-2 focus:ring-blue-500 focus:border-transparent transition-all duration-200"
                                   >
-                                    <option value={t('types.essay')}>{t('types.essay')}</option>
-                                    <option value={t('types.multipleChoice')}>{t('types.multipleChoice')}</option>
+                                    <option value="essay">{t('types.essay')}</option>
+                                    <option value="multipleChoice">{t('types.multipleChoice')}</option>
                                   </select>
                                   
                                   <button 
@@ -648,17 +642,14 @@ export default function Home() {
           </div>
         </div>
       )}
-    </>
+    </div>
   );
 }
 
-export async function getServerSideProps({ req, locale }) {
-  // Get language from cookie if available
-  const language = req.cookies?.NEXT_LOCALE || locale || 'id';
-  
+export async function getStaticProps({ locale }) {
   return {
     props: {
-      ...(await serverSideTranslations(language, ['common'])),
+      ...(await serverSideTranslations(locale || 'id', ['common'])),
     },
   };
 }

@@ -149,5 +149,10 @@
       "c5": "C5 (Evaluate)",
       "c6": "C6 (Create)"
     }
+  },
+  "language": {
+    "en": "EN",
+    "id": "ID",
+    "switch": "Switch language"
   }
 } 
