@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
 
 const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
-  const { t } = useTranslation('common');
+  const { t, i18n } = useTranslation('common');
   const [isGenerating, setIsGenerating] = useState(false); 
   const [isParsing, setIsParsing] = useState(false);
   const [formData, setFormData] = useState({

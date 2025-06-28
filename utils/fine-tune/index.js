@@ -85,7 +85,7 @@ export const fineTuneDetailEn = [
 ];
 
 
-export const fineTuneListId = [
+export const fineTuneListEn = [
           {
             role: "user",
             content: "|-[buat list soal matematika dasar]-| |-[tidak ada]-| |-[tingkat kognitif Taksonomi Bloom Acak]-| |-[bertipe Acak]-| |-[soal mulai dari nomor 1 sampai nomor 5]-|",
@@ -112,3 +112,31 @@ export const fineTuneListId = [
           },
     ]
         
+    export const fineTuneListId = [
+        {
+          role: "user",
+          content: "|-[create a list of basic math problems]-| |-[none]-| |-[Bloom’s Taxonomy cognitive level: Random]-| |-[question type: Random]-| |-[questions numbered from 1 to 5]-|",
+        },
+        {
+          role: "assistant",
+          content: "1. <prompt>|-><cognitive level>|-><question type><_>2. <prompt>|-><cognitive level>|-><question type><_>3. <prompt>|-><cognitive level>|-><question type><_>4. <prompt>|-><cognitive level>|-><question type><_>5. <prompt>|-><cognitive level>|-><question type>",
+        },
+        {
+          role: "user",
+          content: "|-[create a list of basic math problems]-| |-[none]-| |-[Bloom’s Taxonomy cognitive level: Random]-| |-[question type: Random]-| |-[questions numbered from 1 to 5]-|",
+        },
+        {
+          role: "assistant",
+          content: "1. Ratio Problem (GCF): This problem uses the concept of greatest common factor and requires analysis to determine the maximum way to divide apples and oranges.|->C2 (Understanding)|->Essay<_>2. Linear Equation (Speed, Distance, Time): A basic problem requiring only the formula speed = distance/time. Not much analysis needed.|->C1 (Remembering)|->Essay<_>3. Number Patterns (Arithmetic Sequence): Involves understanding arithmetic sequences and applying the formula for the sum. Mid-level in complexity.|->C3 (Applying)|->MCQ<_>4. Mixed Operations (Basic Algebra): Simple one-variable linear equation. Direct solution without complex steps.|->C1 (Remembering)|->MCQ<_>5. Fractions (Fraction Operations): Simple addition and subtraction involving fractions.|->C2 (Understanding)|->Essay",
+        },
+        {
+          role: "user",
+          content: "|-[create a list of basic math problems]-| |-[none]-| |-[Bloom’s Taxonomy cognitive level: Random]-| |-[question type: Random]-| |-[questions numbered from 6 to 6]-|",
+        },
+        {
+          role: "assistant",
+          content: "<_>6. Compute the result of $$7 + 5 \\times 2$$. Write your answer by following the correct order of operations (PEMDAS/BODMAS).|->C1 (Remembering)|->MCQ",
+        },
+      ];
+      
+    
