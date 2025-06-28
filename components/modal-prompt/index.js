@@ -1,61 +1,63 @@
 import { useState, useRef, useEffect } from 'react';
-
-const suggestionList = [
-  {
-    label: "Algebra",
-    value: "Buatkan soal yang menguji pemahaman siswa tentang konsep dasar aljabar, termasuk operasi dan persamaan aljabar."
-  },
-  {
-    label: "Trigonometry",
-    value: "Buatkan soal yang melatih kemampuan siswa dalam memahami dan menerapkan konsep trigonometri, seperti sudut dan identitas trigonometri."
-  },
-  {
-    label: "Calculus",
-    value: "Rancang soal yang menguji keterampilan siswa dalam kalkulus, termasuk diferensiasi dan integrasi fungsi."
-  },
-  {
-    label: "Geometry",
-    value: "Buatkan soal yang menilai pemahaman siswa tentang konsep geometri, termasuk bentuk, ukuran, dan sifat ruang."
-  },
-  {
-    label: "Statistics",
-    value: "Kembangkan soal yang menguji kemampuan siswa dalam statistika, termasuk analisis data dan interpretasi hasil statistik."
-  },
-  {
-    label: "Probability",
-    value: "Buat soal yang melatih siswa dalam memahami konsep probabilitas dan penerapannya dalam berbagai situasi."
-  },
-  {
-    label: "Number Theory",
-    value: "Rancang soal yang menguji pengetahuan siswa tentang teori bilangan, termasuk faktor, kelipatan, dan bilangan prima."
-  },
-  {
-    label: "Linear Algebra",
-    value: "Buatkan soal yang menguji pemahaman siswa tentang aljabar linear, termasuk matriks dan vektor."
-  },
-  {
-    label: "Discrete Mathematics",
-    value: "Kembangkan soal yang melatih siswa dalam konsep matematika diskrit, seperti graf dan kombinatorik."
-  },
-  {
-    label: "Mathematical Logic",
-    value: "Buat soal yang menguji kemampuan siswa dalam logika matematika, termasuk proposisi dan pembuktian."
-  },
-];
+import { useTranslation } from 'next-i18next';
 
 const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
+  const { t } = useTranslation('common');
   const [isGenerating, setIsGenerating] = useState(false); 
   const [isParsing, setIsParsing] = useState(false);
   const [formData, setFormData] = useState({
     prompt: '',
     total: 1,
-    difficulty: 'Acak',
-    type: 'Acak',
+    difficulty: t('difficulties.random'),
+    type: t('types.random'),
     reference: ''
   });
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const abortControllerRef = useRef(null);
   const blurTimeoutRef = useRef(null);
+
+  const suggestionList = [
+    {
+      label: t('suggestions.algebra.label'),
+      value: t('suggestions.algebra.value')
+    },
+    {
+      label: t('suggestions.trigonometry.label'),
+      value: t('suggestions.trigonometry.value')
+    },
+    {
+      label: t('suggestions.calculus.label'),
+      value: t('suggestions.calculus.value')
+    },
+    {
+      label: t('suggestions.geometry.label'),
+      value: t('suggestions.geometry.value')
+    },
+    {
+      label: t('suggestions.statistics.label'),
+      value: t('suggestions.statistics.value')
+    },
+    {
+      label: t('suggestions.probability.label'),
+      value: t('suggestions.probability.value')
+    },
+    {
+      label: t('suggestions.numberTheory.label'),
+      value: t('suggestions.numberTheory.value')
+    },
+    {
+      label: t('suggestions.linearAlgebra.label'),
+      value: t('suggestions.linearAlgebra.value')
+    },
+    {
+      label: t('suggestions.discreteMath.label'),
+      value: t('suggestions.discreteMath.value')
+    },
+    {
+      label: t('suggestions.mathLogic.label'),
+      value: t('suggestions.mathLogic.value')
+    }
+  ];
 
   const handleChange = (field, value) => {
     setFormData({ ...formData, [field]: value });
@@ -187,11 +189,11 @@ const handleClose = () => {
   return (
     <div className="fixed inset-0 z-50 flex items-center justify-center bg-black bg-opacity-50" onClick={handleOutsideClick}>
       <div className="bg-white w-full max-w-md px-6 pt-6 rounded-lg shadow-lg max-h-[600px] overflow-scroll">
-        <h2 className="text-xl font-semibold mb-4">Membuat Perintah Soal AI Otomatis</h2>
+        <h2 className="text-xl font-semibold mb-4">{t('modal.title')}</h2>
         <form onSubmit={onGenerate}>
-        <div className="mb-4 relative">
+          <div className="mb-4 relative">
             <label htmlFor="prompt" className="block text-sm font-medium mb-1">
-              Perintah:
+              {t('modal.prompt')}
             </label>
             <input
               type="text"
@@ -200,111 +202,107 @@ const handleClose = () => {
               onChange={(e) => handleChange('prompt', e.target.value)}
               onFocus={handleFocus}
               onBlur={handleBlur}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              placeholder="Contoh: Ujian Tengah Semester Matematika"
-              autoComplete="off"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
               required
             />
-            {filteredSuggestions?.length > 0 && (
-              <ul className="absolute z-10 w-full bg-white border border-gray-300 rounded-md max-h-48 overflow-y-auto">
-                {filteredSuggestions.map((s, index) => (
-                  <li
+            {filteredSuggestions.length > 0 && (
+              <div className="absolute z-10 w-full bg-white border rounded-lg shadow-lg mt-1 max-h-60 overflow-auto">
+                {filteredSuggestions.map((suggestion, index) => (
+                  <div
                     key={index}
                     className="p-2 hover:bg-gray-100 cursor-pointer"
-                    onClick={() => handleSuggestionClick(s.value)}
+                    onClick={() => handleSuggestionClick(suggestion.value)}
                   >
-                    <strong>{s.label}:</strong> {s.value}
-                  </li>
+                    <div className="font-medium">{suggestion.label}</div>
+                    <div className="text-sm text-gray-600">{suggestion.value}</div>
+                  </div>
                 ))}
-              </ul>
+              </div>
             )}
           </div>
+
           <div className="mb-4">
-            <label htmlFor="total" className="block text-sm font-medium mb-1">
-              Jumlah Soal:
-            </label>
-            <input
-              type="number"
-              id="total"
-              value={formData.total}
-              onChange={(e) => handleChange('total', e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md"
-              min="1"
-              max="100"
-              required
-            />
-          </div>
-          <div className="mb-4">
-            <label htmlFor="difficulty" className="block text-sm font-medium mb-1 capitalize">
-              tingkat kognitif:
+            <label htmlFor="difficulty" className="block text-sm font-medium mb-1">
+              {t('modal.difficulty')}
             </label>
             <select
               id="difficulty"
               value={formData.difficulty}
               onChange={(e) => handleChange('difficulty', e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-                <option value="Acak">Acak</option>
-                <option value="C2 (Memahami)">C2 (Memahami)</option>
-                <option value="C3 (Menerapkan)">C3 (Menerapkan)</option>
-                <option value="C4 (Menganalisis)">C4 (Menganalisis)</option>
-                <option value="C5 (Mengevaluasi)">C5 (Mengevaluasi)</option>
-                <option value="C6 (Mencipta)">C6 (Mencipta)</option>
+              <option value={t('difficulties.random')}>{t('difficulties.random')}</option>
+              <option value={t('difficulties.easy')}>{t('difficulties.easy')}</option>
+              <option value={t('difficulties.medium')}>{t('difficulties.medium')}</option>
+              <option value={t('difficulties.hard')}>{t('difficulties.hard')}</option>
             </select>
           </div>
+
           <div className="mb-4">
             <label htmlFor="type" className="block text-sm font-medium mb-1">
-              Tipe Soal:
+              {t('modal.type')}
             </label>
             <select
               id="type"
               value={formData.type}
               onChange={(e) => handleChange('type', e.target.value)}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value="Acak">Acak</option>
-              <option value="Essay">Essay</option>
-              <option value="PG">PG</option>
+              <option value={t('types.random')}>{t('types.random')}</option>
+              <option value={t('types.multipleChoice')}>{t('types.multipleChoice')}</option>
+              <option value={t('types.essay')}>{t('types.essay')}</option>
             </select>
           </div>
+
           <div className="mb-4">
-            <label htmlFor="file" className="block text-sm font-medium mb-1">
-              Unggah Silabus:
+            <label htmlFor="total" className="block text-sm font-medium mb-1">
+              {t('modal.total')}
             </label>
             <input
-              type="file"
-              id="file"
-              accept="application/pdf"
-              onChange={handleFileChange}
-              className="w-full p-2 border border-gray-300 rounded-md"
+              type="number"
+              id="total"
+              min="1"
+              max="10"
+              value={formData.total}
+              onChange={(e) => handleChange('total', parseInt(e.target.value))}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             />
           </div>
+
           <div className="mb-4">
-            {!isParsing && formData?.reference?.length > 0 ? (
-              <textarea 
+            <label htmlFor="reference" className="block text-sm font-medium mb-1">
+              {t('modal.reference')}
+            </label>
+            <textarea
+              id="reference"
               value={formData.reference}
-              className='w-full h-[200px]' 
-              readOnly={true}
-              ></textarea>
-            ): isParsing &&(
-              <>Membaca...</>
-            )}
-             
+              onChange={(e) => handleChange('reference', e.target.value)}
+              className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500 h-32"
+            />
+            <input
+              type="file"
+              accept=".pdf"
+              onChange={handleFileChange}
+              className="mt-2"
+            />
+            {isParsing && <p className="text-sm text-gray-600 mt-1">{t('modal.uploading')}</p>}
           </div>
-          <div className="flex justify-end gap-2 sticky bottom-0 py-4 bg-white">
+
+          <div className="flex justify-end space-x-2 pb-4">
             <button
               type="button"
               onClick={handleClose}
-              className="bg-red-500 text-white px-4 py-2 rounded-md hover:bg-red-600"
+              className="px-4 py-2 text-gray-600 hover:text-gray-800"
+              disabled={isGenerating}
             >
-              Batal
+              {t('modal.cancel')}
             </button>
             <button
               type="submit"
-              disabled={isGenerating || isParsing}
-              className={`${isGenerating || isParsing ? 'bg-gray-300 cursor-wait' : 'bg-green-500 hover:bg-green-600'} text-white font-medium rounded-md text-sm w-full sm:w-auto px-5 py-2.5`}
+              className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-300"
+              disabled={isGenerating}
             >
-              {isGenerating ? 'Membuat...': 'Buat Perintah'}
+              {isGenerating ? t('modal.generating') : t('modal.generate')}
             </button>
           </div>
         </form>

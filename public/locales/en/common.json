@@ -1,0 +1,153 @@
+{
+  "modal": {
+    "title": "Create AI Automated Question Command",
+    "prompt": "Command:",
+    "difficulty": "Difficulty",
+    "type": "Type",
+    "total": "Total Questions",
+    "reference": "Reference",
+    "generate": "Generate",
+    "cancel": "Cancel",
+    "uploading": "Uploading...",
+    "generating": "Generating...",
+    "uploadPdf": "Upload PDF"
+  },
+  "difficulties": {
+    "random": "Random",
+    "easy": "Easy",
+    "medium": "Medium",
+    "hard": "Hard"
+  },
+  "types": {
+    "random": "Random",
+    "multipleChoice": "Multiple Choice",
+    "essay": "Essay"
+  },
+  "suggestions": {
+    "simple": {
+      "label": "Simple Question",
+      "value": "Create a simple high school math question about [...]."
+    },
+    "illustrated": {
+      "label": "Illustrated Question",
+      "value": "Create a high school math question about [...] that includes diagrams, charts, or visual elements to support the problem."
+    },
+    "examModel": {
+      "label": "Exam-Style Question",
+      "value": "Create a practice question in the style of [SAT/ACT/AP] exams for high school level on the topic of [...]. Use language and structure similar to actual exam questions. Include answer choices (if applicable) and detailed explanations."
+    },
+    "hots": {
+      "label": "HOTS Question",
+      "value": "Create a high school math question that requires higher-order thinking skills (HOTS), such as analysis, synthesis, or evaluation, on the topic of [...]. Include the question, answer, and explanation of why this qualifies as a HOTS question."
+    },
+    "shortAnswer": {
+      "label": "Short Answer Question",
+      "value": "Create a short-answer math question for high school students about [...]. The question should have a final answer in the form of a number or mathematical expression. Include the answer key and step-by-step solution."
+    },
+    "story": {
+      "label": "Word Problem",
+      "value": "Create a contextual word problem for high school math related to real-life situations, focusing on [...]. The problem should include a narrative and require understanding of mathematical concepts. Provide the complete answer with detailed explanation."
+    },
+    "quadratic": {
+      "label": "Quadratic Function Question",
+      "value": "Create a question about quadratic functions that covers graph analysis, equation roots, and the relationship between coefficients and parabola shape. Include concept explanations, solution steps, and result interpretation to help students understand how coefficient variations affect graph shape."
+    },
+    "limit": {
+      "label": "Function Limit Question",
+      "value": "Develop a question about algebraic function limits, such as polynomial or rational function limits approaching specific points. Provide calculation steps, limit concept explanations, and discussion on how limits play a role in analyzing function continuity."
+    },
+    "derivative": {
+      "label": "Function Derivative Question",
+      "value": "Create a challenging question for students to calculate derivatives of functions (algebraic or trigonometric) and relate them to graph applications (finding maximum, minimum, or inflection points). Include derivative rules and graph interpretation of derivative results."
+    },
+    "integral": {
+      "label": "Integral Question",
+      "value": "Design an indefinite integral question for simple algebraic functions, such as polynomial functions. Include integration steps, substitution techniques (if needed), and antiderivative explanations, helping students understand the relationship between original functions and their integrals."
+    },
+    "statistics": {
+      "label": "Statistics Question",
+      "value": "Create a question related to basic statistics, such as calculating mean, median, mode, and standard deviation from real data sets. Include data processing method explanations and result interpretations to help students connect statistical concepts with real-world applications."
+    },
+    "algebra": {
+      "label": "Algebra",
+      "value": "Create questions that test students' understanding of basic algebraic concepts, including algebraic operations and equations."
+    },
+    "trigonometry": {
+      "label": "Trigonometry",
+      "value": "Create questions that train students' ability to understand and apply trigonometric concepts, such as angles and trigonometric identities."
+    },
+    "calculus": {
+      "label": "Calculus",
+      "value": "Design questions that test students' skills in calculus, including function differentiation and integration."
+    },
+    "geometry": {
+      "label": "Geometry",
+      "value": "Create questions that assess students' understanding of geometric concepts, including shapes, measurements, and spatial properties."
+    },
+    "probability": {
+      "label": "Probability",
+      "value": "Create questions that train students in understanding probability concepts and their application in various situations."
+    },
+    "numberTheory": {
+      "label": "Number Theory",
+      "value": "Design questions that test students' knowledge of number theory, including factors, multiples, and prime numbers."
+    },
+    "linearAlgebra": {
+      "label": "Linear Algebra",
+      "value": "Create questions that test students' understanding of linear algebra, including matrices and vectors."
+    },
+    "discreteMath": {
+      "label": "Discrete Mathematics",
+      "value": "Develop questions that train students in discrete mathematics concepts, such as graphs and combinatorics."
+    },
+    "mathLogic": {
+      "label": "Mathematical Logic",
+      "value": "Create questions that test students' ability in mathematical logic, including propositions and proofs."
+    }
+  },
+  "login": {
+    "title": "Teacher Login",
+    "nuptk": "NUPTK or Email",
+    "nuptkPlaceholder": "Unique Number for Educators and Education Personnel",
+    "password": "Password",
+    "passwordPlaceholder": "••••••••",
+    "loginButton": "Sign In",
+    "success": {
+      "title": "Login Successful!",
+      "welcomeMale": "Welcome, Mr. {{name}}!",
+      "welcomeFemale": "Welcome, Mrs. {{name}}!"
+    },
+    "error": {
+      "title": "Login Failed",
+      "message": "NUPTK or Password is incorrect",
+      "tryAgain": "Try Again"
+    }
+  },
+  "main": {
+    "title": "Automatic Math Question Generator",
+    "subtitle": "AI-powered automatic math question generation for high school level",
+    "developedBy": "Developed by",
+    "command": "Instruction:",
+    "commandPlaceholder": "Enter your instruction to generate questions",
+    "cognitiveLevel": "Cognitive Level:",
+    "questionType": "Question Type:",
+    "createQuestion": "Generate Question",
+    "creating": "Generating...",
+    "title_field": "Title:",
+    "description": "Description",
+    "answer": "Answer",
+    "branch": "Subject Area:",
+    "feedback": "Feedback",
+    "logout": "Sign Out",
+    "addQuestion": "Add Question",
+    "generate": "Auto Generate",
+    "cognitive": {
+      "c1": "C1 (Remember)",
+      "c2": "C2 (Understand)",
+      "c3": "C3 (Apply)",
+      "c4": "C4 (Analyze)",
+      "c5": "C5 (Evaluate)",
+      "c6": "C6 (Create)"
+    }
+  }
+} 
