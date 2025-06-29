@@ -6,6 +6,7 @@ import Login from '/components/login';
 import users from '../mock/users/index.json';
 import Navbar from '../components/navbar';
 import QuestionEditor from '../components/question-editor';
+import QuestionSkeleton from '../components/question-skeleton';
 import SuggestionList from '../components/suggestion-list';
 import BottomNavigation from '../components/bottom-navigation';
 import Footer from '../components/footer';
@@ -25,6 +26,11 @@ export default function Home() {
   }]);
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [isLoggedIn, setIsLoggedIn] = useState(false);
+  const [streamingState, setStreamingState] = useState({
+    isStreaming: false,
+    total: 0,
+    completed: 0
+  });
 
   // Check if user is logged in on component mount
   useEffect(() => {
@@ -99,7 +105,80 @@ export default function Home() {
     return () => window.removeEventListener('languageChanged', handleLanguageChange);
   }, [ready, t]);
 
-  const handleModalSubmit = (data) => {
+  // Listen for streaming events
+  useEffect(() => {
+    const handleStreamingQuestionReady = (event) => {
+      const { question, completed, total } = event.detail;
+      
+      setQuestions(prevQuestions => {
+        const newQuestions = [...prevQuestions];
+        // Find the first skeleton question and replace it
+        const skeletonIndex = newQuestions.findIndex(q => q.isLoading);
+        
+        if (skeletonIndex !== -1) {
+          newQuestions[skeletonIndex] = {
+            prompt: question.prompt,
+            difficulty: question.difficulty,
+            type: question.type,
+            title: "",
+            description: "",
+            answer: "",
+            topic: "",
+            isLoading: false
+          };
+        }
+        
+        return newQuestions;
+      });
+
+      setStreamingState(prev => ({
+        ...prev,
+        completed: completed
+      }));
+    };
+
+    const handleStreamingComplete = (event) => {
+      const { completed, total } = event.detail;
+      
+      // Remove any remaining skeleton questions
+      setQuestions(prevQuestions => 
+        prevQuestions.filter(q => !q.isLoading)
+      );
+      
+      setStreamingState({
+        isStreaming: false,
+        total: 0,
+        completed: 0
+      });
+    };
+
+    const handleStreamingError = (event) => {
+      const { message } = event.detail;
+      console.error('Streaming error:', message);
+      // Optionally show error to user
+    };
+
+    window.addEventListener('streamingQuestionReady', handleStreamingQuestionReady);
+    window.addEventListener('streamingComplete', handleStreamingComplete);
+    window.addEventListener('streamingError', handleStreamingError);
+
+    return () => {
+      window.removeEventListener('streamingQuestionReady', handleStreamingQuestionReady);
+      window.removeEventListener('streamingComplete', handleStreamingComplete);
+      window.removeEventListener('streamingError', handleStreamingError);
+    };
+  }, []);
+
+  const handleModalSubmit = (data, options = {}) => {
+    if (options.isStreaming) {
+      // Handle streaming mode - set up skeleton questions
+      setStreamingState({
+        isStreaming: true,
+        total: options.total,
+        completed: 0
+      });
+    }
+
     data?.map((item) => {
       setQuestions((prev) => [
         ...prev,
@@ -111,6 +190,8 @@ export default function Home() {
           description: "",
           answer: "",
           topic: "",
+          isLoading: item?.isLoading || false,
+          loadingIndex: item?.loadingIndex || 0,
         },
       ]);
       setIsGenerating((prev) => [...prev, false]);
@@ -302,23 +383,56 @@ export default function Home() {
             <ModalPrompt isOpen={isModalOpen} onClose={closeModal} onSubmit={handleModalSubmit} />
             
             <div className="max-w-[1080px] w-full container mx-auto px-1 lg:px-4 py-6 relative">
+              {/* Streaming Progress */}
+              {streamingState.isStreaming && (
+                <div className="mb-6 p-4 bg-gradient-to-r from-green-50 to-blue-50 rounded-lg border border-green-200">
+                  <div className="flex items-center justify-between mb-2">
+                    <div className="flex items-center space-x-2">
+                      <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
+                      <span className="text-sm font-medium text-green-700">Generating Questions...</span>
+                    </div>
+                    <div className="text-sm text-green-600">
+                      {streamingState.completed} / {streamingState.total} completed
+                    </div>
+                  </div>
+                  <div className="w-full bg-green-200 rounded-full h-2">
+                    <div 
+                      className="bg-gradient-to-r from-green-500 to-blue-600 h-2 rounded-full transition-all duration-300"
+                      style={{ 
+                        width: `${(streamingState.completed / streamingState.total) * 100}%` 
+                      }}
+                    ></div>
+                  </div>
+                </div>
+              )}
+
               <div className="space-y-6">
                 {questions.map((question, index) => (
-                  <QuestionEditor
-                    key={index}
-                    index={index}
-                    question={question}
-                    isGenerating={isGenerating}
-                    isShow={isShow}
-                    onRemove={questions.length > 1 ? removeQuestion : null}
-                    onInputChange={handleInputChange}
-                    onGenerate={onGenerate}
-                    onToggleVisibility={toggleVisibility}
-                    onTextareaFocus={handleTextareaFocus}
-                    textareaRefs={textareaRefs}
-                    activeSuggestionIndex={activeSuggestionIndex}
-                    t={t}
-                  />
+                  question.isLoading ? (
+                    <QuestionSkeleton 
+                      key={`skeleton-${index}`}
+                      index={index}
+                      loadingIndex={question.loadingIndex}
+                      total={streamingState.total}
+                      t={t}
+                    />
+                  ) : (
+                    <QuestionEditor
+                      key={index}
+                      index={index}
+                      question={question}
+                      isGenerating={isGenerating}
+                      isShow={isShow}
+                      onRemove={questions.length > 1 ? removeQuestion : null}
+                      onInputChange={handleInputChange}
+                      onGenerate={onGenerate}
+                      onToggleVisibility={toggleVisibility}
+                      onTextareaFocus={handleTextareaFocus}
+                      textareaRefs={textareaRefs}
+                      activeSuggestionIndex={activeSuggestionIndex}
+                      t={t}
+                    />
+                  )
                 ))}
               </div>
             </div>

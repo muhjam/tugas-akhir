@@ -121,6 +121,23 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
     event.preventDefault();
     const { prompt, difficulty, type, total, reference } = formData;
     
+    // Prepare skeleton data for immediate submission
+    const skeletonQuestions = Array.from({ length: parseInt(total) }, (_, index) => ({
+      prompt: prompt,
+      difficulty: difficulty === t('difficulties.random') ? "c1" : difficulty,
+      type: type === t('types.random') ? "essay" : type,
+      title: "",
+      description: "",
+      answer: "",
+      topic: "",
+      isLoading: true,
+      loadingIndex: index
+    }));
+
+    // Submit skeleton questions immediately and close modal
+    onSubmit(skeletonQuestions, { isStreaming: true, total: parseInt(total) });
+    onClose();
+    
     setIsGenerating(true);
     setStreamingProgress({ 
       completed: 0, 
@@ -177,6 +194,15 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
                   ...prev,
                   completed: data.completed
                 }));
+                
+                // Send update to parent via window event
+                window.dispatchEvent(new CustomEvent('streamingQuestionReady', {
+                  detail: {
+                    question: data.data,
+                    completed: data.completed,
+                    total: data.total
+                  }
+                }));
               } else if (data.type === 'progress') {
                 setStreamingProgress(prev => ({
                   ...prev,
@@ -194,8 +220,25 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
                   ...prev,
                   isStreaming: false
                 }));
+                
+                // Send complete event to parent
+                window.dispatchEvent(new CustomEvent('streamingComplete', {
+                  detail: {
+                    completed: data.completed,
+                    total: data.total
+                  }
+                }));
               } else if (data.type === 'error') {
                 console.error('Streaming error:', data.message);
+                
+                // Send error event to parent
+                window.dispatchEvent(new CustomEvent('streamingError', {
+                  detail: {
+                    message: data.message,
+                    completed: data.completed,
+                    total: data.total
+                  }
+                }));
               }
             } catch (e) {
               console.error('Error parsing streaming data:', e);
@@ -204,11 +247,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
         }
       }
 
-      // Submit collected questions
-      if (collectedQuestionsRef.current.length > 0) {
-        onSubmit(collectedQuestionsRef.current);
-        onClose();
-      }
+      // No need to submit collected questions - parent is handling via events
 
     } catch (error) {
       console.error('Streaming error:', error);
