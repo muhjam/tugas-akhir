@@ -390,10 +390,10 @@ export default function Home() {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
-                      <span className="text-sm font-medium text-green-700">Generating Questions...</span>
+                      <span className="text-sm font-medium text-green-700">{t('streaming.generatingQuestions')}</span>
                     </div>
                     <div className="text-sm text-green-600">
-                      {streamingState.completed} / {streamingState.total} completed
+                      {streamingState.completed} / {streamingState.total} {t('streaming.completed')}
                     </div>
                   </div>
                   <div className="w-full bg-green-200 rounded-full h-2">
@@ -415,7 +415,6 @@ export default function Home() {
                       index={index}
                       loadingIndex={question.loadingIndex}
                       total={streamingState.total}
-                      t={t}
                     />
                   ) : (
                     <QuestionEditor

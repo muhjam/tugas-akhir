@@ -1,6 +1,8 @@
 import React from 'react';
+import { useTranslation } from 'next-i18next';
 
-const QuestionSkeleton = ({ index, loadingIndex, total, t }) => {
+const QuestionSkeleton = ({ index, loadingIndex, total }) => {
+  const { t } = useTranslation('common');
   return (
     <div className="bg-white p-4 md:p-6 rounded-lg shadow-md border border-gray-200 relative overflow-hidden">
       {/* Shimmer overlay */}
@@ -46,7 +48,10 @@ const QuestionSkeleton = ({ index, loadingIndex, total, t }) => {
         <div className="inline-flex items-center space-x-2">
           <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-blue-500"></div>
           <span className="text-sm text-gray-500">
-            {total ? `Waiting in queue (${loadingIndex + 1} of ${total})` : 'Generating question...'}
+            {total ? 
+              t('streaming.waitingInQueue', { current: loadingIndex + 1, total: total }) : 
+              t('streaming.generatingQuestion')
+            }
           </span>
         </div>
       </div>

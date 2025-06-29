@@ -154,5 +154,12 @@
     "en": "EN",
     "id": "ID",
     "switch": "Ganti bahasa"
+  },
+  "streaming": {
+    "generatingQuestions": "Membuat Soal...",
+    "completed": "selesai",
+    "waitingInQueue": "Menunggu dalam antrian ({{current}} dari {{total}})",
+    "generatingQuestion": "Membuat soal...",
+    "questionsReady": "soal siap"
   }
 } 

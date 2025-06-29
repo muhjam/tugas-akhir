@@ -154,5 +154,12 @@
     "en": "EN",
     "id": "ID",
     "switch": "Switch language"
+  },
+  "streaming": {
+    "generatingQuestions": "Generating Questions...",
+    "completed": "completed",
+    "waitingInQueue": "Waiting in queue ({{current}} of {{total}})",
+    "generatingQuestion": "Generating question...",
+    "questionsReady": "questions ready"
   }
 } 
