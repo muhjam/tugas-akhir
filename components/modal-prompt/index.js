@@ -5,21 +5,13 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
   const { t, i18n } = useTranslation('common');
   const [isGenerating, setIsGenerating] = useState(false); 
   const [isParsing, setIsParsing] = useState(false);
-  const [streamingProgress, setStreamingProgress] = useState({
-    completed: 0,
-    total: 0,
-    current: 0,
-    message: '',
-    isStreaming: false
-  });
   const [streamingQuestions, setStreamingQuestions] = useState([]);
   const [formData, setFormData] = useState({
     prompt: '',
     total: 1,
     difficulty: t('difficulties.random'),
     type: t('types.random'),
-    reference: '',
-    useStreaming: true
+    reference: ''
   });
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const abortControllerRef = useRef(null);
@@ -139,13 +131,6 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
     onClose();
     
     setIsGenerating(true);
-    setStreamingProgress({ 
-      completed: 0, 
-      total: parseInt(total), 
-      current: 0,
-      message: 'Starting generation...',
-      isStreaming: true 
-    });
     setStreamingQuestions([]);
     collectedQuestionsRef.current = [];
 
@@ -190,10 +175,6 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
               if (data.type === 'question') {
                 collectedQuestionsRef.current.push(data.data);
                 setStreamingQuestions(prev => [...prev, data.data]);
-                setStreamingProgress(prev => ({
-                  ...prev,
-                  completed: data.completed
-                }));
                 
                 // Send update to parent via window event
                 window.dispatchEvent(new CustomEvent('streamingQuestionReady', {
@@ -204,23 +185,10 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
                   }
                 }));
               } else if (data.type === 'progress') {
-                setStreamingProgress(prev => ({
-                  ...prev,
-                  current: data.current,
-                  message: data.message
-                }));
+                // Progress updates are handled by parent page
               } else if (data.type === 'status') {
-                setStreamingProgress(prev => ({
-                  ...prev,
-                  total: data.total,
-                  completed: data.completed
-                }));
+                // Status updates are handled by parent page
               } else if (data.type === 'complete') {
-                setStreamingProgress(prev => ({
-                  ...prev,
-                  isStreaming: false
-                }));
-                
                 // Send complete event to parent
                 window.dispatchEvent(new CustomEvent('streamingComplete', {
                   detail: {
@@ -254,60 +222,12 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
       alert(error.message);
     } finally {
       setIsGenerating(false);
-      setStreamingProgress({ 
-        completed: 0, 
-        total: 0, 
-        current: 0,
-        message: '',
-        isStreaming: false 
-      });
       collectedQuestionsRef.current = [];
     }
   }
 
-  // Non-streaming generation function (original)
-  async function onGenerateNonStreaming(event) {
-    event.preventDefault();
-    const { prompt, difficulty, type, total, reference } = formData;
-    setIsGenerating(true);
-  
-    abortControllerRef.current = new AbortController();
-  
-    try {
-      const response = await fetch('/api/generate', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        signal: abortControllerRef.current.signal, 
-        body: JSON.stringify({ prompt, type, difficulty, reference, mode: "list", total: total, lang: i18n.language }),
-      });
-  
-      const data = await response.json();
-      const results = data.result.split("<_>").map(item => item.trim());
-      const questions = results.map((item) => {
-        const [prompt, thisDifficulty, type] = item.split("|->").map(part => part.trim());
-        const settingDifficulty = difficulty === "Acak" ? thisDifficulty : difficulty;
-        return { prompt, difficulty: settingDifficulty, type };
-      });
-
-      onSubmit(questions);
-      onClose();
-
-    } catch (error) {
-      if (error.name === 'AbortError') {
-        console.log('Request was aborted');
-      } else {
-        console.error(error);
-        alert(error.message);
-      }
-    } finally {
-      setIsGenerating(false);
-    }
-  }
-
-  // Choose which generation method to use
-  const onGenerate = formData.useStreaming ? onGenerateStreaming : onGenerateNonStreaming;
+  // All generation now uses streaming by default
+  const onGenerate = onGenerateStreaming;
 
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
@@ -352,13 +272,6 @@ const handleClose = () => {
   }
   // Reset streaming state
   setIsGenerating(false);
-  setStreamingProgress({ 
-    completed: 0, 
-    total: 0, 
-    current: 0,
-    message: '',
-    isStreaming: false 
-  });
   setStreamingQuestions([]);
   collectedQuestionsRef.current = [];
   onClose();
@@ -483,54 +396,9 @@ useEffect(() => {
             {isParsing && <p className="text-sm text-gray-600 mt-1">{t('modal.uploading')}</p>}
           </div>
 
-          {/* Streaming Toggle */}
-          <div className="mb-4">
-            <label className="flex items-center">
-              <input
-                type="checkbox"
-                checked={formData.useStreaming}
-                onChange={(e) => handleChange('useStreaming', e.target.checked)}
-                className="mr-2"
-              />
-              <span className="text-sm font-medium">⚡ Enable Streaming Mode</span>
-            </label>
-            <p className="text-xs text-gray-500 mt-1 ml-6">
-              Questions will appear as they're generated (faster for large batches)
-            </p>
-          </div>
 
-          {/* Streaming Progress */}
-          {streamingProgress.isStreaming && (
-                         <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
-               <div className="flex items-center justify-between mb-3">
-                 <div className="text-sm font-medium text-blue-700">
-                   {streamingProgress.message || 'Generating Questions...'}
-                 </div>
-                 <div className="text-sm text-blue-600">
-                   {streamingProgress.completed} / {streamingProgress.total}
-                 </div>
-               </div>
-               <div className="w-full bg-blue-200 rounded-full h-3 mb-2">
-                 <div 
-                   className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-300 ease-out"
-                   style={{ 
-                     width: `${Math.max(5, (streamingProgress.completed / streamingProgress.total) * 100)}%` 
-                   }}
-                 ></div>
-               </div>
-               <div className="flex items-center justify-between text-xs">
-                 <div className="text-blue-600">
-                   📝 {streamingQuestions.length} questions ready
-                 </div>
-                 <div className="text-blue-500">
-                   {streamingProgress.current > 0 ? 
-                     `🔄 Processing question ${streamingProgress.current}` : 
-                     '⚡ Streaming mode active'
-                   }
-                 </div>
-               </div>
-             </div>
-          )}
+
+          
 
           <div className="sticky bottom-0 left-0 right-0 bg-white pt-2 flex justify-end space-x-2 pb-2.5">
             <button
@@ -546,13 +414,7 @@ useEffect(() => {
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-300"
               disabled={isGenerating}
             >
-              {isGenerating ? 
-                (streamingProgress.isStreaming ? 
-                  `Generating... (${streamingProgress.completed}/${streamingProgress.total})` : 
-                  t('modal.generating')
-                ) : 
-                t('modal.generate')
-              }
+              {isGenerating ? t('modal.generating') : t('modal.generate')}
             </button>
           </div>
         </form>

@@ -51,6 +51,7 @@ export default function Home() {
   const [isFoucused, setIsFocused] = useState(false);
   const textareaRefs = useRef({});
   const [suggestionQuery, setSuggestionQuery] = useState('');
+  const [generateClickCount, setGenerateClickCount] = useState(0);
 
 
   const openModal = () => setIsModalOpen(true);
