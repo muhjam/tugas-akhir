@@ -1,4 +1,3 @@
-
 import {fineTuneDetailId, fineTuneDetailEn, fineTuneListId, fineTuneListEn} from "../../utils/fine-tune";
 import { systemPromptDetailId, systemPromptDetailEn, systemPromptListId, systemPromptListEn } from "../../utils/system-prompt";
 
@@ -13,7 +12,7 @@ const path = process.env.AZURE_COMPLETIONPATH_GPT4
 const client = new ModelClient(endpoint, new AzureKeyCredential(key));
 
 export default async function (req, res) {
-  const { prompt, mode, difficulty, reference, type, total, lang } = req.body || {};
+  const { prompt, mode, difficulty, reference, type, total, lang, stream } = req.body || {};
 
   if (!prompt || prompt.trim().length === 0) {
     return res.status(400).json({
@@ -33,7 +32,7 @@ export default async function (req, res) {
         lang
       }
       const messages = generatePrompt(body);
-      const response = await await client.path(path).post({
+      const response = await client.path(path).post({
         body: {
           messages,
           max_tokens: 16384,
@@ -46,6 +45,129 @@ export default async function (req, res) {
       return;
     }
 
+    // Streaming mode for list
+    if (stream) {
+      // Set headers for Server-Sent Events
+      res.writeHead(200, {
+        'Content-Type': 'text/event-stream',
+        'Cache-Control': 'no-cache',
+        'Connection': 'keep-alive',
+        'Access-Control-Allow-Origin': '*',
+        'Access-Control-Allow-Headers': 'Cache-Control'
+      });
+
+      const totalQuestions = parseInt(total, 10);
+      
+      // Send initial status
+      res.write(`data: ${JSON.stringify({ 
+        type: 'status', 
+        message: 'Starting generation...', 
+        total: totalQuestions,
+        completed: 0 
+      })}\n\n`);
+      
+      // Force flush initial status
+      if (res.flush) res.flush();
+
+      let completedQuestions = 0;
+      
+      // Generate questions one by one for true streaming
+      for (let questionIndex = 1; questionIndex <= totalQuestions; questionIndex++) {
+        try {
+          // Send progress update
+          res.write(`data: ${JSON.stringify({
+            type: 'progress',
+            message: `Generating question ${questionIndex}...`,
+            completed: completedQuestions,
+            total: totalQuestions,
+            current: questionIndex
+          })}\n\n`);
+          
+          if (res.flush) res.flush();
+
+          const questionBody = {
+            prompt,
+            mode,
+            difficulty,
+            reference,
+            type,
+            total: 1, // Generate only 1 question at a time
+            range: { start: questionIndex, end: questionIndex },
+            lang
+          };
+
+          const messages = generatePrompt(questionBody);
+          const apiResponse = await client.path(path).post({
+            body: {
+              messages,
+              max_tokens: 16384,
+              top_p: 1.0,
+              temperature: 0.65,
+            }
+          });
+
+          const content = apiResponse?.body?.choices[0]?.message?.content || "";
+          
+          // Parse the single question result
+          if (content.trim()) {
+            const results = content.split("<_>").map(item => item.trim()).filter(item => item);
+            
+            // Process each result (should be only 1, but handle multiple just in case)
+            results.forEach((item) => {
+              const [questionPrompt, thisDifficulty, questionType] = item.split("|->").map(part => part.trim());
+              const settingDifficulty = difficulty === "Acak" ? thisDifficulty : difficulty;
+              
+              const questionData = { 
+                prompt: questionPrompt, 
+                difficulty: settingDifficulty, 
+                type: questionType || type,
+                index: completedQuestions
+              };
+
+              // Send question immediately
+              res.write(`data: ${JSON.stringify({
+                type: 'question',
+                data: questionData,
+                completed: completedQuestions + 1,
+                total: totalQuestions
+              })}\n\n`);
+              
+              // Force flush to ensure immediate delivery
+              if (res.flush) res.flush();
+              
+              completedQuestions++;
+            });
+          }
+
+        } catch (error) {
+          console.error(`Error generating question ${questionIndex}:`, error);
+          
+          res.write(`data: ${JSON.stringify({
+            type: 'error',
+            message: `Error generating question ${questionIndex}: ${error.message}`,
+            completed: completedQuestions,
+            total: totalQuestions,
+            current: questionIndex
+          })}\n\n`);
+          
+          if (res.flush) res.flush();
+        }
+      }
+
+      // Send completion status
+      res.write(`data: ${JSON.stringify({
+        type: 'complete',
+        message: 'Generation completed',
+        completed: completedQuestions,
+        total: totalQuestions
+      })}\n\n`);
+      
+      if (res.flush) res.flush();
+      res.end();
+      return;
+    }
+
+    // Non-streaming mode (original behavior)
     const chunkSize = 5;
     const totalQuestions = parseInt(total, 10);
     const responses = [];

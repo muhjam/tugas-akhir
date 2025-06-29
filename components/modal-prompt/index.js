@@ -5,16 +5,27 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
   const { t, i18n } = useTranslation('common');
   const [isGenerating, setIsGenerating] = useState(false); 
   const [isParsing, setIsParsing] = useState(false);
+  const [streamingProgress, setStreamingProgress] = useState({
+    completed: 0,
+    total: 0,
+    current: 0,
+    message: '',
+    isStreaming: false
+  });
+  const [streamingQuestions, setStreamingQuestions] = useState([]);
   const [formData, setFormData] = useState({
     prompt: '',
     total: 1,
     difficulty: t('difficulties.random'),
     type: t('types.random'),
-    reference: ''
+    reference: '',
+    useStreaming: true
   });
   const [filteredSuggestions, setFilteredSuggestions] = useState([]);
   const abortControllerRef = useRef(null);
+  const eventSourceRef = useRef(null);
   const blurTimeoutRef = useRef(null);
+  const collectedQuestionsRef = useRef([]);
 
   const suggestionList = [
     {
@@ -85,11 +96,14 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
     }, 200);
   };
 
-  // Cleanup timeout on unmount
+  // Cleanup timeout and event source on unmount
   useEffect(() => {
     return () => {
       if (blurTimeoutRef.current) {
         clearTimeout(blurTimeoutRef.current);
+      }
+      if (eventSourceRef.current) {
+        eventSourceRef.current.close();
       }
     };
   }, []);
@@ -102,7 +116,118 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
     setFilteredSuggestions([]);
   };
 
-  async function onGenerate(event) {
+  // Streaming generation function
+  async function onGenerateStreaming(event) {
+    event.preventDefault();
+    const { prompt, difficulty, type, total, reference } = formData;
+    
+    setIsGenerating(true);
+    setStreamingProgress({ 
+      completed: 0, 
+      total: parseInt(total), 
+      current: 0,
+      message: 'Starting generation...',
+      isStreaming: true 
+    });
+    setStreamingQuestions([]);
+    collectedQuestionsRef.current = [];
+
+    try {
+      // Create a POST request to initiate streaming
+      const response = await fetch('/api/generate', {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ 
+          prompt, 
+          type, 
+          difficulty, 
+          reference, 
+          mode: "list", 
+          total: total, 
+          lang: i18n.language,
+          stream: true
+        }),
+      });
+
+      if (!response.ok) {
+        throw new Error('Failed to start streaming');
+      }
+
+      const reader = response.body.getReader();
+      const decoder = new TextDecoder();
+
+      while (true) {
+        const { done, value } = await reader.read();
+        if (done) break;
+
+        const chunk = decoder.decode(value);
+        const lines = chunk.split('\n');
+
+        for (const line of lines) {
+          if (line.startsWith('data: ')) {
+            try {
+              const data = JSON.parse(line.slice(6));
+              
+              if (data.type === 'question') {
+                collectedQuestionsRef.current.push(data.data);
+                setStreamingQuestions(prev => [...prev, data.data]);
+                setStreamingProgress(prev => ({
+                  ...prev,
+                  completed: data.completed
+                }));
+              } else if (data.type === 'progress') {
+                setStreamingProgress(prev => ({
+                  ...prev,
+                  current: data.current,
+                  message: data.message
+                }));
+              } else if (data.type === 'status') {
+                setStreamingProgress(prev => ({
+                  ...prev,
+                  total: data.total,
+                  completed: data.completed
+                }));
+              } else if (data.type === 'complete') {
+                setStreamingProgress(prev => ({
+                  ...prev,
+                  isStreaming: false
+                }));
+              } else if (data.type === 'error') {
+                console.error('Streaming error:', data.message);
+              }
+            } catch (e) {
+              console.error('Error parsing streaming data:', e);
+            }
+          }
+        }
+      }
+
+      // Submit collected questions
+      if (collectedQuestionsRef.current.length > 0) {
+        onSubmit(collectedQuestionsRef.current);
+        onClose();
+      }
+
+    } catch (error) {
+      console.error('Streaming error:', error);
+      alert(error.message);
+    } finally {
+      setIsGenerating(false);
+      setStreamingProgress({ 
+        completed: 0, 
+        total: 0, 
+        current: 0,
+        message: '',
+        isStreaming: false 
+      });
+      collectedQuestionsRef.current = [];
+    }
+  }
+
+  // Non-streaming generation function (original)
+  async function onGenerateNonStreaming(event) {
     event.preventDefault();
     const { prompt, difficulty, type, total, reference } = formData;
     setIsGenerating(true);
@@ -142,6 +267,9 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
     }
   }
 
+  // Choose which generation method to use
+  const onGenerate = formData.useStreaming ? onGenerateStreaming : onGenerateNonStreaming;
+
   const handleFileChange = async (event) => {
     const file = event.target.files[0];
     if (file) {
@@ -180,6 +308,20 @@ const handleClose = () => {
   if (abortControllerRef.current) {
     abortControllerRef.current.abort();
   }
+  if (eventSourceRef.current) {
+    eventSourceRef.current.close();
+  }
+  // Reset streaming state
+  setIsGenerating(false);
+  setStreamingProgress({ 
+    completed: 0, 
+    total: 0, 
+    current: 0,
+    message: '',
+    isStreaming: false 
+  });
+  setStreamingQuestions([]);
+  collectedQuestionsRef.current = [];
   onClose();
 };
 
@@ -194,7 +336,6 @@ useEffect(() => {
     document.body.style.overflow = 'unset';
   };
 }, [isOpen]);
-
 
   if (!isOpen) return null;
 
@@ -303,6 +444,55 @@ useEffect(() => {
             {isParsing && <p className="text-sm text-gray-600 mt-1">{t('modal.uploading')}</p>}
           </div>
 
+          {/* Streaming Toggle */}
+          <div className="mb-4">
+            <label className="flex items-center">
+              <input
+                type="checkbox"
+                checked={formData.useStreaming}
+                onChange={(e) => handleChange('useStreaming', e.target.checked)}
+                className="mr-2"
+              />
+              <span className="text-sm font-medium">⚡ Enable Streaming Mode</span>
+            </label>
+            <p className="text-xs text-gray-500 mt-1 ml-6">
+              Questions will appear as they're generated (faster for large batches)
+            </p>
+          </div>
+
+          {/* Streaming Progress */}
+          {streamingProgress.isStreaming && (
+                         <div className="mb-4 p-4 bg-gradient-to-r from-blue-50 to-indigo-50 rounded-lg border border-blue-200">
+               <div className="flex items-center justify-between mb-3">
+                 <div className="text-sm font-medium text-blue-700">
+                   {streamingProgress.message || 'Generating Questions...'}
+                 </div>
+                 <div className="text-sm text-blue-600">
+                   {streamingProgress.completed} / {streamingProgress.total}
+                 </div>
+               </div>
+               <div className="w-full bg-blue-200 rounded-full h-3 mb-2">
+                 <div 
+                   className="bg-gradient-to-r from-blue-500 to-indigo-600 h-3 rounded-full transition-all duration-300 ease-out"
+                   style={{ 
+                     width: `${Math.max(5, (streamingProgress.completed / streamingProgress.total) * 100)}%` 
+                   }}
+                 ></div>
+               </div>
+               <div className="flex items-center justify-between text-xs">
+                 <div className="text-blue-600">
+                   📝 {streamingQuestions.length} questions ready
+                 </div>
+                 <div className="text-blue-500">
+                   {streamingProgress.current > 0 ? 
+                     `🔄 Processing question ${streamingProgress.current}` : 
+                     '⚡ Streaming mode active'
+                   }
+                 </div>
+               </div>
+             </div>
+          )}
+
           <div className="sticky bottom-0 left-0 right-0 bg-white pt-2 flex justify-end space-x-2 pb-2.5">
             <button
               type="button"
@@ -317,7 +507,13 @@ useEffect(() => {
               className="px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600 disabled:bg-blue-300"
               disabled={isGenerating}
             >
-              {isGenerating ? t('modal.generating') : t('modal.generate')}
+              {isGenerating ? 
+                (streamingProgress.isStreaming ? 
+                  `Generating... (${streamingProgress.completed}/${streamingProgress.total})` : 
+                  t('modal.generating')
+                ) : 
+                t('modal.generate')
+              }
             </button>
           </div>
         </form>
