@@ -131,6 +131,7 @@
     "commandPlaceholder": "Masukan perintah untuk membuat soal",
     "cognitiveLevel": "Tingkat Kognitif:",
     "questionType": "Tipe Soal:",
+    "question": "Pertanyaan",
     "createQuestion": "Buat Soal",
     "creating": "Membuat...",
     "title_field": "Judul:",
@@ -160,6 +161,8 @@
     "completed": "selesai",
     "waitingInQueue": "Menunggu dalam antrian ({{current}} dari {{total}})",
     "generatingQuestion": "Membuat soal...",
-    "questionsReady": "soal siap"
+    "questionsReady": "soal siap",
+    "cancel": "Batalkan",
+    "chunk": "Grup"
   }
 } 

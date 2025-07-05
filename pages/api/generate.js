@@ -20,6 +20,15 @@ export default async function (req, res) {
     });
   }
 
+  const totalQuestions = parseInt(total, 10);
+  
+  // Limit to maximum 5 questions per request for list mode
+  if (mode === "list" && totalQuestions > 5) {
+    return res.status(400).json({
+      error: { message: "Maximum 5 questions per request. Please split into multiple requests." }
+    });
+  }
+
   try {
     if(mode === "detail"){
       const body = {
@@ -55,8 +64,14 @@ export default async function (req, res) {
         'Access-Control-Allow-Origin': '*',
         'Access-Control-Allow-Headers': 'Cache-Control'
       });
-
-      const totalQuestions = parseInt(total, 10);
+      
+      // Get range from request body
+      const { range } = req.body;
+      const startQuestion = range?.start || 1;
+      const endQuestion = range?.end || totalQuestions;
+      
+      // Debug logging
+      console.log(`Streaming request - Total: ${totalQuestions}, Range: ${startQuestion}-${endQuestion}`);
       
       // Send initial status
       res.write(`data: ${JSON.stringify({ 
@@ -71,8 +86,8 @@ export default async function (req, res) {
 
       let completedQuestions = 0;
       
-      // Generate questions one by one for true streaming
-      for (let questionIndex = 1; questionIndex <= totalQuestions; questionIndex++) {
+      // Generate questions using the specified range
+      for (let questionIndex = startQuestion; questionIndex <= endQuestion; questionIndex++) {
         try {
           // Send progress update
           res.write(`data: ${JSON.stringify({
@@ -96,6 +111,8 @@ export default async function (req, res) {
             lang
           };
 
+          console.log(`Question ${questionIndex} - Sending range: ${questionIndex}-${questionIndex}`);
+          
           const messages = generatePrompt(questionBody);
           const apiResponse = await client.path(path).post({
             body: {
@@ -167,45 +184,30 @@ export default async function (req, res) {
       return;
     }
 
-    // Non-streaming mode (original behavior)
-    const chunkSize = 5;
-    const totalQuestions = parseInt(total, 10);
-    const responses = [];
+    // Non-streaming mode - simplified to handle up to 5 questions directly
+    const body = {
+      prompt,
+      mode,
+      difficulty,
+      reference,
+      type,
+      total: totalQuestions,
+      range: { start: 1, end: totalQuestions },
+      lang
+    };
 
-    let startIndex = 1;
-    while (startIndex <= totalQuestions) {
-      const endIndex = Math.min(startIndex + chunkSize - 1, totalQuestions);
-      const currentChunkSize = endIndex - startIndex + 1;
+    const messages = generatePrompt(body);
+    const apiResponse = await client.path(path).post({
+      body: {
+        messages,
+        max_tokens: 16384,
+        top_p: 1.0,
+        temperature: 0.65,
+      }
+    });
 
-      const chunkBody = {
-        prompt,
-        mode,
-        difficulty,
-        reference,
-        type,
-        total: currentChunkSize,
-        range: { start: startIndex, end: endIndex },
-        lang
-      };
-
-      const messages = generatePrompt(chunkBody);
-      const apiResponse = await client.path(path).post({
-        body: {
-          messages,
-          max_tokens: 16384,
-          top_p: 1.0,
-          temperature: 0.65,
-        }
-      });
-
-      const content = apiResponse?.body?.choices[0]?.message?.content || "";
-      responses.push(content);
-
-      startIndex = endIndex + 1;
-    }
-
-    const combinedResult = responses.join("\n");
-    res.status(200).json({ result: combinedResult });
+    const content = apiResponse?.body?.choices[0]?.message?.content || "";
+    res.status(200).json({ result: content });
 
   } catch (error) {
     console.error(`Error with OpenAI API request: ${error.message}`);
@@ -262,9 +264,14 @@ function generatePrompt ( data )
         messages = [...messages, ...fineTuneListEn];
       }
 
+      const userContent = `|-[${prompt}]-| |-[${reference}]-| |-[tingkat kognitif Taksonomi Bloom ${difficulty}]-| |-[bertipe ${type}]-| |-[soal mulai dari nomor ${range.start} sampai nomor ${range.end}]-|`;
+      
+      // Debug logging
+      console.log(`GeneratePrompt - Range: ${range.start}-${range.end}, User content: ${userContent}`);
+
       messages.push({
         role: "user",
-        content: `|-[${prompt}]-| |-[${reference}]-| |-[tingkat kognitif Taksonomi Bloom ${difficulty}]-| |-[bertipe ${type}]-| |-[soal mulai dari nomor ${range.start} sampai nomor ${range.end}]-|`,
+        content: userContent,
       });
   }
 

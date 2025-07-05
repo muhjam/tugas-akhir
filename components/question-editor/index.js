@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
-import { GoTrash } from 'react-icons/go';
 import { IoIosArrowDown } from 'react-icons/io';
+import { IoClose } from 'react-icons/io5';
 import Editor from '../editor';
 
 export default function QuestionEditor({
@@ -20,19 +20,37 @@ export default function QuestionEditor({
   return (
     <div key={index} className="bg-white rounded-xl shadow-sm border border-gray-100 overflow-hidden transition-all duration-200 hover:shadow-md">
       <div className="p-4 md:p-6">
+        <div className="flex items-center justify-between mb-4">
+          <div className="flex items-center space-x-2">
+            <h3 className="text-lg font-semibold text-gray-800">
+              {t('main.question')}
+            </h3>
+              <span className="text-sm font-medium text-gray-500 bg-gray-100 px-2 py-1 rounded">
+                #{index + 1}
+              </span>
+          </div>
+          <div className="flex space-x-2">
+            <button 
+              type="button" 
+              onClick={() => onToggleVisibility(index)} 
+              className="bg-blue-500 hover:bg-blue-600 px-3 py-2 text-white rounded-lg transition-colors duration-200"
+            >
+              <IoIosArrowDown className={`text-xl transition-transform duration-200 ${isShow.includes(index) ? '-rotate-180' : ''}`}/>
+            </button>
+            
+            {onRemove && (
+              <button 
+                type="button" 
+                onClick={() => onRemove(index)} 
+                className="bg-red-500 hover:bg-red-600 px-3 py-2 text-white rounded-lg transition-colors duration-200"
+              >
+                <IoClose className="text-xl"/>
+              </button>
+            )}
+          </div>
+        </div>
         <form onSubmit={(e) => onGenerate(e, index)}>
           <div className="flex flex-col lg:flex-row lg:items-start gap-4">
-            {onRemove && (
-              <div className="lg:pt-8">
-                <button
-                  type="button"
-                  onClick={() => onRemove(index)}
-                  className="w-full lg:w-[40px] h-[40px] bg-red-500 hover:bg-red-600 text-white rounded-lg flex items-center justify-center transition-colors duration-200"
-                >
-                  <GoTrash className='text-lg'/>
-                </button>
-              </div>
-            )}
             <div className="flex-grow space-y-4">
               <div className="space-y-2">
                 <label htmlFor={`prompt-${index}`} className="block text-sm font-semibold text-gray-700">
@@ -97,14 +115,6 @@ export default function QuestionEditor({
                       className={`${isGenerating[index] ? 'bg-gray-400' : 'bg-green-500 hover:bg-green-600'} px-6 py-2 text-white rounded-lg transition-colors duration-200 flex items-center gap-2`}
                     >
                       {isGenerating[index] ? t('main.creating') : t('main.createQuestion')}
-                    </button>
-                    
-                    <button 
-                      type="button" 
-                      onClick={() => onToggleVisibility(index)} 
-                      className="bg-blue-500 hover:bg-blue-600 px-3 py-2 text-white rounded-lg transition-colors duration-200"
-                    >
-                      <IoIosArrowDown className={`text-xl transition-transform duration-200 ${isShow.includes(index) ? '-rotate-180' : ''}`}/>
                     </button>
                   </div>
                 </div>
