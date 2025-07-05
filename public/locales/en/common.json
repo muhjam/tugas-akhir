@@ -124,14 +124,13 @@
     }
   },
   "main": {
-    "title": "Math Time",
+    "title": "Auto Math",
     "subtitle": "AI-powered automatic math question generation for high school level",
     "developedBy": "Developed by",
     "command": "Instruction:",
     "commandPlaceholder": "Enter your instruction to generate questions",
     "cognitiveLevel": "Cognitive Level:",
     "questionType": "Question Type:",
-    "question": "Question",
     "createQuestion": "Generate",
     "creating": "Generating",
     "title_field": "Title:",
@@ -161,8 +160,6 @@
     "completed": "completed",
     "waitingInQueue": "Waiting in queue ({{current}} of {{total}})",
     "generatingQuestion": "Generating question...",
-    "questionsReady": "questions ready",
-    "cancel": "Cancel",
-    "chunk": "Chunk"
+    "questionsReady": "questions ready"
   }
 } 
