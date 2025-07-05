@@ -124,7 +124,7 @@
     }
   },
   "main": {
-    "title": "Math Time",
+    "title": "Auto Math",
     "subtitle": "Pembuatan soal matematika tingkat SMA otomatis menggunakan AI",
     "developedBy": "Dikembangkan oleh",
     "command": "Perintah:",

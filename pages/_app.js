@@ -26,11 +26,11 @@ function MyApp({ Component, pageProps }) {
     <>
       <Head>
         {/* Primary Meta Tags */}
-        <title>Math Time - AI-Powered Math Problem Generator</title>
-        <meta name="title" content="JamMath Time Quest - AI-Powered Math Problem Generator" />
+        <title>Auto Math - AI-Powered Math Problem Generator</title>
+        <meta name="title" content="Auto Math - AI-Powered Math Problem Generator" />
         <meta name="description" content="Generate custom math problems and worksheets with AI. Perfect for teachers, students, and parents looking for personalized math exercises." />
         <meta name="keywords" content="math problems, math generator, AI math, education, mathematics, worksheets, math exercises, learning math" />
-        <meta name="author" content="Math Quest Team" />
+        <meta name="author" content="Auto Math Team" />
         <meta name="robots" content="index, follow" />
         <meta httpEquiv="Content-Type" content="text/html; charset=utf-8" />
         <meta name="language" content="English" />
@@ -42,14 +42,14 @@ function MyApp({ Component, pageProps }) {
         {/* Open Graph / Facebook */}
         <meta property="og:type" content="website" />
         <meta property="og:url" content="https://mathquest.com/" />
-        <meta property="og:title" content="Math Quest - AI-Powered Math Problem Generator" />
+        <meta property="og:title" content="Auto Math - AI-Powered Math Problem Generator" />
         <meta property="og:description" content="Generate custom math problems and worksheets with AI. Perfect for teachers, students, and parents." />
         <meta property="og:image" content="https://mathquest.com/images/math-quest-og.jpg" />
 
         {/* Twitter */}
         <meta property="twitter:card" content="summary_large_image" />
         <meta property="twitter:url" content="https://mathquest.com/" />
-        <meta property="twitter:title" content="Math Quest - AI-Powered Math Problem Generator" />
+        <meta property="twitter:title" content="Auto Math - AI-Powered Math Problem Generator" />
         <meta property="twitter:description" content="Generate custom math problems and worksheets with AI. Perfect for teachers, students, and parents." />
         <meta property="twitter:image" content="https://mathquest.com/images/math-quest-twitter.jpg" />
 
