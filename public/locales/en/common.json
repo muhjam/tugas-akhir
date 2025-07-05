@@ -131,6 +131,7 @@
     "commandPlaceholder": "Enter your instruction to generate questions",
     "cognitiveLevel": "Cognitive Level:",
     "questionType": "Question Type:",
+    "question": "Question",
     "createQuestion": "Generate",
     "creating": "Generating",
     "title_field": "Title:",
