@@ -131,6 +131,7 @@
     "commandPlaceholder": "Enter your instruction to generate questions",
     "cognitiveLevel": "Cognitive Level:",
     "questionType": "Question Type:",
+    "question": "Question",
     "createQuestion": "Generate",
     "creating": "Generating",
     "title_field": "Title:",
@@ -160,6 +161,8 @@
     "completed": "completed",
     "waitingInQueue": "Waiting in queue ({{current}} of {{total}})",
     "generatingQuestion": "Generating question...",
-    "questionsReady": "questions ready"
+    "questionsReady": "questions ready",
+    "cancel": "Cancel",
+    "chunk": "Chunk"
   }
 } 

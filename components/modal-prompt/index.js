@@ -134,95 +134,226 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
     setStreamingQuestions([]);
     collectedQuestionsRef.current = [];
 
-    try {
-      // Create a POST request to initiate streaming
-      const response = await fetch('/api/generate', {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({ 
-          prompt, 
-          type, 
-          difficulty, 
-          reference, 
-          mode: "list", 
-          total: total, 
-          lang: i18n.language,
-          stream: true
-        }),
-      });
+    // Create AbortController for cancellation
+    abortControllerRef.current = new AbortController();
+    let isCancelled = false;
 
-      if (!response.ok) {
-        throw new Error('Failed to start streaming');
+    try {
+      const totalQuestions = parseInt(total);
+      
+      // Split into chunks of 5
+      const chunkSize = 5;
+      const chunks = [];
+      let startIndex = 1;
+      
+      while (startIndex <= totalQuestions) {
+        const endIndex = Math.min(startIndex + chunkSize - 1, totalQuestions);
+        const currentChunkSize = endIndex - startIndex + 1;
+        chunks.push({
+          start: startIndex,
+          end: endIndex,
+          size: currentChunkSize
+        });
+        startIndex = endIndex + 1;
       }
 
-      const reader = response.body.getReader();
-      const decoder = new TextDecoder();
+      let totalCompleted = 0;
 
-      while (true) {
-        const { done, value } = await reader.read();
-        if (done) break;
+      // Send initial status
+      window.dispatchEvent(new CustomEvent('streamingStatus', {
+        detail: {
+          type: 'status',
+          message: 'Starting generation...',
+          total: totalQuestions,
+          completed: 0,
+          chunks: chunks.length
+        }
+      }));
 
-        const chunk = decoder.decode(value);
-        const lines = chunk.split('\n');
+      // Process each chunk
+      for (let chunkIndex = 0; chunkIndex < chunks.length; chunkIndex++) {
+        // Check if cancelled
+        if (abortControllerRef.current?.signal.aborted) {
+          isCancelled = true;
+          break;
+        }
 
-        for (const line of lines) {
-          if (line.startsWith('data: ')) {
-            try {
-              const data = JSON.parse(line.slice(6));
-              
-              if (data.type === 'question') {
-                collectedQuestionsRef.current.push(data.data);
-                setStreamingQuestions(prev => [...prev, data.data]);
-                
-                // Send update to parent via window event
-                window.dispatchEvent(new CustomEvent('streamingQuestionReady', {
-                  detail: {
-                    question: data.data,
-                    completed: data.completed,
-                    total: data.total
+        const chunk = chunks[chunkIndex];
+        
+        // Send chunk progress
+        window.dispatchEvent(new CustomEvent('streamingStatus', {
+          detail: {
+            type: 'progress',
+            message: `Processing chunk ${chunkIndex + 1}/${chunks.length}... (Questions ${chunk.start}-${chunk.end})`,
+            total: totalQuestions,
+            completed: totalCompleted,
+            currentChunk: chunkIndex + 1,
+            totalChunks: chunks.length
+          }
+        }));
+
+        try {
+          // Create a POST request to initiate streaming for this chunk
+          const response = await fetch('/api/generate', {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json",
+            },
+            body: JSON.stringify({ 
+              prompt, 
+              type, 
+              difficulty, 
+              reference, 
+              mode: "list", 
+              total: chunk.size,
+              range: { start: chunk.start, end: chunk.end },
+              lang: i18n.language,
+              stream: true
+            }),
+            signal: abortControllerRef.current.signal
+          });
+
+          if (!response.ok) {
+            throw new Error(`Failed to start streaming for chunk ${chunkIndex + 1}`);
+          }
+
+          const reader = response.body.getReader();
+          const decoder = new TextDecoder();
+          let chunkCompleted = 0;
+
+          while (true) {
+            // Check if cancelled
+            if (abortControllerRef.current?.signal.aborted) {
+              isCancelled = true;
+              reader.cancel();
+              break;
+            }
+
+            const { done, value } = await reader.read();
+            if (done) break;
+
+            const chunkData = decoder.decode(value);
+            const lines = chunkData.split('\n');
+
+            for (const line of lines) {
+              if (line.startsWith('data: ')) {
+                try {
+                  const data = JSON.parse(line.slice(6));
+                  
+                  if (data.type === 'question') {
+                    // Calculate correct global index based on chunk position
+                    const globalIndex = chunk.start + chunkCompleted - 1;
+                    
+                    // Adjust question index for global position
+                    const adjustedQuestion = {
+                      ...data.data,
+                      index: globalIndex,
+                      questionNumber: chunk.start + chunkCompleted, // Add question number for display
+                      chunkIndex: chunkIndex,
+                      chunkPosition: chunkCompleted + 1
+                    };
+                    
+                    collectedQuestionsRef.current.push(adjustedQuestion);
+                    setStreamingQuestions(prev => [...prev, adjustedQuestion]);
+                    chunkCompleted++;
+                    
+                    // Send update to parent via window event
+                    window.dispatchEvent(new CustomEvent('streamingQuestionReady', {
+                      detail: {
+                        question: adjustedQuestion,
+                        completed: totalCompleted + chunkCompleted,
+                        total: totalQuestions,
+                        chunkIndex: chunkIndex,
+                        chunkCompleted: chunkCompleted,
+                        chunkTotal: chunk.size,
+                        globalIndex: globalIndex
+                      }
+                    }));
+                  } else if (data.type === 'complete') {
+                    // Chunk completed
+                    totalCompleted += chunkCompleted;
+                    break;
+                  } else if (data.type === 'error') {
+                    console.error('Streaming error:', data.message);
+                    
+                    // Send error event to parent
+                    window.dispatchEvent(new CustomEvent('streamingError', {
+                      detail: {
+                        message: `Chunk ${chunkIndex + 1}: ${data.message}`,
+                        completed: totalCompleted + chunkCompleted,
+                        total: totalQuestions,
+                        chunkIndex: chunkIndex
+                      }
+                    }));
                   }
-                }));
-              } else if (data.type === 'progress') {
-                // Progress updates are handled by parent page
-              } else if (data.type === 'status') {
-                // Status updates are handled by parent page
-              } else if (data.type === 'complete') {
-                // Send complete event to parent
-                window.dispatchEvent(new CustomEvent('streamingComplete', {
-                  detail: {
-                    completed: data.completed,
-                    total: data.total
-                  }
-                }));
-              } else if (data.type === 'error') {
-                console.error('Streaming error:', data.message);
-                
-                // Send error event to parent
-                window.dispatchEvent(new CustomEvent('streamingError', {
-                  detail: {
-                    message: data.message,
-                    completed: data.completed,
-                    total: data.total
-                  }
-                }));
+                } catch (e) {
+                  console.error('Error parsing streaming data:', e);
+                }
               }
-            } catch (e) {
-              console.error('Error parsing streaming data:', e);
             }
           }
+
+          // If cancelled during this chunk, break
+          if (isCancelled) {
+            break;
+          }
+
+        } catch (error) {
+          if (error.name === 'AbortError') {
+            isCancelled = true;
+            break;
+          }
+          
+          console.error(`Error in chunk ${chunkIndex + 1}:`, error);
+          
+          // Send error event to parent
+          window.dispatchEvent(new CustomEvent('streamingError', {
+            detail: {
+              message: `Chunk ${chunkIndex + 1}: ${error.message}`,
+              completed: totalCompleted,
+              total: totalQuestions,
+              chunkIndex: chunkIndex
+            }
+          }));
         }
       }
 
-      // No need to submit collected questions - parent is handling via events
+      // Send final status
+      if (isCancelled) {
+        window.dispatchEvent(new CustomEvent('streamingCancelled', {
+          detail: {
+            completed: totalCompleted,
+            total: totalQuestions,
+            message: 'Generation cancelled by user'
+          }
+        }));
+      } else {
+        window.dispatchEvent(new CustomEvent('streamingComplete', {
+          detail: {
+            completed: totalCompleted,
+            total: totalQuestions,
+            message: 'All chunks completed successfully'
+          }
+        }));
+      }
 
     } catch (error) {
-      console.error('Streaming error:', error);
-      alert(error.message);
+      if (error.name === 'AbortError') {
+        console.log('Generation cancelled by user');
+      } else {
+        console.error('Streaming error:', error);
+        window.dispatchEvent(new CustomEvent('streamingError', {
+          detail: {
+            message: error.message,
+            completed: 0,
+            total: parseInt(total)
+          }
+        }));
+      }
     } finally {
       setIsGenerating(false);
       collectedQuestionsRef.current = [];
+      abortControllerRef.current = null;
     }
   }
 
@@ -288,6 +419,21 @@ useEffect(() => {
     document.body.style.overflow = 'unset';
   };
 }, [isOpen]);
+
+// Listen for cancel streaming event
+useEffect(() => {
+  const handleCancelStreaming = () => {
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+  };
+
+  window.addEventListener('cancelStreaming', handleCancelStreaming);
+  
+  return () => {
+    window.removeEventListener('cancelStreaming', handleCancelStreaming);
+  };
+}, []);
 
   if (!isOpen) return null;
 

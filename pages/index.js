@@ -109,15 +109,17 @@ export default function Home() {
   // Listen for streaming events
   useEffect(() => {
     const handleStreamingQuestionReady = (event) => {
-      const { question, completed, total } = event.detail;
+      const { question, completed, total, chunkIndex, chunkCompleted, chunkTotal, globalIndex } = event.detail;
       
       setQuestions(prevQuestions => {
         const newQuestions = [...prevQuestions];
-        // Find the first skeleton question and replace it
-        const skeletonIndex = newQuestions.findIndex(q => q.isLoading);
         
-        if (skeletonIndex !== -1) {
-          newQuestions[skeletonIndex] = {
+        // Find the skeleton question at the correct position based on globalIndex
+        // Since we create skeleton questions in order, we can use globalIndex directly
+        const targetIndex = globalIndex;
+        
+        if (targetIndex < newQuestions.length && newQuestions[targetIndex].isLoading) {
+          newQuestions[targetIndex] = {
             prompt: question.prompt,
             difficulty: question.difficulty,
             type: question.type,
@@ -125,8 +127,27 @@ export default function Home() {
             description: "",
             answer: "",
             topic: "",
-            isLoading: false
+            isLoading: false,
+            questionNumber: question.questionNumber, // Store question number for display
+            globalIndex: globalIndex
           };
+        } else {
+          // If for some reason the index doesn't match, find the first available skeleton
+          const skeletonIndex = newQuestions.findIndex(q => q.isLoading);
+          if (skeletonIndex !== -1) {
+            newQuestions[skeletonIndex] = {
+              prompt: question.prompt,
+              difficulty: question.difficulty,
+              type: question.type,
+              title: "",
+              description: "",
+              answer: "",
+              topic: "",
+              isLoading: false,
+              questionNumber: question.questionNumber,
+              globalIndex: globalIndex
+            };
+          }
         }
         
         return newQuestions;
@@ -135,6 +156,19 @@ export default function Home() {
       setStreamingState(prev => ({
         ...prev,
         completed: completed
+      }));
+    };
+
+    const handleStreamingStatus = (event) => {
+      const { type, message, completed, total, currentChunk, totalChunks } = event.detail;
+      
+      setStreamingState(prev => ({
+        ...prev,
+        completed: completed,
+        total: total,
+        currentChunk: currentChunk,
+        totalChunks: totalChunks,
+        message: message
       }));
     };
 
@@ -149,23 +183,50 @@ export default function Home() {
       setStreamingState({
         isStreaming: false,
         total: 0,
-        completed: 0
+        completed: 0,
+        currentChunk: 0,
+        totalChunks: 0,
+        message: ''
       });
     };
 
+    const handleStreamingCancelled = (event) => {
+      const { completed, total, message } = event.detail;
+      
+      // Remove any remaining skeleton questions
+      setQuestions(prevQuestions => 
+        prevQuestions.filter(q => !q.isLoading)
+      );
+      
+      setStreamingState({
+        isStreaming: false,
+        total: 0,
+        completed: 0,
+        currentChunk: 0,
+        totalChunks: 0,
+        message: ''
+      });
+      
+      console.log('Generation cancelled:', message);
+    };
+
     const handleStreamingError = (event) => {
-      const { message } = event.detail;
+      const { message, chunkIndex } = event.detail;
       console.error('Streaming error:', message);
       // Optionally show error to user
     };
 
     window.addEventListener('streamingQuestionReady', handleStreamingQuestionReady);
+    window.addEventListener('streamingStatus', handleStreamingStatus);
     window.addEventListener('streamingComplete', handleStreamingComplete);
+    window.addEventListener('streamingCancelled', handleStreamingCancelled);
     window.addEventListener('streamingError', handleStreamingError);
 
     return () => {
       window.removeEventListener('streamingQuestionReady', handleStreamingQuestionReady);
+      window.removeEventListener('streamingStatus', handleStreamingStatus);
       window.removeEventListener('streamingComplete', handleStreamingComplete);
+      window.removeEventListener('streamingCancelled', handleStreamingCancelled);
       window.removeEventListener('streamingError', handleStreamingError);
     };
   }, []);
@@ -176,11 +237,14 @@ export default function Home() {
       setStreamingState({
         isStreaming: true,
         total: options.total,
-        completed: 0
+        completed: 0,
+        currentChunk: 0,
+        totalChunks: Math.ceil(options.total / 5),
+        message: 'Preparing generation...'
       });
     }
 
-    data?.map((item) => {
+    data?.map((item, dataIndex) => {
       setQuestions((prev) => [
         ...prev,
         {
@@ -192,7 +256,8 @@ export default function Home() {
           answer: "",
           topic: "",
           isLoading: item?.isLoading || false,
-          loadingIndex: item?.loadingIndex || 0,
+          loadingIndex: item?.loadingIndex !== undefined ? item.loadingIndex : dataIndex,
+          questionNumber: item?.loadingIndex !== undefined ? item.loadingIndex + 1 : dataIndex + 1,
         },
       ]);
       setIsGenerating((prev) => [...prev, false]);
@@ -356,6 +421,12 @@ export default function Home() {
       });
     }
   };
+
+  const cancelStreaming = () => {
+    // Send cancel event to modal
+    window.dispatchEvent(new CustomEvent('cancelStreaming'));
+  };
+
   if (isLoading || !ready) {
     return (
       <div className="min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50 flex items-center justify-center">
@@ -390,10 +461,25 @@ export default function Home() {
                   <div className="flex items-center justify-between mb-2">
                     <div className="flex items-center space-x-2">
                       <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600"></div>
-                      <span className="text-sm font-medium text-green-700">{t('streaming.generatingQuestions')}</span>
+                      <span className="text-sm font-medium text-green-700">
+                        {streamingState.message || t('streaming.generatingQuestions')}
+                      </span>
                     </div>
-                    <div className="text-sm text-green-600">
-                      {streamingState.completed} / {streamingState.total} {t('streaming.completed')}
+                    <div className="flex items-center space-x-3">
+                      <div className="text-sm text-green-600">
+                        {streamingState.completed} / {streamingState.total} {t('streaming.completed')}
+                        {streamingState.totalChunks > 1 && (
+                          <span className="ml-2 text-xs text-blue-600">
+                            ({t('streaming.chunk')} {streamingState.currentChunk}/{streamingState.totalChunks})
+                          </span>
+                        )}
+                      </div>
+                      <button
+                        onClick={cancelStreaming}
+                        className="text-xs px-3 py-1 bg-red-500 text-white rounded-full hover:bg-red-600 transition-colors"
+                      >
+                        {t('streaming.cancel')}
+                      </button>
                     </div>
                   </div>
                   <div className="w-full bg-green-200 rounded-full h-2">
