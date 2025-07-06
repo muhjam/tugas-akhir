@@ -108,8 +108,6 @@ export default async function (req, res) {
             lang
           };
 
-          console.log(`Question ${questionIndex} - Sending range: ${questionIndex}-${questionIndex}`);
-          
           const messages = generatePrompt(questionBody);
           const apiResponse = await client.path(path).post({
             body: {
@@ -154,8 +152,6 @@ export default async function (req, res) {
           }
 
         } catch (error) {
-          console.error(`Error generating question ${questionIndex}:`, error);
-          
           res.write(`data: ${JSON.stringify({
             type: 'error',
             message: `Error generating question ${questionIndex}: ${error.message}`,
@@ -207,7 +203,6 @@ export default async function (req, res) {
     res.status(200).json({ result: content });
 
   } catch (error) {
-    console.error(`Error with OpenAI API request: ${error.message}`);
     res.status(500).json({
       error: { message: 'An error occurred during your request.' }
     });

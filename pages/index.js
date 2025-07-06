@@ -206,8 +206,6 @@ export default function Home() {
         totalChunks: 0,
         message: ''
       });
-      
-      console.log('Generation cancelled:', message);
     };
 
     const handleStreamingError = (event) => {
