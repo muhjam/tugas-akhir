@@ -70,9 +70,6 @@ export default async function (req, res) {
       const startQuestion = range?.start || 1;
       const endQuestion = range?.end || totalQuestions;
       
-      // Debug logging
-      console.log(`Streaming request - Total: ${totalQuestions}, Range: ${startQuestion}-${endQuestion}`);
-      
       // Send initial status
       res.write(`data: ${JSON.stringify({ 
         type: 'status', 
@@ -227,6 +224,7 @@ function generatePrompt ( data )
   const range = data?.range || { start: 1, end: total };
   const mode = data?.mode || "list";
   const lang = data?.lang || "id";
+  const isId = lang === "id";
 
   let messages;
 
@@ -234,7 +232,7 @@ function generatePrompt ( data )
       messages = [
         {
           role: "system",
-          content: lang === "id" ? systemPromptDetailId : systemPromptDetailEn,
+          content: isId ? systemPromptDetailId : systemPromptDetailEn,
         }
       ];
 
@@ -243,10 +241,12 @@ function generatePrompt ( data )
       } else {
         messages = [...messages, ...fineTuneDetailEn];
       }
-
+      const difficultyText = isId ? `tingkat kognitif Taksonomi Bloom ${difficulty}` : `Bloom's Taxonomy cognitive level ${difficulty}`;
+      const typeText = isId ? `bertipe ${type}` : `question type ${type}`;
+      const userContent = `|-[${prompt}]-| |-[${reference}]-| |-[${difficultyText}]-| |-[${typeText}]-|`;
       messages.push({
         role: "user",
-        content: `|-[${prompt}]-| |-[tingkat kognitif Taksonomi Bloom ${difficulty}]-| |-[bertipe ${type}]-|`,
+        content: userContent,
       });
  
   } else  {
@@ -263,11 +263,10 @@ function generatePrompt ( data )
       } else {
         messages = [...messages, ...fineTuneListEn];
       }
-
-      const userContent = `|-[${prompt}]-| |-[${reference}]-| |-[tingkat kognitif Taksonomi Bloom ${difficulty}]-| |-[bertipe ${type}]-| |-[soal mulai dari nomor ${range.start} sampai nomor ${range.end}]-|`;
-      
-      // Debug logging
-      console.log(`GeneratePrompt - Range: ${range.start}-${range.end}, User content: ${userContent}`);
+      const difficultyText = isId ? `tingkat kognitif Taksonomi Bloom ${difficulty}` : `Bloom's Taxonomy cognitive level ${difficulty}`;
+      const typeText = isId ? `bertipe ${type}` : `question type ${type}`;
+      const rangeText = isId ? `soal mulai dari nomor ${range.start} sampai nomor ${range.end}` : `questions start from number ${range.start} to number ${range.end}`;
+      const userContent = `|-[${prompt}]-| |-[${reference}]-| |-[${difficultyText}]-| |-[${typeText}]-| |-${rangeText}-|`;
 
       messages.push({
         role: "user",

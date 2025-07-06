@@ -161,6 +161,12 @@
     "completed": "completed",
     "waitingInQueue": "Waiting in queue ({{current}} of {{total}})",
     "generatingQuestion": "Generating question...",
-    "questionsReady": "questions ready"
+    "questionsReady": "questions ready",
+    "processingChunk": "Processing chunk {{chunkIndex}}/{{totalChunks}}... (Questions {{start}}-{{end}})",
+    "chunkError": "Chunk {{chunkIndex}}: {{message}}",
+    "failedToStartStreaming": "Failed to start streaming for chunk {{chunkIndex}}",
+    "generationCancelled": "Generation cancelled by user",
+    "allChunksCompleted": "All chunks completed successfully",
+    "failedToParsePdf": "Failed to parse PDF"
   }
 } 

@@ -163,6 +163,12 @@
     "generatingQuestion": "Membuat soal...",
     "questionsReady": "soal siap",
     "cancel": "Batalkan",
-    "chunk": "Grup"
+    "chunk": "Grup",
+    "processingChunk": "Memproses grup {{chunkIndex}}/{{totalChunks}}... (Soal {{start}}-{{end}})",
+    "chunkError": "Grup {{chunkIndex}}: {{message}}",
+    "failedToStartStreaming": "Gagal memulai streaming untuk grup {{chunkIndex}}",
+    "generationCancelled": "Pembuatan soal dibatalkan oleh pengguna",
+    "allChunksCompleted": "Semua grup berhasil diselesaikan",
+    "failedToParsePdf": "Gagal memproses PDF"
   }
 } 

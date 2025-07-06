@@ -184,7 +184,12 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
         window.dispatchEvent(new CustomEvent('streamingStatus', {
           detail: {
             type: 'progress',
-            message: `Processing chunk ${chunkIndex + 1}/${chunks.length}... (Questions ${chunk.start}-${chunk.end})`,
+            message: t('streaming.processingChunk', { 
+              chunkIndex: chunkIndex + 1, 
+              totalChunks: chunks.length, 
+              start: chunk.start, 
+              end: chunk.end 
+            }),
             total: totalQuestions,
             completed: totalCompleted,
             currentChunk: chunkIndex + 1,
@@ -214,7 +219,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
           });
 
           if (!response.ok) {
-            throw new Error(`Failed to start streaming for chunk ${chunkIndex + 1}`);
+            throw new Error(t('streaming.failedToStartStreaming', { chunkIndex: chunkIndex + 1 }));
           }
 
           const reader = response.body.getReader();
@@ -279,7 +284,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
                     // Send error event to parent
                     window.dispatchEvent(new CustomEvent('streamingError', {
                       detail: {
-                        message: `Chunk ${chunkIndex + 1}: ${data.message}`,
+                        message: t('streaming.chunkError', { chunkIndex: chunkIndex + 1, message: data.message }),
                         completed: totalCompleted + chunkCompleted,
                         total: totalQuestions,
                         chunkIndex: chunkIndex
@@ -309,7 +314,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
           // Send error event to parent
           window.dispatchEvent(new CustomEvent('streamingError', {
             detail: {
-              message: `Chunk ${chunkIndex + 1}: ${error.message}`,
+              message: t('streaming.chunkError', { chunkIndex: chunkIndex + 1, message: error.message }),
               completed: totalCompleted,
               total: totalQuestions,
               chunkIndex: chunkIndex
@@ -324,7 +329,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
           detail: {
             completed: totalCompleted,
             total: totalQuestions,
-            message: 'Generation cancelled by user'
+            message: t('streaming.generationCancelled')
           }
         }));
       } else {
@@ -332,7 +337,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
           detail: {
             completed: totalCompleted,
             total: totalQuestions,
-            message: 'All chunks completed successfully'
+            message: t('streaming.allChunksCompleted')
           }
         }));
       }
@@ -379,7 +384,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
           handleChange('reference', data.text);
         } catch (error) {
           console.error('Error parsing PDF:', error);
-          alert('Failed to parse PDF');
+          alert(t('streaming.failedToParsePdf'));
         } finally {
           setIsParsing(false);
         }
