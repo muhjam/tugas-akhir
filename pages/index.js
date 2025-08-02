@@ -443,9 +443,9 @@ export default function Home() {
           <h1 className="text-gray-500">Loading...</h1>
         </div>
       ) : 
-      // !isLoggedIn ? ( 
-      //   <Login/>
-      // ) : 
+      !isLoggedIn ? ( 
+        <Login/>
+      ) : 
       (
         <div className='flex flex-col justify-between w-full min-h-screen bg-gradient-to-br from-blue-50 to-indigo-50'>
           <Navbar showLogout={isLoggedIn} onLogout={handleLogout} />

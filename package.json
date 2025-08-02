@@ -5,7 +5,12 @@
   "scripts": {
     "dev": "next dev -p 8000",
     "build": "next build",
-    "start": "next start -p 8000"
+    "start": "next start -p 8000",
+    "test:api": "node test-api-performance.js",
+    "test:api:advanced": "node test-api-advanced.js",
+    "test:100": "node test-100-requests.js",
+    "test:100:simple": "node test-100-simple.js",
+    "test:demo": "node test-10-demo.js"
   },
   "dependencies": {
     "@azure-rest/ai-inference": "^1.0.0-beta.4",
@@ -40,6 +45,7 @@
     "@tailwindcss/forms": "^0.5.10",
     "autoprefixer": "^10.4.20",
     "negotiator": "^1.0.0",
+    "node-fetch": "^3.3.2",
     "postcss": "^8.4.41",
     "tailwindcss": "^3.4.10",
     "webpack-cli": "^5.1.4"
