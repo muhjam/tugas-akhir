@@ -491,9 +491,12 @@ useEffect(() => {
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
               <option value={t('difficulties.random')}>{t('difficulties.random')}</option>
-              <option value={t('difficulties.easy')}>{t('difficulties.easy')}</option>
-              <option value={t('difficulties.medium')}>{t('difficulties.medium')}</option>
-              <option value={t('difficulties.hard')}>{t('difficulties.hard')}</option>
+              <option value="c1">{t('main.cognitive.c1')}</option>
+              <option value="c2">{t('main.cognitive.c2')}</option>
+              <option value="c3">{t('main.cognitive.c3')}</option>
+              <option value="c4">{t('main.cognitive.c4')}</option>
+              <option value="c5">{t('main.cognitive.c5')}</option>
+              <option value="c6">{t('main.cognitive.c6')}</option>
             </select>
           </div>
 
