@@ -12,12 +12,6 @@
     "generating": "Generating",
     "uploadPdf": "Upload PDF"
   },
-  "difficulties": {
-    "random": "Random",
-    "easy": "Easy",
-    "medium": "Medium",
-    "hard": "Hard"
-  },
   "types": {
     "random": "Random",
     "multipleChoice": "Multiple Choice",
@@ -143,6 +137,7 @@
     "addQuestion": "Add Question",
     "generate": "Auto Generate",
     "cognitive": {
+      "random": "Random",
       "c1": "C1 (Remember)",
       "c2": "C2 (Understand)",
       "c3": "C3 (Apply)",

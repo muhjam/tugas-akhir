@@ -12,12 +12,6 @@
     "generating": "Membuat...",
     "uploadPdf": "Unggah PDF"
   },
-  "difficulties": {
-    "random": "Acak",
-    "easy": "Mudah",
-    "medium": "Sedang",
-    "hard": "Sulit"
-  },
   "types": {
     "random": "Acak",
     "multipleChoice": "Pilihan Ganda",
@@ -143,6 +137,7 @@
     "addQuestion": "Tambah Soal",
     "generate": "Buat Otomatis",
     "cognitive": {
+      "random": "Acak",
       "c1": "C1 (Mengingat)",
       "c2": "C2 (Memahami)",
       "c3": "C3 (Menerapkan)",

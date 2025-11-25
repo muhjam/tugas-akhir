@@ -10,6 +10,7 @@ import QuestionSkeleton from '../components/question-skeleton';
 import SuggestionList from '../components/suggestion-list';
 import BottomNavigation from '../components/bottom-navigation';
 import Footer from '../components/footer';
+import { convertCognitiveLevel } from '../utils';
 
 export default function Home() {
   const { t, ready, i18n } = useTranslation('common');
@@ -121,7 +122,7 @@ export default function Home() {
         if (targetIndex < newQuestions.length && newQuestions[targetIndex].isLoading) {
           newQuestions[targetIndex] = {
             prompt: question.prompt,
-            difficulty: question.difficulty,
+            difficulty: convertCognitiveLevel(question.difficulty),
             type: question.type,
             title: "",
             description: "",
@@ -137,7 +138,7 @@ export default function Home() {
           if (skeletonIndex !== -1) {
             newQuestions[skeletonIndex] = {
               prompt: question.prompt,
-              difficulty: question.difficulty,
+              difficulty: convertCognitiveLevel(question.difficulty),
               type: question.type,
               title: "",
               description: "",
@@ -247,7 +248,7 @@ export default function Home() {
         ...prev,
         {
           prompt: item?.prompt,
-          difficulty: item?.difficulty || "c1",
+          difficulty: convertCognitiveLevel(item?.difficulty) || "c1",
           type: item?.type || "essay",
           title: "",
           description: "",
@@ -284,7 +285,7 @@ export default function Home() {
   const addQuestion = () => {
     setQuestions([...questions, {
       prompt: "",
-      difficulty: "c1",
+      difficulty: convertCognitiveLevel("c1"),
       type: "essay",
       title: "",
       description: "",

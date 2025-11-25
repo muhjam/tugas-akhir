@@ -1,5 +1,6 @@
 import { useState, useRef, useEffect } from 'react';
 import { useTranslation } from 'next-i18next';
+import { convertCognitiveLevel } from '../../utils';
 
 const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
   const { t, i18n } = useTranslation('common');
@@ -9,7 +10,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
   const [formData, setFormData] = useState({
     prompt: '',
     total: 1,
-    difficulty: t('difficulties.random'),
+    difficulty: t('main.cognitive.random'),
     type: t('types.random'),
     reference: ''
   });
@@ -116,7 +117,7 @@ const ModalPrompt = ({ isOpen, onClose, onSubmit }) => {
     // Prepare skeleton data for immediate submission
     const skeletonQuestions = Array.from({ length: parseInt(total) }, (_, index) => ({
       prompt: prompt,
-      difficulty: difficulty === t('difficulties.random') ? "c1" : difficulty,
+      difficulty: difficulty === t('main.cognitive.random') ? "c1" : convertCognitiveLevel(difficulty),
       type: type === t('types.random') ? "essay" : type,
       title: "",
       description: "",
@@ -490,7 +491,7 @@ useEffect(() => {
               onChange={(e) => handleChange('difficulty', e.target.value)}
               className="w-full p-2 border rounded focus:outline-none focus:ring-2 focus:ring-blue-500"
             >
-              <option value={t('difficulties.random')}>{t('difficulties.random')}</option>
+              <option value={t('main.cognitive.random')}>{t('main.cognitive.random')}</option>
               <option value="c1">{t('main.cognitive.c1')}</option>
               <option value="c2">{t('main.cognitive.c2')}</option>
               <option value="c3">{t('main.cognitive.c3')}</option>
