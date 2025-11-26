@@ -100,7 +100,7 @@ export const fineTuneListEn = [
           },
           {
             role: "assistant",
-            content: "1. Soal Perbandingan (FPB): Soal ini melibatkan konsep FPB yang cukup dasar, tetapi perlu analisis untuk memahami bagaimana membagi jumlah apel dan jeruk secara maksimal.|->C2 (Memahami)|->Esai<_>2. Soal Persamaan Linear (Kecepatan, Jarak, dan Waktu): Soal ini sederhana karena hanya membutuhkan rumus dasar kecepatan = jarak/waktu. Tidak banyak analisis yang diperlukan.|->C1 (Mengingat)|->Esai<_>3. Soal Pola Bilangan (Deret Aritmatika): Memerlukan pemahaman konsep deret aritmatika dan penerapan rumus jumlah suku. Tingkatannya menengah karena ada langkah tambahan untuk menghitung.|->C3 (Menerapkan)|->PG<_>4. Soal Operasi Campuran (Aljabar Dasar): Menggunakan persamaan linier satu variabel yang sederhana. Penyelesaiannya langsung tanpa perlu banyak langkah kompleks.|->C1 (Mengingat)|->PG<_>5. Soal Pecahan (Operasi Pecahan): Menghitung pecahan dan mengurangkannya dari total hanya melibatkan operasi aritmatika dasar.|->C2 (Memahami)|->Esai",
+            content: "1. Soal Perbandingan (FPB): Soal ini melibatkan konsep FPB yang cukup dasar, tetapi perlu analisis untuk memahami bagaimana membagi jumlah apel dan jeruk secara maksimal.|->C2 (Memahami)|->Esai<_>2. Soal Persamaan Linear (Kecepatan, Jarak, dan Waktu): Soal ini sederhana karena hanya membutuhkan rumus dasar kecepatan = jarak/waktu. Tidak banyak analisis yang diperlukan.|->C1 (Mengingat)|->Esai<_>3. Soal Pola Bilangan (Deret Aritmatika): Memerlukan pemahaman konsep deret aritmatika dan penerapan rumus jumlah suku. Tingkatannya menengah karena ada langkah tambahan untuk menghitung.|->C3 (Menerapkan)|->multipleChoice<_>4. Soal Operasi Campuran (Aljabar Dasar): Menggunakan persamaan linier satu variabel yang sederhana. Penyelesaiannya langsung tanpa perlu banyak langkah kompleks.|->C1 (Mengingat)|->multipleChoice<_>5. Soal Pecahan (Operasi Pecahan): Menghitung pecahan dan mengurangkannya dari total hanya melibatkan operasi aritmatika dasar.|->C2 (Memahami)|->Esai",
           },
           {
             role: "user",
@@ -108,7 +108,7 @@ export const fineTuneListEn = [
           },
           {
             role: "assistant",
-            content: "<_>6. Menghitung hasil dari $$7 + 5 \\times 2$$. Tuliskan dengan urutan operasi yang benar (PEMDAS/BODMAS).|->C1 (Mengingat)|->PG",
+            content: "<_>6. Menghitung hasil dari $$7 + 5 \\times 2$$. Tuliskan dengan urutan operasi yang benar (PEMDAS/BODMAS).|->C1 (Mengingat)|->multipleChoice",
           },
     ]
         
@@ -127,7 +127,7 @@ export const fineTuneListEn = [
         },
         {
           role: "assistant",
-          content: "1. Ratio Problem (GCF): This problem uses the concept of greatest common factor and requires analysis to determine the maximum way to divide apples and oranges.|->C2 (Understanding)|->Essay<_>2. Linear Equation (Speed, Distance, Time): A basic problem requiring only the formula speed = distance/time. Not much analysis needed.|->C1 (Remembering)|->Essay<_>3. Number Patterns (Arithmetic Sequence): Involves understanding arithmetic sequences and applying the formula for the sum. Mid-level in complexity.|->C3 (Applying)|->MCQ<_>4. Mixed Operations (Basic Algebra): Simple one-variable linear equation. Direct solution without complex steps.|->C1 (Remembering)|->MCQ<_>5. Fractions (Fraction Operations): Simple addition and subtraction involving fractions.|->C2 (Understanding)|->Essay",
+          content: "1. Ratio Problem (GCF): This problem uses the concept of greatest common factor and requires analysis to determine the maximum way to divide apples and oranges.|->C2 (Understanding)|->essay<_>2. Linear Equation (Speed, Distance, Time): A basic problem requiring only the formula speed = distance/time. Not much analysis needed.|->C1 (Remembering)|->essay<_>3. Number Patterns (Arithmetic Sequence): Involves understanding arithmetic sequences and applying the formula for the sum. Mid-level in complexity.|->C3 (Applying)|->MCQ<_>4. Mixed Operations (Basic Algebra): Simple one-variable linear equation. Direct solution without complex steps.|->C1 (Remembering)|->MCQ<_>5. Fractions (Fraction Operations): Simple addition and subtraction involving fractions.|->C2 (Understanding)|->essay",
         },
         {
           role: "user",
