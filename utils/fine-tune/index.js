@@ -25,7 +25,7 @@ export const fineTuneDetailId = [
       },
       {
         role: "user",
-        content: "|-[17. Tentukan nilai limit dari $f(x) = \\frac{x^2 - 1}{x - 1}$ saat $x$ mendekati 1.]-| |-[tingkat kognitif Taksonomi Bloom C3 (Menerapkan)]-| |-[bertipe PG]-|",
+        content: "|-[17. Tentukan nilai limit dari $f(x) = \\frac{x^2 - 1}{x - 1}$ saat $x$ mendekati 1.]-| |-[tingkat kognitif Taksonomi Bloom C3 (Menerapkan)]-| |-[bertipe multipleChoice]-|",
       },
       {
         role: "assistant",
@@ -33,11 +33,19 @@ export const fineTuneDetailId = [
       },
       {
         role: "user",
-        content: "|-[tebak gambar bangun ruang]-| |-[tingkat kognitif Taksonomi Bloom C6 (Mencipta)]-| |-[bertipe PG]-|",
+        content: "|-[tebak gambar bangun ruang]-| |-[tingkat kognitif Taksonomi Bloom C6 (Mencipta)]-| |-[bertipe multipleChoice]-|",
       },
       {
         role: "assistant",
         content: `Tebak Gambar Bangun Ruang|->Pada gambar di bawah ini terdapat sebuah bangun ruang. Sebutkan nama bangun ruang tersebut.\n\n<svg width="200" height="250" viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">\n<line x1="100" y1="20" x2="30" y2="200" stroke="black" stroke-width="2"/>\n<line x1="100" y1="20" x2="170" y2="200" stroke="black" stroke-width="2"/>\n<path d="M30 200 Q100 230 170 200" stroke="black" fill="none" stroke-width="2"/>\n<path d="M170 200 Q100 170 30 200" stroke="black" fill="none" stroke-dasharray="6,4" stroke-width="2"/>\n</svg>\n\nJawaban yang tepat adalah...\n\nA. Kubus\n\nB. Balok\n\nC. Kerucut\n\nD. Limas Segiempat\n\nE. Tabung|->Bangun ruang yang ditampilkan pada gambar adalah sebuah Kerucut.\n\nKarakteristik dari kerucut adalah sebagai berikut:\n\n1. Kerucut memiliki satu sisi alas berbentuk lingkaran.\n2. Memiliki satu titik puncak yang tidak berada pada bidang alas.\n3. Selimut kerucut berbentuk bidang lengkung yang menghubungkan tepi alas dengan titik puncak.\n4. Volume kerucut dapat dihitung dengan rumus: $$V = \\frac{1}{3} \\pi r^2 h$$ di mana $r$ adalah jari-jari alas dan $h$ adalah tinggi kerucut.\n5. Luas permukaan kerucut terdiri dari luas alas dan luas selimut, yang dapat dihitung dengan rumus: $$A = \pi r (r + s)$$ di mana $s$ adalah garis pelukis kerucut.\n\nKerucut banyak ditemukan dalam kehidupan sehari-hari, seperti pada bentuk topi ulang tahun atau es krim cone. Berdasarkan karakteristik tersebut, bangun ruang ini adalah:\n\nJawaban yang benar adalah C. Kerucut.|->Geometri`,
+      },
+      {
+        role: "user",
+        content: "|-[Menganalisis dan Menyelesaikan masalah yang berkaitan dengan persamaan trigonometri.]-| |-[tingkat kognitif Taksonomi Bloom C5 (Evaluasi)]-| |-[bertipe essay]-|",
+      },
+      {
+        role: "assistant",
+        content: `Miranti Memandang Puncak Menar|->Di tepi sebuah pantai, Miranti berdiri dengan jarak 60 meter dari sebuah menara. Ia memandang puncak menara dengan sudut elevasi 60. Jika jarak mata Miranti dengan tanah adalah 165 cm, tinggi menara tersebut adalah ....|->Untuk menentukan tinggi menara, kita dapat menggunakan konsep trigonometri, khususnya fungsi tangen dalam segitiga siku-siku. \n\nMisalkan:\n- $h$ adalah tinggi menara dari tanah,\n- $h_1$ adalah tinggi mata Miranti dari tanah (165 cm atau 1.65 m),\n- $d$ adalah jarak horizontal dari Miranti ke menara (60 m),\n- $\\theta$ adalah sudut elevasi (60 derajat).\n\nDari segitiga siku-siku yang terbentuk, kita dapat menggunakan fungsi tangen:\n$$\\tan(\\theta) = \\frac{\\text{tinggi menara - tinggi mata Miranti}}{\\text{jarak}}$$\n\nSehingga:\n$$\\tan(60^\\circ) = \\frac{h - 1.65}{60}$$\n\nKita tahu bahwa $\\tan(60^\\circ) = \\sqrt{3}$, sehingga:\n$$\\sqrt{3} = \\frac{h - 1.65}{60}$$\n\nMaka, kita dapat menyelesaikan persamaan ini untuk $h$:\n$$h - 1.65 = 60\\sqrt{3}$$\n$$h = 60\\sqrt{3} + 1.65$$\n\nMenghitung nilai numeriknya:\n$$h \\approx 60(1.732) + 1.65$$\n$$h \\approx 103.92 + 1.65$$\n$$h \\approx 105.57$$\n\nJadi, tinggi menara tersebut adalah sekitar 105.57 meter.|->Trigonometri`,
       },
 ];
 
@@ -68,7 +76,7 @@ export const fineTuneDetailEn = [
       },
       {
         role: "user",
-        content: "|-[17. Determine the limit value of $f(x) = \\frac{x^2 - 1}{x - 1}$ as $x$ approaches 1.]-| |-[Bloom’s Taxonomy cognitive level C3 (Applying)]-| |-[MCQ type]-|",
+        content: "|-[17. Determine the limit value of $f(x) = \\frac{x^2 - 1}{x - 1}$ as $x$ approaches 1.]-| |-[Bloom’s Taxonomy cognitive level C3 (Applying)]-| |-[multipleChoice type]-|",
       },
       {
         role: "assistant",
@@ -76,11 +84,19 @@ export const fineTuneDetailEn = [
       },
       {
         role: "user",
-        content: "|-[guess the 3D shape from the drawing]-| |-[Bloom’s Taxonomy cognitive level C6 (Creating)]-| |-[MCQ type]-|",
+        content: "|-[guess the 3D shape from the drawing]-| |-[Bloom’s Taxonomy cognitive level C6 (Creating)]-| |-[multipleChoice type]-|",
       },
       {
         role: "assistant",
         content: `Guess the 3D Shape from the Drawing|->In the image below, identify the name of the 3D shape shown.\n\n<svg width="200" height="250" viewBox="0 0 200 250" xmlns="http://www.w3.org/2000/svg">\n<line x1="100" y1="20" x2="30" y2="200" stroke="black" stroke-width="2"/>\n<line x1="100" y1="20" x2="170" y2="200" stroke="black" stroke-width="2"/>\n<path d="M30 200 Q100 230 170 200" stroke="black" fill="none" stroke-width="2"/>\n<path d="M170 200 Q100 170 30 200" stroke="black" fill="none" stroke-dasharray="6,4" stroke-width="2"/>\n</svg>\n\nWhat is the correct answer?\n\nA. Cube\n\nB. Rectangular Prism\n\nC. Cone\n\nD. Square Pyramid\n\nE. Cylinder|->The shape shown in the image is a **Cone**.\n\nKey characteristics of a cone:\n\n1. It has a circular base.\n2. It has a single vertex not on the base.\n3. Its curved surface connects the base to the vertex.\n4. Volume: $$V = \\frac{1}{3} \\pi r^2 h$$ where $r$ is radius and $h$ is height.\n5. Surface area: $$A = \\pi r (r + s)$$ where $s$ is the slant height.\n\nCones appear in everyday objects such as party hats and ice cream cones.\n\nThus, the correct answer is C. Cone.|->Geometry`,
+      },
+      {
+        role: "user",
+        content: "|-[Analyze and solve problems related to trigonometric equations.]-| |-[Bloom’s Taxonomy cognitive level C5 (Evaluating)]-| |-[essay type]-|",
+      },
+      {
+        role: "assistant",
+        content: `Miranti Looks at the Top of a Tower|->On the edge of a beach, Miranti stands at a distance of 60 meters from a tower. She looks at the top of the tower with an elevation angle of 60°. If the distance from Miranti's eyes to the ground is 165 cm, what is the height of the tower?|->To determine the height of the tower, we can use trigonometric concepts, especially the tangent function in a right triangle.\n\nLet:\n- $h$ be the height of the tower from the ground,\n- $h_1$ be the height of Miranti's eyes from the ground (165 cm or 1.65 m),\n- $d$ be the horizontal distance from Miranti to the tower (60 m),\n- $\\theta$ be the angle of elevation (60 degrees).\n\nFrom the right triangle formed, we can use the tangent function:\n$$\\tan(\\theta) = \\frac{\\text{height of tower - height of eyes}}{\\text{distance}}$$\n\nSo:\n$$\\tan(60^\\circ) = \\frac{h - 1.65}{60}$$\n\nWe know $\\tan(60^\\circ) = \\sqrt{3}$, thus:\n$$\\sqrt{3} = \\frac{h - 1.65}{60}$$\n\nNow, solve this equation for $h$:\n$$h - 1.65 = 60\\sqrt{3}$$\n$$h = 60\\sqrt{3} + 1.65$$\n\nCalculating the numerical value:\n$$h \\approx 60(1.732) + 1.65$$\n$$h \\approx 103.92 + 1.65$$\n$$h \\approx 105.57$$\n\nSo, the height of the tower is approximately 105.57 meters.|->Trigonometry`,
       },
 ];
 
@@ -127,7 +143,7 @@ export const fineTuneListEn = [
         },
         {
           role: "assistant",
-          content: "1. Ratio Problem (GCF): This problem uses the concept of greatest common factor and requires analysis to determine the maximum way to divide apples and oranges.|->C2 (Understanding)|->essay<_>2. Linear Equation (Speed, Distance, Time): A basic problem requiring only the formula speed = distance/time. Not much analysis needed.|->C1 (Remembering)|->essay<_>3. Number Patterns (Arithmetic Sequence): Involves understanding arithmetic sequences and applying the formula for the sum. Mid-level in complexity.|->C3 (Applying)|->MCQ<_>4. Mixed Operations (Basic Algebra): Simple one-variable linear equation. Direct solution without complex steps.|->C1 (Remembering)|->MCQ<_>5. Fractions (Fraction Operations): Simple addition and subtraction involving fractions.|->C2 (Understanding)|->essay",
+          content: "1. Ratio Problem (GCF): This problem uses the concept of greatest common factor and requires analysis to determine the maximum way to divide apples and oranges.|->C2 (Understanding)|->essay<_>2. Linear Equation (Speed, Distance, Time): A basic problem requiring only the formula speed = distance/time. Not much analysis needed.|->C1 (Remembering)|->essay<_>3. Number Patterns (Arithmetic Sequence): Involves understanding arithmetic sequences and applying the formula for the sum. Mid-level in complexity.|->C3 (Applying)|->multipleChoice<_>4. Mixed Operations (Basic Algebra): Simple one-variable linear equation. Direct solution without complex steps.|->C1 (Remembering)|->multipleChoice<_>5. Fractions (Fraction Operations): Simple addition and subtraction involving fractions.|->C2 (Understanding)|->essay",
         },
         {
           role: "user",
@@ -135,7 +151,7 @@ export const fineTuneListEn = [
         },
         {
           role: "assistant",
-          content: "<_>6. Compute the result of $$7 + 5 \\times 2$$. Write your answer by following the correct order of operations (PEMDAS/BODMAS).|->C1 (Remembering)|->MCQ",
+          content: "<_>6. Compute the result of $$7 + 5 \\times 2$$. Write your answer by following the correct order of operations (PEMDAS/BODMAS).|->C1 (Remembering)|->multipleChoice",
         },
       ];
       
