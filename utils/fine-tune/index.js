@@ -126,6 +126,14 @@ export const fineTuneListEn = [
             role: "assistant",
             content: "<_>6. Menghitung hasil dari $$7 + 5 \\times 2$$. Tuliskan dengan urutan operasi yang benar (PEMDAS/BODMAS).|->C1 (Mengingat)|->multipleChoice",
           },
+          {
+            role: "user",
+            content: "|-[buat list soal matematika dasar]-| |-[tidak ada]-| |-[tingkat kognitif Taksonomi Bloom Acak]-| |-[bertipe Acak]-| |-[soal mulai dari nomor 11 sampai nomor 11]-|",
+          },
+          {
+            role: "assistant",
+            content: "<_>11. Jika tan 6 = z, maka nilai dari sin 174 adalah....|->C1 (Mengingat)|->multipleChoice",
+          },
     ]
         
     export const fineTuneListId = [
@@ -152,6 +160,14 @@ export const fineTuneListEn = [
         {
           role: "assistant",
           content: "<_>6. Compute the result of $$7 + 5 \\times 2$$. Write your answer by following the correct order of operations (PEMDAS/BODMAS).|->C1 (Remembering)|->multipleChoice",
+        },
+        {
+          role: "user",
+          content: "|-[create a list of basic math problems]-| |-[none]-| |-[Bloom’s Taxonomy cognitive level: Random]-| |-[question type: Random]-| |-[questions numbered from 11 to 11]-|",
+        },
+        {
+          role: "assistant",
+          content: "<_>11. If tan 6 = z, then the value of sin 174 is....|->C1 (Remembering)|->multipleChoice",
         },
       ];
       
